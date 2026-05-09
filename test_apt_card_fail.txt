@@ -1,0 +1,162 @@
+
+> my-app@0.1.0 test
+> jest --verbose __tests__/components/agenda/appointment-card.test.tsx
+
+FAIL __tests__/components/agenda/appointment-card.test.tsx
+  Agenda Module — AppointmentCard
+    ✕ renders card with correct appointment data (29 ms)
+    ✓ calls onClick when the card is clicked (25 ms)
+
+  ● Agenda Module — AppointmentCard › renders card with correct appointment data
+
+    TestingLibraryElementError: Unable to find an element with the text: DR. SMITH. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"w-full text-left bg-white p-4 rounded-2xl border border-slate-100 shadow-sm transition-all hover:border-indigo-100 group"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex justify-between items-start mb-3"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center gap-2 text-indigo-600"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"lucide lucide-clock group-hover:animate-pulse"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mheight[39m=[32m"14"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"2"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [33mwidth[39m=[32m"14"[39m
+                [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+              [36m>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"12"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"10"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M12 6v6l4 2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-xs font-bold tracking-tight"[39m
+              [36m>[39m
+                [0m06:00 AM[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"inline-flex items-center font-bold border rounded-full bg-emerald-50 text-emerald-700 border-emerald-100 px-2 py-0.5 text-[10px] "[39m
+            [36m>[39m
+              [0mCONFIRMED[0m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<h3[39m
+            [33mclass[39m=[32m"text-sm font-bold text-slate-900 mb-1 group-hover:text-indigo-600 transition-colors"[39m
+          [36m>[39m
+            [0mJohn Doe[0m
+          [36m</h3>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"space-y-1.5"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center gap-2 text-slate-500"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"lucide lucide-stethoscope"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mheight[39m=[32m"12"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"2"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [33mwidth[39m=[32m"12"[39m
+                [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M11 2v2"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M5 2v2"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M8 15a6 6 0 0 0 12 0v-3"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"20"[39m
+                  [33mcy[39m=[32m"10"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-xs font-medium"[39m
+              [36m>[39m
+                [0mLimpieza[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center gap-2 text-slate-400"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"lucide lucide-user"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mheight[39m=[32m"12"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"2"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [33mwidth[39m=[32m"12"[39m
+                [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"12"[39m
+                  [33mcy[39m=[32m"7"[39m
+                  [33mr[39m=[32m"4"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-[10px] font-bold uppercase tracking-wider"[39m
+              [36m>[39m
+                [0mDr. Smith[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</button>[39m
+      [36m</div>[39m
+    [36m</body>[39m
+
+      25 |     expect(screen.getByText('John Doe')).toBeInTheDocument()
+      26 |     expect(screen.getByText('Limpieza')).toBeInTheDocument()
+    > 27 |     expect(screen.getByText('DR. SMITH')).toBeInTheDocument()
+         |                   ^
+      28 |     expect(screen.getByText(AppointmentStatus.CONFIRMED)).toBeInTheDocument()
+      29 |   })
+      30 |
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/components/agenda/appointment-card.test.tsx:27:19)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 passed, 2 total
+Snapshots:   0 total
+Time:        0.553 s, estimated 1 s
+Ran all test suites matching __tests__/components/agenda/appointment-card.test.tsx.

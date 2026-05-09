@@ -1,0 +1,154 @@
+
+> my-app@0.1.0 test
+> jest --verbose
+
+PASS __tests__/components/ui/button.test.tsx
+  UI Atoms — Button
+    ✓ successfully renders the children content correctly (28 ms)
+    ✓ successfully shows the spinner and disables interaction when loading is true (59 ms)
+    ✓ successfully applies the correct variant classes (primary check) (3 ms)
+    ✓ does not trigger onClick when disabled is true (14 ms)
+    ✓ applies fullWidth class when fullWidth prop is provided (7 ms)
+
+PASS __tests__/components/ui/toast.test.tsx
+  UI Molecules — Toast
+    ✓ successfully renders title and message correctly (29 ms)
+    ✓ calls onRemove automatically after the specified duration (5 ms)
+    ✓ calls onRemove when the close button is clicked (7 ms)
+    ✓ applies correct success styles (36 ms)
+
+PASS __tests__/components/ui/modal.test.tsx
+  UI Molecules — Modal
+    ✓ successfully renders nothing when isOpen is false (68 ms)
+    ✓ successfully renders title and content when isOpen is true (19 ms)
+    ✓ calls onClose when clicking the close button (10 ms)
+    ✓ renders footer content when provided (18 ms)
+
+PASS __tests__/components/ui/empty-state.test.tsx
+  UI Molecules — EmptyState
+    ✓ successfully renders title and description correctly (27 ms)
+    ✓ successfully renders the action button when the action prop is provided (82 ms)
+    ✓ successfully renders the icon when provided (11 ms)
+    ✓ does not render the button when the action prop is missing (2 ms)
+
+PASS __tests__/components/base-ui.test.tsx
+  Base UI Components
+    404 Not Found Page
+      ✓ successfully renders the 404 status code and clear heading (40 ms)
+      ✓ successfully renders the return to dashboard link with correct href (127 ms)
+    Error Feedback Page
+      ✓ successfully renders the error message to the user (9 ms)
+      ✓ successfully triggers the retry logic when clicking the "Try again" button (19 ms)
+
+PASS __tests__/stores/auth.store.test.ts
+  Logic — Auth Store (Zustand)
+    ✓ successfully updates the state when setSession is called with valid data
+    ✓ successfully clears the session and resets the state to defaults
+    ✓ successfully grants access to superadmins regardless of specific module permissions
+    ✓ successfully validates specific module.action permissions for regular users
+    ✓ successfully denies access when the user is not authenticated
+
+PASS __tests__/utils/api-client.test.ts
+  Infrastructure — API Client
+    ✓ successfully attaches the Authorization header to the outgoing request (2 ms)
+    ✓ successfully returns the unpacked data field from a successful response
+    ✓ successfully triggers a token refresh and retries the original request on a 401 response (1 ms)
+    ✓ successfully throws an ApiError with descriptive code when the server returns an error (1 ms)
+
+PASS __tests__/utils/socket-client.test.ts
+  Infrastructure — Socket Client (Singleton)
+    ✓ successfully initializes connection with the provided JWT token (3 ms)
+    ✓ successfully registers and triggers event handlers (1 ms)
+    ✓ successfully unsubscribes from events when requested (1 ms)
+    ✓ correctly reports the connection status
+    ✓ disconnects the existing socket before reconnecting with a new token
+
+PASS __tests__/components/layout/navigation.test.tsx
+  Layout Components — Navigation & Header
+    Sidebar
+      ✓ only renders items allowed by user permissions (67 ms)
+      ✓ highlights the active item based on pathname (96 ms)
+    Header
+      ✓ displays the user email prefix and role (15 ms)
+      ✓ triggers logout and redirection (20 ms)
+
+PASS __tests__/components/ui/badge.test.tsx
+  UI Atoms — Badge
+    ✓ successfully renders the label text correctly (9 ms)
+    ✓ successfully applies the correct variant classes (success check) (5 ms)
+    ✓ renders the dot indicator when the dot prop is true (2 ms)
+    ✓ applies smaller size classes when size is sm
+
+PASS __tests__/components/redirection.test.tsx
+  Security — Route Protection & Redirection
+    ✓ successfully redirects unauthenticated users to the login page (4 ms)
+    ✓ successfully allows authenticated users to access protected dashboard content (6 ms)
+
+PASS __tests__/utils/socket-listeners.test.tsx
+  Infrastructure — Socket Listeners Hook
+    ✓ successfully registers and unregisters socket listeners on mount/unmount (4 ms)
+    ✓ invalidates queries when a message is received (2 ms)
+
+PASS __tests__/utils/endpoints.test.ts
+  Infrastructure — API Endpoints
+    ✓ successfully generates the correct base URL for core modules (2 ms)
+    ✓ successfully resolves dynamic routes with provided parameters (2 ms)
+    ✓ ensures all defined endpoints are consistent strings or functions (8 ms)
+
+PASS __tests__/components/ui/input.test.tsx
+  UI Atoms — Input
+    ✓ successfully calls onChange with the correct value when typing (17 ms)
+    ✓ successfully displays the error message in red when the error prop is provided (5 ms)
+    ✓ successfully renders icons when provided (11 ms)
+    ✓ is visually disabled when the disabled prop is true (12 ms)
+    ✓ renders a label and associates it with the input (2 ms)
+
+PASS __tests__/api/hooks/use-conversations.test.tsx
+  Conversations Module — Hook useConversations
+    ✓ successfully fetches a list of conversations (72 ms)
+    ✓ applies filters correctly to the API request (3 ms)
+    Hook useConversationDetail
+      ✓ successfully fetches detailed conversation data (67 ms)
+      ✓ does not fetch when id is missing (8 ms)
+    Hook useTakeover
+      ✓ successfully triggers takeover mutation (8 ms)
+      ✓ successfully triggers sendMessage mutation (2 ms)
+
+PASS __tests__/components/ui/spinner.test.tsx
+  UI Atoms — Spinner
+    ✓ successfully renders with rotation animation classes (6 ms)
+    ✓ successfully includes aria-label for accessibility (9 ms)
+    ✓ uses default accessibility label when none is provided (23 ms)
+    ✓ does not render visible text (only screen-reader text) (1 ms)
+    ✓ applies the correct size classes (1 ms)
+
+PASS __tests__/utils/types.test.ts
+  Data Integrity — TypeScript Schema Definitions
+    ✓ successfully validates the IUser schema with complete role and permission data (1 ms)
+    ✓ successfully validates the IAppointment schema with all required relational metadata
+    ✓ successfully validates the IConversationDetail schema including nested messages and contacts
+
+PASS __tests__/components/auth/login-page.test.tsx
+  Auth Module — Login Page
+    ✓ renders correctly with all fields (148 ms)
+    ✓ successfully logs in and redirects on valid credentials (86 ms)
+    ✓ shows error toast on invalid credentials (89 ms)
+
+PASS __tests__/stores/ui.store.test.ts
+  Logic — UI Store (Zustand)
+    ✓ successfully toggles the sidebar state between open and closed (2 ms)
+    ✓ successfully manages the active modal state
+    ✓ successfully adds and removes toasts from the stack (1 ms)
+    ✓ successfully ignores removing a toast with a non-existent ID
+
+PASS __tests__/infra/msw.test.ts
+  Infrastructure — Mock Server & Factories
+    ✓ successfully intercepts a login request and returns factory-generated data (1 ms)
+    ✓ successfully handles a 400 Bad Request error and throws ApiError
+    ✓ ensures factories produce consistent but random data across calls
+
+Test Suites: 20 passed, 20 total
+Tests:       79 passed, 79 total
+Snapshots:   0 total
+Time:        2.013 s
+Ran all test suites.

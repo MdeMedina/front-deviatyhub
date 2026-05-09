@@ -1,0 +1,361 @@
+
+> my-app@0.1.0 test
+> jest --verbose __tests__/components/conversations/conversation-detail.test.tsx
+
+  console.error
+    Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    
+    Check the render method of `ConversationDetail`.
+        at createFiberFromTypeAndProps (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:5021:28)
+        at createFiberFromElement (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:5035:14)
+        at reconcileChildFibersImpl (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:6920:31)
+        at /Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:7098:33
+        at reconcileChildren (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:9701:13)
+        at beginWork (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:12049:13)
+        at runWithFiberInDEV (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+        at performUnitOfWork (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+        at workLoopSync (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+        at renderRootSync (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+        at performWorkOnRoot (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+        at performSyncWorkOnRoot (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+        at flushSyncWorkAcrossRoots_impl (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+        at processRootScheduleInMicrotask (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+        at /Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:18991:13
+        at invokeTheCallbackFunction (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+        at /Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/jsdom/lib/jsdom/browser/Window.js:613:9
+        at node:internal/process/task_queues:149:7
+        at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+        at AsyncResource.runMicrotask (node:internal/process/task_queues:146:8)
+
+      at process.env.NODE_ENV.reportGlobalError (node_modules/react-dom/cjs/react-dom-client.development.js:25513:23)
+      at defaultOnUncaughtError (node_modules/react-dom/cjs/react-dom-client.development.js:9361:7)
+      at logUncaughtError (node_modules/react-dom/cjs/react-dom-client.development.js:9431:11)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at lane.callback (node_modules/react-dom/cjs/react-dom-client.development.js:9461:9)
+      at callCallback (node_modules/react-dom/cjs/react-dom-client.development.js:7423:16)
+      at commitCallbacks (node_modules/react-dom/cjs/react-dom-client.development.js:7443:11)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitLayoutEffectOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:14047:15)
+      at flushLayoutEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18138:15)
+      at commitRoot (node_modules/react-dom/cjs/react-dom-client.development.js:17954:9)
+      at commitRootWhenReady (node_modules/react-dom/cjs/react-dom-client.development.js:16824:7)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16722:15)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18991:13
+      at invokeTheCallbackFunction (node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:613:9
+
+  console.warn
+    An error occurred in the <div> component.
+    
+    Consider adding an error boundary to your tree to customize error handling behavior.
+    Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+      at defaultOnUncaughtError (node_modules/react-dom/cjs/react-dom-client.development.js:9362:15)
+      at logUncaughtError (node_modules/react-dom/cjs/react-dom-client.development.js:9431:11)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at lane.callback (node_modules/react-dom/cjs/react-dom-client.development.js:9461:9)
+      at callCallback (node_modules/react-dom/cjs/react-dom-client.development.js:7423:16)
+      at commitCallbacks (node_modules/react-dom/cjs/react-dom-client.development.js:7443:11)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitLayoutEffectOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:14047:15)
+      at flushLayoutEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18138:15)
+      at commitRoot (node_modules/react-dom/cjs/react-dom-client.development.js:17954:9)
+      at commitRootWhenReady (node_modules/react-dom/cjs/react-dom-client.development.js:16824:7)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16722:15)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18991:13
+      at invokeTheCallbackFunction (node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:613:9
+
+  console.error
+    Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    
+    Check the render method of `ConversationDetail`.
+        at createFiberFromTypeAndProps (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:5021:28)
+        at createFiberFromElement (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:5035:14)
+        at reconcileChildFibersImpl (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:6920:31)
+        at /Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:7098:33
+        at reconcileChildren (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:9701:13)
+        at beginWork (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:12049:13)
+        at runWithFiberInDEV (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+        at performUnitOfWork (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+        at workLoopSync (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+        at renderRootSync (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+        at performWorkOnRoot (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+        at performSyncWorkOnRoot (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+        at flushSyncWorkAcrossRoots_impl (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+        at processRootScheduleInMicrotask (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+        at /Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:18991:13
+        at invokeTheCallbackFunction (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+        at /Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/jsdom/lib/jsdom/browser/Window.js:613:9
+        at node:internal/process/task_queues:149:7
+        at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+        at AsyncResource.runMicrotask (node:internal/process/task_queues:146:8)
+
+      at process.env.NODE_ENV.reportGlobalError (node_modules/react-dom/cjs/react-dom-client.development.js:25513:23)
+      at defaultOnUncaughtError (node_modules/react-dom/cjs/react-dom-client.development.js:9361:7)
+      at logUncaughtError (node_modules/react-dom/cjs/react-dom-client.development.js:9431:11)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at lane.callback (node_modules/react-dom/cjs/react-dom-client.development.js:9461:9)
+      at callCallback (node_modules/react-dom/cjs/react-dom-client.development.js:7423:16)
+      at commitCallbacks (node_modules/react-dom/cjs/react-dom-client.development.js:7443:11)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitLayoutEffectOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:14047:15)
+      at flushLayoutEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18138:15)
+      at commitRoot (node_modules/react-dom/cjs/react-dom-client.development.js:17954:9)
+      at commitRootWhenReady (node_modules/react-dom/cjs/react-dom-client.development.js:16824:7)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16722:15)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18991:13
+      at invokeTheCallbackFunction (node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:613:9
+
+  console.warn
+    An error occurred in the <div> component.
+    
+    Consider adding an error boundary to your tree to customize error handling behavior.
+    Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+      at defaultOnUncaughtError (node_modules/react-dom/cjs/react-dom-client.development.js:9362:15)
+      at logUncaughtError (node_modules/react-dom/cjs/react-dom-client.development.js:9431:11)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at lane.callback (node_modules/react-dom/cjs/react-dom-client.development.js:9461:9)
+      at callCallback (node_modules/react-dom/cjs/react-dom-client.development.js:7423:16)
+      at commitCallbacks (node_modules/react-dom/cjs/react-dom-client.development.js:7443:11)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitLayoutEffectOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:14047:15)
+      at flushLayoutEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18138:15)
+      at commitRoot (node_modules/react-dom/cjs/react-dom-client.development.js:17954:9)
+      at commitRootWhenReady (node_modules/react-dom/cjs/react-dom-client.development.js:16824:7)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16722:15)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18991:13
+      at invokeTheCallbackFunction (node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:613:9
+
+  console.error
+    Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    
+    Check the render method of `ConversationDetail`.
+        at createFiberFromTypeAndProps (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:5021:28)
+        at createFiberFromElement (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:5035:14)
+        at reconcileChildFibersImpl (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:6920:31)
+        at /Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:7098:33
+        at reconcileChildren (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:9701:13)
+        at beginWork (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:12049:13)
+        at runWithFiberInDEV (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+        at performUnitOfWork (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+        at workLoopSync (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+        at renderRootSync (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+        at performWorkOnRoot (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+        at performSyncWorkOnRoot (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+        at flushSyncWorkAcrossRoots_impl (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+        at processRootScheduleInMicrotask (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+        at /Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/react-dom/cjs/react-dom-client.development.js:18991:13
+        at invokeTheCallbackFunction (/Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+        at /Users/MiguelMedina/Desktop/Deviaty/DeviatyHub/front-deviatyhub/my-app/node_modules/jsdom/lib/jsdom/browser/Window.js:613:9
+        at node:internal/process/task_queues:149:7
+        at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+        at AsyncResource.runMicrotask (node:internal/process/task_queues:146:8)
+
+      at process.env.NODE_ENV.reportGlobalError (node_modules/react-dom/cjs/react-dom-client.development.js:25513:23)
+      at defaultOnUncaughtError (node_modules/react-dom/cjs/react-dom-client.development.js:9361:7)
+      at logUncaughtError (node_modules/react-dom/cjs/react-dom-client.development.js:9431:11)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at lane.callback (node_modules/react-dom/cjs/react-dom-client.development.js:9461:9)
+      at callCallback (node_modules/react-dom/cjs/react-dom-client.development.js:7423:16)
+      at commitCallbacks (node_modules/react-dom/cjs/react-dom-client.development.js:7443:11)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitLayoutEffectOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:14047:15)
+      at flushLayoutEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18138:15)
+      at commitRoot (node_modules/react-dom/cjs/react-dom-client.development.js:17954:9)
+      at commitRootWhenReady (node_modules/react-dom/cjs/react-dom-client.development.js:16824:7)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16722:15)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18991:13
+      at invokeTheCallbackFunction (node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:613:9
+
+  console.warn
+    An error occurred in the <div> component.
+    
+    Consider adding an error boundary to your tree to customize error handling behavior.
+    Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+      at defaultOnUncaughtError (node_modules/react-dom/cjs/react-dom-client.development.js:9362:15)
+      at logUncaughtError (node_modules/react-dom/cjs/react-dom-client.development.js:9431:11)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at lane.callback (node_modules/react-dom/cjs/react-dom-client.development.js:9461:9)
+      at callCallback (node_modules/react-dom/cjs/react-dom-client.development.js:7423:16)
+      at commitCallbacks (node_modules/react-dom/cjs/react-dom-client.development.js:7443:11)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitLayoutEffectOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:14047:15)
+      at flushLayoutEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18138:15)
+      at commitRoot (node_modules/react-dom/cjs/react-dom-client.development.js:17954:9)
+      at commitRootWhenReady (node_modules/react-dom/cjs/react-dom-client.development.js:16824:7)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16722:15)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18991:13
+      at invokeTheCallbackFunction (node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:613:9
+
+FAIL __tests__/components/conversations/conversation-detail.test.tsx
+  Conversations Module — ConversationDetail
+    ✓ renders EmptyState when no conversationId is provided (22 ms)
+    ✕ renders detailed conversation and messages (1010 ms)
+    ✕ handles takeover mutation correctly (1005 ms)
+    ✕ shows message input only when status is HUMAN_TAKEOVER (1008 ms)
+
+  ● Conversations Module — ConversationDetail › renders detailed conversation and messages
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `ConversationDetail`.
+
+      at createFiberFromTypeAndProps (node_modules/react-dom/cjs/react-dom-client.development.js:5021:28)
+      at createFiberFromElement (node_modules/react-dom/cjs/react-dom-client.development.js:5035:14)
+      at reconcileChildFibersImpl (node_modules/react-dom/cjs/react-dom-client.development.js:6920:31)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:7098:33
+      at reconcileChildren (node_modules/react-dom/cjs/react-dom-client.development.js:9701:13)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:12049:13)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18991:13
+      at invokeTheCallbackFunction (node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:613:9
+
+  ● Conversations Module — ConversationDetail › renders detailed conversation and messages
+
+    Unable to find an element with the text: Jane Doe. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      46 |     render(<ConversationDetail conversationId="conv-123" />, { wrapper: createWrapper() })
+      47 |
+    > 48 |     expect(await screen.findByText('Jane Doe')).toBeInTheDocument()
+         |                         ^
+      49 |     expect(screen.getByText('Hola!')).toBeInTheDocument()
+      50 |     expect(screen.getByText('Tomar Control')).toBeInTheDocument()
+      51 |   })
+
+      at waitForWrapper (node_modules/@testing-library/dom/dist/wait-for.js:163:27)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+      at Object.findByText (__tests__/components/conversations/conversation-detail.test.tsx:48:25)
+
+  ● Conversations Module — ConversationDetail › handles takeover mutation correctly
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `ConversationDetail`.
+
+      at createFiberFromTypeAndProps (node_modules/react-dom/cjs/react-dom-client.development.js:5021:28)
+      at createFiberFromElement (node_modules/react-dom/cjs/react-dom-client.development.js:5035:14)
+      at reconcileChildFibersImpl (node_modules/react-dom/cjs/react-dom-client.development.js:6920:31)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:7098:33
+      at reconcileChildren (node_modules/react-dom/cjs/react-dom-client.development.js:9701:13)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:12049:13)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18991:13
+      at invokeTheCallbackFunction (node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:613:9
+
+  ● Conversations Module — ConversationDetail › handles takeover mutation correctly
+
+    Unable to find an element with the text: Tomar Control. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      70 |     render(<ConversationDetail conversationId="conv-123" />, { wrapper: createWrapper() })
+      71 |
+    > 72 |     const takeoverBtn = await screen.findByText('Tomar Control')
+         |                                      ^
+      73 |     fireEvent.click(takeoverBtn)
+      74 |
+      75 |     await waitFor(() => expect(takeoverCalled).toBe(true))
+
+      at waitForWrapper (node_modules/@testing-library/dom/dist/wait-for.js:163:27)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+      at Object.findByText (__tests__/components/conversations/conversation-detail.test.tsx:72:38)
+
+  ● Conversations Module — ConversationDetail › shows message input only when status is HUMAN_TAKEOVER
+
+    Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+    Check the render method of `ConversationDetail`.
+
+      at createFiberFromTypeAndProps (node_modules/react-dom/cjs/react-dom-client.development.js:5021:28)
+      at createFiberFromElement (node_modules/react-dom/cjs/react-dom-client.development.js:5035:14)
+      at reconcileChildFibersImpl (node_modules/react-dom/cjs/react-dom-client.development.js:6920:31)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:7098:33
+      at reconcileChildren (node_modules/react-dom/cjs/react-dom-client.development.js:9701:13)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:12049:13)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:18972:7)
+      at flushSyncWorkAcrossRoots_impl (node_modules/react-dom/cjs/react-dom-client.development.js:18814:21)
+      at processRootScheduleInMicrotask (node_modules/react-dom/cjs/react-dom-client.development.js:18853:9)
+      at node_modules/react-dom/cjs/react-dom-client.development.js:18991:13
+      at invokeTheCallbackFunction (node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:613:9
+
+  ● Conversations Module — ConversationDetail › shows message input only when status is HUMAN_TAKEOVER
+
+    Unable to find an element with the placeholder text of: Escribe un mensaje...
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      86 |     render(<ConversationDetail conversationId="conv-123" />, { wrapper: createWrapper() })
+      87 |
+    > 88 |     expect(await screen.findByPlaceholderText('Escribe un mensaje...')).toBeInTheDocument()
+         |                         ^
+      89 |     expect(screen.queryByText('El bot está manejando esta conversación.')).not.toBeInTheDocument()
+      90 |   })
+      91 | })
+
+      at waitForWrapper (node_modules/@testing-library/dom/dist/wait-for.js:163:27)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+      at Object.findByPlaceholderText (__tests__/components/conversations/conversation-detail.test.tsx:88:25)
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 1 passed, 4 total
+Snapshots:   0 total
+Time:        3.691 s, estimated 4 s
+Ran all test suites matching __tests__/components/conversations/conversation-detail.test.tsx.

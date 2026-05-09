@@ -1,0 +1,81 @@
+
+> my-app@0.1.0 test
+> jest --verbose __tests__/api/hooks/use-conversations.test.tsx
+
+FAIL __tests__/api/hooks/use-conversations.test.tsx
+  Conversations Module — Hook useConversations
+    ✓ successfully fetches a list of conversations (64 ms)
+    ✓ applies filters correctly to the API request (3 ms)
+    Hook useConversationDetail
+      ✕ successfully fetches detailed conversation data (8 ms)
+      ✕ does not fetch when id is missing (2 ms)
+
+  ● Conversations Module — Hook useConversations › Hook useConversationDetail › successfully fetches detailed conversation data
+
+    ReferenceError: useConversationDetail is not defined
+
+      93 |       }))
+      94 |
+    > 95 |       const { result } = renderHook(() => useConversationDetail('conv-123'), { wrapper: createWrapper() })
+         |                                           ^
+      96 |
+      97 |       await waitFor(() => expect(result.current.isSuccess).toBe(true))
+      98 |       expect(result.current.data?.id).toBe('conv-123')
+
+      at useConversationDetail (__tests__/api/hooks/use-conversations.test.tsx:95:43)
+      at TestComponent (node_modules/@testing-library/react/dist/pure.js:330:27)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at renderHook (node_modules/@testing-library/react/dist/pure.js:339:7)
+      at Object.<anonymous> (__tests__/api/hooks/use-conversations.test.tsx:95:36)
+
+  ● Conversations Module — Hook useConversations › Hook useConversationDetail › does not fetch when id is missing
+
+    ReferenceError: useConversationDetail is not defined
+
+      101 |
+      102 |     it('does not fetch when id is missing', () => {
+    > 103 |       const { result } = renderHook(() => useConversationDetail(''), { wrapper: createWrapper() })
+          |                                           ^
+      104 |       expect(result.current.isLoading).toBe(false)
+      105 |       expect(result.current.isFetching).toBe(false)
+      106 |     })
+
+      at useConversationDetail (__tests__/api/hooks/use-conversations.test.tsx:103:43)
+      at TestComponent (node_modules/@testing-library/react/dist/pure.js:330:27)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at renderHook (node_modules/@testing-library/react/dist/pure.js:339:7)
+      at Object.<anonymous> (__tests__/api/hooks/use-conversations.test.tsx:103:36)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 passed, 4 total
+Snapshots:   0 total
+Time:        0.68 s, estimated 1 s
+Ran all test suites matching __tests__/api/hooks/use-conversations.test.tsx.

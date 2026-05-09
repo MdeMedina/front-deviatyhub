@@ -1,0 +1,84 @@
+
+> my-app@0.1.0 test
+> jest --verbose __tests__/api/hooks/use-appointments.test.tsx
+
+FAIL __tests__/api/hooks/use-appointments.test.tsx
+  Agenda Module — Hooks
+    useAppointments
+      ✓ successfully fetches a list of appointments (63 ms)
+    useAppointmentDetail
+      ✓ successfully fetches appointment details by ID (53 ms)
+      ✓ does not fetch when id is missing (2 ms)
+    Mutations
+      ✕ successfully updates appointment status (12 ms)
+      ✕ successfully reschedules an appointment (2 ms)
+
+  ● Agenda Module — Hooks › Mutations › successfully updates appointment status
+
+    ReferenceError: useUpdateAppointmentStatus is not defined
+
+      84 |       })
+      85 |
+    > 86 |       const { result } = renderHook(() => useUpdateAppointmentStatus(), { wrapper: createWrapper() })
+         |                                           ^
+      87 |
+      88 |       result.current.mutate({ id: 'apt-1', status: AppointmentStatus.COMPLETED })
+      89 |
+
+      at useUpdateAppointmentStatus (__tests__/api/hooks/use-appointments.test.tsx:86:43)
+      at TestComponent (node_modules/@testing-library/react/dist/pure.js:330:27)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at renderHook (node_modules/@testing-library/react/dist/pure.js:339:7)
+      at Object.<anonymous> (__tests__/api/hooks/use-appointments.test.tsx:86:36)
+
+  ● Agenda Module — Hooks › Mutations › successfully reschedules an appointment
+
+    ReferenceError: useRescheduleAppointment is not defined
+
+       99 |       })
+      100 |
+    > 101 |       const { result } = renderHook(() => useRescheduleAppointment(), { wrapper: createWrapper() })
+          |                                           ^
+      102 |
+      103 |       result.current.mutate({ id: 'apt-1', scheduled_at: new Date().toISOString() })
+      104 |
+
+      at useRescheduleAppointment (__tests__/api/hooks/use-appointments.test.tsx:101:43)
+      at TestComponent (node_modules/@testing-library/react/dist/pure.js:330:27)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at renderHook (node_modules/@testing-library/react/dist/pure.js:339:7)
+      at Object.<anonymous> (__tests__/api/hooks/use-appointments.test.tsx:101:36)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 3 passed, 5 total
+Snapshots:   0 total
+Time:        0.847 s, estimated 1 s
+Ran all test suites matching __tests__/api/hooks/use-appointments.test.tsx.
