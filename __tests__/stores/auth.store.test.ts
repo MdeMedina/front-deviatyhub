@@ -9,25 +9,33 @@ describe('Logic — Auth Store (Zustand)', () => {
   const mockUser: IUser = {
     id: '1',
     email: 'test@example.com',
-    name: 'Test User',
+    clinic_id: 'clinic-1',
+    active: true,
     role: {
       id: 'role-1',
       name: 'User',
       is_superadmin: false,
       permissions: {
-        conversations: { view: true, send: true },
-        agenda: { view: true, create: false }
+        knowledge_base: { view: true, edit: true },
+        agent_actions: { view: true, edit: true },
+        simulator: { view: true },
+        metrics: { view: true },
+        integrations: { view: true },
+        security: { view: true },
+        users: { view: true, edit: true, create: true, delete: true },
+        clinic_config: { view: true, edit: true },
+        conversations: { view: true, takeover: true },
+        agenda: { view: true, edit: true }
       }
-    },
-    created_at: '2024-01-01',
-    updated_at: '2024-01-01'
+    }
   }
 
   it('successfully updates the state when setSession is called with valid data', () => {
     useAuthStore.getState().setSession({
       user: mockUser,
       access_token: 'access-123',
-      refresh_token: 'refresh-456'
+      refresh_token: 'refresh-456',
+      expires_in: 3600
     })
 
     const state = useAuthStore.getState()
@@ -40,7 +48,8 @@ describe('Logic — Auth Store (Zustand)', () => {
     useAuthStore.getState().setSession({
       user: mockUser,
       access_token: 'access-123',
-      refresh_token: 'refresh-456'
+      refresh_token: 'refresh-456',
+      expires_in: 3600
     })
 
     useAuthStore.getState().clearSession()
@@ -54,13 +63,14 @@ describe('Logic — Auth Store (Zustand)', () => {
   it('successfully grants access to superadmins regardless of specific module permissions', () => {
     const superUser: IUser = {
       ...mockUser,
-      role: { ...mockUser.role, is_superadmin: true, permissions: {} }
+      role: { ...mockUser.role, is_superadmin: true, permissions: {} as any }
     }
     
     useAuthStore.getState().setSession({
       user: superUser,
       access_token: 'at',
-      refresh_token: 'rt'
+      refresh_token: 'rt',
+      expires_in: 3600
     })
 
     expect(useAuthStore.getState().hasPermission('any.thing')).toBe(true)
@@ -68,16 +78,29 @@ describe('Logic — Auth Store (Zustand)', () => {
   })
 
   it('successfully validates specific module.action permissions for regular users', () => {
+    const customUser: IUser = {
+      ...mockUser,
+      role: {
+        ...mockUser.role,
+        permissions: {
+          ...mockUser.role.permissions,
+          conversations: { view: true, takeover: false },
+          agenda: { view: true, edit: false }
+        }
+      }
+    }
+
     useAuthStore.getState().setSession({
-      user: mockUser,
+      user: customUser,
       access_token: 'at',
-      refresh_token: 'rt'
+      refresh_token: 'rt',
+      expires_in: 3600
     })
 
     expect(useAuthStore.getState().hasPermission('conversations.view')).toBe(true)
-    expect(useAuthStore.getState().hasPermission('conversations.send')).toBe(true)
+    expect(useAuthStore.getState().hasPermission('conversations.takeover')).toBe(false)
     expect(useAuthStore.getState().hasPermission('agenda.view')).toBe(true)
-    expect(useAuthStore.getState().hasPermission('agenda.create')).toBe(false)
+    expect(useAuthStore.getState().hasPermission('agenda.edit')).toBe(false)
   })
 
   it('successfully denies access when the user is not authenticated', () => {

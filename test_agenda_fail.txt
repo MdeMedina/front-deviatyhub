@@ -1,0 +1,105 @@
+
+> my-app@0.1.0 test
+> jest --verbose __tests__/pages/agenda.test.tsx
+
+FAIL __tests__/pages/agenda.test.tsx
+  Agenda Page Integration
+    ✕ renders the agenda page with appointments grouped by doctor (27 ms)
+    ✕ shows empty state when no appointments are found (3 ms)
+    ✕ opens detail modal when clicking an appointment card (2 ms)
+
+  ● Agenda Page Integration › renders the agenda page with appointments grouped by doctor
+
+    TypeError: (0 , _navigation.usePathname) is not a function
+
+      38 |
+      39 | export const Sidebar: React.FC = () => {
+    > 40 |   const pathname = usePathname()
+         |                               ^
+      41 |   const { hasPermission } = useAuthStore()
+      42 |   const { isSidebarOpen, toggleSidebar } = useUIStore()
+      43 |
+
+      at Sidebar (components/layout/Sidebar.tsx:40:31)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at Object.<anonymous> (__tests__/pages/agenda.test.tsx:61:11)
+
+  ● Agenda Page Integration › shows empty state when no appointments are found
+
+    TypeError: (0 , _navigation.usePathname) is not a function
+
+      38 |
+      39 | export const Sidebar: React.FC = () => {
+    > 40 |   const pathname = usePathname()
+         |                               ^
+      41 |   const { hasPermission } = useAuthStore()
+      42 |   const { isSidebarOpen, toggleSidebar } = useUIStore()
+      43 |
+
+      at Sidebar (components/layout/Sidebar.tsx:40:31)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at Object.<anonymous> (__tests__/pages/agenda.test.tsx:77:11)
+
+  ● Agenda Page Integration › opens detail modal when clicking an appointment card
+
+    TypeError: (0 , _navigation.usePathname) is not a function
+
+      38 |
+      39 | export const Sidebar: React.FC = () => {
+    > 40 |   const pathname = usePathname()
+         |                               ^
+      41 |   const { hasPermission } = useAuthStore()
+      42 |   const { isSidebarOpen, toggleSidebar } = useUIStore()
+      43 |
+
+      at Sidebar (components/layout/Sidebar.tsx:40:31)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at Object.<anonymous> (__tests__/pages/agenda.test.tsx:94:11)
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 3 total
+Snapshots:   0 total
+Time:        0.717 s, estimated 1 s
+Ran all test suites matching __tests__/pages/agenda.test.tsx.

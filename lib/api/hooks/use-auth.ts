@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { apiClient } from '../client'
 import { ENDPOINTS } from '../endpoints'
 import { useAuthStore } from '@/lib/stores/auth.store'
-import type { ILoginResponse, ILoginCredentials } from '@/lib/types'
+import type { ILoginResponse, ILoginCredentials, ISetPasswordCredentials } from '@/lib/types'
 
 export const useLogin = () => {
   const { setSession } = useAuthStore()
@@ -22,3 +22,11 @@ export const useLogin = () => {
     },
   })
 }
+
+export const useSetPassword = () => {
+  return useMutation({
+    mutationFn: (credentials: ISetPasswordCredentials) =>
+      apiClient.post(ENDPOINTS.auth.setPassword, credentials),
+  })
+}
+

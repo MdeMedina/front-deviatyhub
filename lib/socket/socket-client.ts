@@ -3,7 +3,7 @@ import { SocketEvent } from '@/lib/types'
 
 class SocketClient {
   private socket: Socket | null = null
-  private baseUrl: string = process.env.NEXT_PUBLIC_API_URL || ''
+  private baseUrl: string = process.env.NEXT_PUBLIC_SOCKET_URL || process.env.NEXT_PUBLIC_API_URL || ''
 
   /**
    * Initializes the socket connection with the provided JWT token.

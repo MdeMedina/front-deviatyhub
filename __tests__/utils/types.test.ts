@@ -65,7 +65,6 @@ describe('Data Integrity — TypeScript Schema Definitions', () => {
       channel: Channel.INSTAGRAM,
       status: ConversationStatus.OPEN,
       current_step: ConversationStep.INICIO,
-      contact: { id: 'c-1', name: 'Jane Doe' },
       last_message: { id: 'm-1', content: 'Hello', sent_at: new Date().toISOString() },
       appointment_id: null,
       started_at: new Date().toISOString(),

@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { X, CheckCircle2, AlertCircle, Info, AlertTriangle } from 'lucide-react'
-import { IToast } from '@/lib/types'
+import { IToast } from '@/lib/stores/ui.store'
 
 interface ToastProps {
   toast: IToast

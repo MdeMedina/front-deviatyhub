@@ -17,7 +17,7 @@ import {
 
 const mockUuid = () => Math.random().toString(36).substring(2, 15)
 const mockEmail = () => `test-${mockUuid()}@example.com`
-const mockName = () => `Name ${mockUuid().substring(0, 5)}`
+const mockName = () => `User ${mockUuid().substring(0, 5)}`
 
 export const makePermissions = (overrides?: Partial<IPermissions>): IPermissions => ({
   knowledge_base: { view: true, edit: true },
@@ -80,21 +80,21 @@ export const makeAppointment = (overrides?: Partial<IAppointment>): IAppointment
 })
 
 export const makeMessage = (overrides?: Partial<IMessage>): IMessage => ({
-  id: faker.string.uuid(),
+  id: mockUuid(),
   role: MessageRole.USER,
-  content: faker.lorem.sentence(),
-  sent_at: faker.date.recent().toISOString(),
+  content: 'Hello mock message',
+  sent_at: new Date().toISOString(),
   ...overrides
 })
 
 export const makeConversation = (overrides?: Partial<IConversationListItem>): IConversationListItem => ({
-  id: faker.string.uuid(),
+  id: mockUuid(),
   channel: Channel.WHATSAPP,
   status: ConversationStatus.OPEN,
   current_step: ConversationStep.INICIO,
   contact: makeContactSummary(),
   last_message: makeMessageSummary(),
   appointment_id: null,
-  started_at: faker.date.recent().toISOString(),
+  started_at: new Date().toISOString(),
   ...overrides
 })

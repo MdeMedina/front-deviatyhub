@@ -26,15 +26,19 @@ interface AppointmentModalProps {
   id: string | null
   isOpen: boolean
   onClose: () => void
+  demoData?: any // For visual testing in /test
 }
 
 export const AppointmentModal: React.FC<AppointmentModalProps> = ({ 
   id, 
   isOpen, 
-  onClose 
+  onClose,
+  demoData
 }) => {
-  const { data: appointment, isLoading, isError } = useAppointmentDetail(id)
+  const { data: appointmentData, isLoading, isError } = useAppointmentDetail(id)
   const updateStatus = useUpdateAppointmentStatus()
+  
+  const appointment = demoData || appointmentData
   
   const handleStatusUpdate = async (status: AppointmentStatus) => {
     if (!id) return
@@ -63,7 +67,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
       title="Detalle de la Cita"
       size="md"
     >
-      {isLoading ? (
+      {isLoading && !demoData ? (
         <div className="py-20 flex flex-col items-center justify-center gap-4">
           <Spinner size="lg" className="text-indigo-600" />
           <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Cargando información</p>
@@ -127,7 +131,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 <History size={14} /> Historial de Cambios
               </h4>
               <div className="space-y-4 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100">
-                {appointment.history.map((event, idx) => (
+                {appointment.history.map((event: any, idx: number) => (
                   <div key={idx} className="relative pl-8">
                     <div className="absolute left-0 top-1 w-4 h-4 rounded-full bg-white border-2 border-indigo-100 flex items-center justify-center">
                       <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />

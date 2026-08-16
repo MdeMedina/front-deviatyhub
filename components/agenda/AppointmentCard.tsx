@@ -33,7 +33,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
 
   return (
     <motion.button
-      whileHover={{ y: -2, shadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}
+      whileHover={{ y: -2, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
       className="w-full text-left bg-white p-4 rounded-2xl border border-slate-100 shadow-sm transition-all hover:border-indigo-100 group"

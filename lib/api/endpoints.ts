@@ -52,6 +52,8 @@ export const ENDPOINTS = {
   agentConfig: `${API_BASE}/core/agent-config`,
   integrations: {
     list: `${API_BASE}/core/integrations`,
+    detail: (type: string) => `${API_BASE}/core/integrations/${type}`,
+    save: (type: string) => `${API_BASE}/core/integrations/${type}`,
     test: (type: string) => `${API_BASE}/core/integrations/${type}/test`,
   },
   simulator: `${API_BASE}/agent/simulate`,

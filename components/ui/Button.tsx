@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import { Spinner } from './Spinner'
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'outline'
   size?: 'sm' | 'md' | 'lg'
@@ -25,6 +25,7 @@ export const Button: React.FC<ButtonProps> = ({
   fullWidth = false,
   className = '',
   icon,
+  ...props
 }) => {
   const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none'
   
@@ -50,6 +51,7 @@ export const Button: React.FC<ButtonProps> = ({
       onClick={loading || disabled ? undefined : onClick}
       disabled={disabled || loading}
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${width} ${className}`}
+      {...props}
     >
       {loading ? (
         <>

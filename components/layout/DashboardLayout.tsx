@@ -15,26 +15,34 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const router = useRouter()
-  const { isAuthenticated, accessToken } = useAuthStore()
+  const { isAuthenticated, access_token } = useAuthStore()
   const { isSidebarOpen } = useUIStore()
+  const [mounted, setMounted] = React.useState(false)
+
+  // Wait for hydration
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Protection & Socket Init
   useEffect(() => {
+    if (!mounted) return
+
     if (!isAuthenticated) {
       router.push('/login')
       return
     }
 
-    if (accessToken) {
-      socketClient.connect(accessToken)
+    if (access_token) {
+      socketClient.connect(access_token)
     }
 
     return () => {
       socketClient.disconnect()
     }
-  }, [isAuthenticated, accessToken, router])
+  }, [isAuthenticated, access_token, router, mounted])
 
-  if (!isAuthenticated) return null
+  if (!mounted || !isAuthenticated) return null
 
   return (
     <div className="min-h-screen bg-slate-50/50">

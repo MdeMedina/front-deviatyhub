@@ -31,7 +31,8 @@ export const Input: React.FC<InputProps> = ({
   name,
   id,
 }) => {
-  const inputId = id || `input-${name || Math.random().toString(36).substring(7)}`
+  const reactId = React.useId()
+  const inputId = id || `input-${name || reactId}`
   const errorId = `${inputId}-error`
 
   const baseInputStyles = 'w-full px-4 py-2.5 bg-white border rounded-xl text-slate-700 transition-all duration-200 outline-none focus:ring-2 focus:ring-offset-1 disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed'

@@ -24,10 +24,30 @@ import { Modal } from '@/components/ui/Modal'
 import { useUIStore } from '@/lib/stores/ui.store'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { ToastContainer } from '@/components/ui/ToastContainer'
+import { AppointmentCard } from '@/components/agenda/AppointmentCard'
+import { AppointmentModal } from '@/components/agenda/AppointmentModal'
+import { AppointmentStatus, AppointmentSource, Channel } from '@/lib/types'
+import { Calendar } from 'lucide-react'
 
 export default function DesignSystemPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isAptModalOpen, setIsAptModalOpen] = useState(false)
   const { addToast } = useUIStore()
+
+  const mockAppointment = {
+    id: 'apt-1',
+    contact_name: 'John Doe',
+    contact_id: 'c1',
+    treatment: { id: 't1', name: 'Limpieza Dental + Fluor' },
+    doctor: { id: 'd1', name: 'Dra. Valentina Paz' },
+    scheduled_at: new Date().toISOString(),
+    duration_min: 45,
+    status: AppointmentStatus.PENDING,
+    source: AppointmentSource.AGENT,
+    channel: Channel.WHATSAPP,
+    conversation_id: 'conv-test-123',
+    notes: ''
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -90,17 +110,23 @@ export default function DesignSystemPage() {
                 label="Nombre de Usuario" 
                 placeholder="Ej: Miguel Medina" 
                 leftIcon={<User size={18} />}
+                value=""
+                onChange={() => {}}
               />
               <Input 
                 label="Búsqueda" 
                 placeholder="Buscar conversación..." 
                 leftIcon={<Search size={18} />}
+                value=""
+                onChange={() => {}}
               />
               <Input 
                 label="Campo con Error" 
                 placeholder="Email inválido" 
                 error="Este correo ya está registrado"
                 leftIcon={<AlertCircle size={18} />}
+                value=""
+                onChange={() => {}}
               />
             </div>
           </Section>
@@ -188,6 +214,42 @@ export default function DesignSystemPage() {
                 }}
               />
             </div>
+          </Section>
+
+          {/* Agenda Section */}
+          <Section icon={<Calendar size={18} />} title="Agenda / Citas" description="Componentes para la gestión de turnos, integrando estados visuales y acciones.">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <AppointmentCard 
+                appointment={mockAppointment} 
+                onClick={() => setIsAptModalOpen(true)}
+              />
+              <AppointmentCard 
+                appointment={{
+                  ...mockAppointment,
+                  id: 'apt-2',
+                  status: AppointmentStatus.CONFIRMED,
+                  contact_name: 'María García'
+                }} 
+                onClick={() => setIsAptModalOpen(true)}
+              />
+            </div>
+            
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-4">
+              Haz click en una tarjeta para ver el detalle
+            </p>
+
+            <AppointmentModal 
+              id="apt-1" 
+              isOpen={isAptModalOpen} 
+              onClose={() => setIsAptModalOpen(false)} 
+              demoData={{
+                ...mockAppointment,
+                history: [
+                  { event: 'Cita creada por el Agente IA', performed_by: 'Deviaty Agent', channel: 'WHATSAPP', created_at: new Date().toISOString() },
+                  { event: 'Confirmación pendiente', performed_by: 'System', channel: 'INTERNAL', created_at: new Date().toISOString() }
+                ]
+              }}
+            />
           </Section>
         </motion.div>
 

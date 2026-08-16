@@ -45,7 +45,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
         <Input 
           placeholder="Buscar contacto..." 
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={setSearchQuery}
           leftIcon={<Search size={16} className="text-slate-400" />}
           className="bg-slate-50/50 border-none h-10"
         />

@@ -68,6 +68,7 @@ export interface IRole {
   id: string
   name: string
   is_superadmin: boolean
+  isSuperadmin?: boolean
   permissions: IPermissions
 }
 
@@ -308,6 +309,7 @@ export interface IIntegration {
   connected: boolean
   last_tested_at: string
   last_test_ok: boolean
+  latency_ms?: number
 }
 
 // API responses
@@ -369,4 +371,64 @@ export interface ISocketActionExecuted {
 export interface ISocketStepChanged {
   conversation_id: string
   current_step: ConversationStep
+}
+
+// Credentials for setting password
+export interface ISetPasswordCredentials {
+  token: string
+  password: string
+  password_confirm: string
+}
+
+// Agente
+export interface IAgentActionConfig {
+  active: boolean
+  channels: Channel[]
+  integrations: IntegrationType[]
+}
+
+export interface IAgentConfig {
+  id: string
+  clinic_id: string
+  actions: {
+    schedule: IAgentActionConfig
+    reschedule: IAgentActionConfig
+    cancel: IAgentActionConfig
+  }
+  updated_at: string
+}
+
+// Simulador
+export interface ISimulatorResponse {
+  session_id: string
+  response: string
+  tools_used: string[]
+}
+
+// Integraciones
+export interface IIntegrationTestResponse {
+  ok: boolean
+  tested_at: string
+  latency_ms: number
+  error?: string
+}
+
+// Seguridad — Logs de auditoría
+export type AuditLogPeriod = '7d' | '30d'
+
+export interface IAuditLog {
+  id: string
+  /** Email del usuario que realizó la acción */
+  user_email: string
+  /** Acción realizada (ej. CREATE, UPDATE, DELETE) */
+  action: string
+  /** Entidad afectada (ej. Doctor, Treatment, Role) */
+  entity: string
+  /** Fecha ISO de la acción */
+  created_at: string
+  /** Detalle de cambios — before puede ser null para acciones CREATE */
+  changes: {
+    before: Record<string, unknown> | null
+    after: Record<string, unknown> | null
+  }
 }

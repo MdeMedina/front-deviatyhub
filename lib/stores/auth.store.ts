@@ -50,7 +50,7 @@ export const useAuthStore = create<AuthState>()(
         const [module, action] = permission.split('.')
         if (!module || !action) return false
 
-        const permissions = user.role.permissions as Record<string, Record<string, boolean>>
+        const permissions = user.role.permissions as unknown as Record<string, Record<string, boolean>>
         return !!permissions[module]?.[action]
       },
     }),

@@ -23,7 +23,11 @@ function onRefreshed(token: string) {
   refreshSubscribers = []
 }
 
-async function fetchWithAuth<T>(url: string, options: RequestInit = {}): Promise<T> {
+export interface ApiClientOptions extends RequestInit {
+  params?: Record<string, any>
+}
+
+async function fetchWithAuth<T>(url: string, options: ApiClientOptions = {}): Promise<T> {
   const state = useAuthStore.getState()
   const { access_token, refresh_token, updateTokens, clearSession } = state
 
@@ -38,7 +42,22 @@ async function fetchWithAuth<T>(url: string, options: RequestInit = {}): Promise
     headers['Content-Type'] = 'application/json'
   }
 
-  const response = await fetch(url, { ...options, headers })
+  // Build query string dynamically from params
+  let finalUrl = url
+  if (options.params) {
+    const query = new URLSearchParams()
+    Object.entries(options.params).forEach(([key, val]) => {
+      if (val !== undefined && val !== null) {
+        query.append(key, val.toString())
+      }
+    })
+    const queryString = query.toString()
+    if (queryString) {
+      finalUrl += (finalUrl.includes('?') ? '&' : '?') + queryString
+    }
+  }
+
+  const response = await fetch(finalUrl, { ...options, headers })
 
   // Handle Token Refresh on 401
   if (response.status === 401 && refresh_token) {
@@ -100,18 +119,18 @@ async function fetchWithAuth<T>(url: string, options: RequestInit = {}): Promise
 }
 
 export const apiClient = {
-  get: <T>(url: string, options?: RequestInit) => 
+  get: <T>(url: string, options?: ApiClientOptions) => 
     fetchWithAuth<T>(url, { ...options, method: 'GET' }),
   
-  post: <T>(url: string, body?: any, options?: RequestInit) => 
+  post: <T>(url: string, body?: any, options?: ApiClientOptions) => 
     fetchWithAuth<T>(url, { ...options, method: 'POST', body: JSON.stringify(body) }),
   
-  put: <T>(url: string, body?: any, options?: RequestInit) => 
+  put: <T>(url: string, body?: any, options?: ApiClientOptions) => 
     fetchWithAuth<T>(url, { ...options, method: 'PUT', body: JSON.stringify(body) }),
   
-  patch: <T>(url: string, body?: any, options?: RequestInit) => 
+  patch: <T>(url: string, body?: any, options?: ApiClientOptions) => 
     fetchWithAuth<T>(url, { ...options, method: 'PATCH', body: JSON.stringify(body) }),
   
-  delete: <T>(url: string, options?: RequestInit) => 
+  delete: <T>(url: string, options?: ApiClientOptions) => 
     fetchWithAuth<T>(url, { ...options, method: 'DELETE' }),
 }

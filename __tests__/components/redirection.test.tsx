@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation'
 // Mock the store and router
 jest.mock('@/lib/stores/auth.store')
 jest.mock('next/navigation', () => ({
-  useRouter: jest.fn()
+  useRouter: jest.fn(),
+  usePathname: jest.fn(() => '/dashboard')
 }))
 
 describe('Security — Route Protection & Redirection', () => {
@@ -14,7 +15,7 @@ describe('Security — Route Protection & Redirection', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (useRouter as jest.fn).mockReturnValue({
+    (useRouter as jest.Mock).mockReturnValue({
       push: mockPush
     })
   })
@@ -37,7 +38,8 @@ describe('Security — Route Protection & Redirection', () => {
 
   it('successfully allows authenticated users to access protected dashboard content', () => {
     (useAuthStore as unknown as jest.Mock).mockReturnValue({
-      isAuthenticated: true
+      isAuthenticated: true,
+      hasPermission: jest.fn(() => true)
     })
 
     render(

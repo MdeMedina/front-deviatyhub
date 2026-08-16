@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { Toast } from '@/components/ui/Toast'
-import { IToast } from '@/lib/types'
+import { IToast } from '@/lib/stores/ui.store'
 
 describe('UI Molecules — Toast', () => {
   beforeEach(() => {
