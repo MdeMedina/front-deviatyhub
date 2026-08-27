@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { IntentionsChart } from '@/components/metrics/IntentionsChart'
 import { IIntentionDistribution } from '@/lib/types'
 
@@ -22,14 +22,14 @@ describe('IntentionsChart Organism (Fase 7.3)', () => {
   ]
 
   // ==========================================
-  // ✅ TEST 1: Renderizado de Segmentos
+  // ✅ TEST 1: Renderizado de barras
   // ==========================================
-  it('renders one stacked bar segment and one legend item for each intention in the payload', () => {
+  it('renders one horizontal bar row and fill for each intention in the payload', () => {
     render(<IntentionsChart intentions={mockIntentions} />)
 
     mockIntentions.forEach((item, index) => {
-      expect(screen.getByTestId(`bar-segment-${index}`)).toBeInTheDocument()
-      expect(screen.getByTestId(`legend-item-${index}`)).toBeInTheDocument()
+      expect(screen.getByTestId(`intention-row-${index}`)).toBeInTheDocument()
+      expect(screen.getByTestId(`bar-fill-${index}`)).toBeInTheDocument()
       expect(screen.getByText(item.intention)).toBeInTheDocument()
     })
   })
@@ -45,59 +45,46 @@ describe('IntentionsChart Organism (Fase 7.3)', () => {
   })
 
   // ==========================================
-  // ✅ TEST 3: Hover sobre Segmento Muestra Tooltip
+  // ✅ TEST 3: Muestra conteo y porcentaje por barra
   // ==========================================
-  it('successfully displays the detailed info in the tooltip box when hovering a bar segment', () => {
+  it('displays the count and percentage for each intention', () => {
     render(<IntentionsChart intentions={mockIntentions} />)
 
-    // Initially, displays instruction message
-    expect(screen.getByText('Pasa el cursor sobre un segmento de la barra para ver detalles')).toBeInTheDocument()
-
-    // Hover over the first segment ('Agendar Cita')
-    const firstSegment = screen.getByTestId('bar-segment-0')
-    fireEvent.mouseEnter(firstSegment)
-
-    // Now it should display detailed count and percentage
-    expect(screen.getByText('Agendar Cita:')).toBeInTheDocument()
-    expect(screen.getByText('120')).toBeInTheDocument()
-    expect(screen.getByText('(50.0%)')).toBeInTheDocument()
-
-    // Leave the first segment
-    fireEvent.mouseLeave(firstSegment)
-
-    // Displays instruction message again
-    expect(screen.getByText('Pasa el cursor sobre un segmento de la barra para ver detalles')).toBeInTheDocument()
+    expect(screen.getByText('120 · 50%')).toBeInTheDocument()
+    expect(screen.getByText('72 · 30%')).toBeInTheDocument()
+    expect(screen.getByText('48 · 20%')).toBeInTheDocument()
   })
 
   // ==========================================
-  // ❌ TEST 4: Array Vacío Carga EmptyState
+  // ✅ TEST 4: La barra refleja el porcentaje como ancho
+  // ==========================================
+  it('sizes each bar fill width to match its percentage', () => {
+    render(<IntentionsChart intentions={mockIntentions} />)
+
+    expect(screen.getByTestId('bar-fill-0')).toHaveStyle({ width: '50%' })
+    expect(screen.getByTestId('bar-fill-1')).toHaveStyle({ width: '30%' })
+  })
+
+  // ==========================================
+  // ❌ TEST 5: Array Vacío Carga EmptyState
   // ==========================================
   it('renders an EmptyState component when intentions array is empty or undefined', () => {
     render(<IntentionsChart intentions={[]} />)
 
     expect(screen.getByText('Sin datos de intenciones')).toBeInTheDocument()
     expect(screen.getByText('No se registraron intenciones conversacionales en el periodo seleccionado.')).toBeInTheDocument()
-    
+
     // Ensure chart itself is not rendered
     expect(screen.queryByTestId('intentions-chart-container')).not.toBeInTheDocument()
   })
 
   // ==========================================
-  // ❌ TEST 5: Consistencia de Colores
+  // ✅ TEST 6: Usa el color de marca (--blue) en las barras
   // ==========================================
-  it('ensures that segment and legend dot color styles are consistent across render calls', () => {
-    const { rerender } = render(<IntentionsChart intentions={mockIntentions} />)
+  it('uses the Dentral brand blue fill for the bars', () => {
+    render(<IntentionsChart intentions={mockIntentions} />)
 
-    const segment0 = screen.getByTestId('bar-segment-0')
-    const legendDot0 = screen.getByTestId('legend-item-0').querySelector('span')
-
-    // Let's assert class name inclusion
-    expect(segment0.className).toContain('bg-indigo-500')
-    expect(legendDot0?.className).toContain('bg-indigo-500')
-
-    // Rerender again to verify consistency
-    rerender(<IntentionsChart intentions={[...mockIntentions]} />)
-    const segment0After = screen.getByTestId('bar-segment-0')
-    expect(segment0After.className).toContain('bg-indigo-500')
+    const fill0 = screen.getByTestId('bar-fill-0')
+    expect(fill0.className).toContain('bg-[var(--blue)]')
   })
 })

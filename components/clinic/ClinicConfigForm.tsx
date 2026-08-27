@@ -1,10 +1,11 @@
+'use client'
+
 import React, { useState, useEffect } from 'react'
 import { useClinicConfig, useUpdateClinicConfig } from '@/lib/api/hooks/use-clinic'
 import { useUIStore } from '@/lib/stores/ui.store'
 import { Input } from '@/components/ui/Input'
-import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
-import { Building, Phone, Mail, Globe, Languages, Save } from 'lucide-react'
+import { Save } from 'lucide-react'
 
 export interface ClinicConfigFormProps {
   readOnly?: boolean
@@ -98,17 +99,17 @@ export const ClinicConfigForm: React.FC<ClinicConfigFormProps> = ({ readOnly }) 
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 bg-white rounded-3xl border border-slate-100 shadow-sm min-h-[400px]">
-        <Spinner size="lg" className="text-indigo-600 mb-4 animate-spin" />
-        <p className="text-sm font-semibold text-slate-500">Cargando configuración...</p>
+      <div data-card style={{ padding: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '300px' }}>
+        <Spinner size="md" />
+        <span className="microlabel text-[10px] mt-2">Cargando configuración...</span>
       </div>
     )
   }
 
   if (isError) {
     return (
-      <div className="p-8 bg-rose-50 border border-rose-100 rounded-3xl text-center">
-        <p className="text-sm font-semibold text-rose-600">
+      <div data-card style={{ padding: '24px', textAlign: 'center' }}>
+        <p style={{ fontSize: '13px', color: 'var(--neg)' }}>
           No se pudo cargar la configuración de la clínica. Por favor, intente de nuevo.
         </p>
       </div>
@@ -119,75 +120,73 @@ export const ClinicConfigForm: React.FC<ClinicConfigFormProps> = ({ readOnly }) 
     <form
       onSubmit={handleSubmit}
       aria-label="config-form"
-      className="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm max-w-2xl mx-auto space-y-6"
+      data-card
+      style={{ display: 'flex', flexDirection: 'column' }}
     >
-      <div className="border-b border-slate-100 pb-4">
-        <h2 className="text-lg font-bold text-slate-900 leading-tight">Configuración General</h2>
-        <p className="text-xs text-slate-400 font-medium tracking-wide uppercase mt-0.5">
-          Datos de contacto e idioma de la clínica
-        </p>
+      <div data-hd>
+        <h2>Datos de la clínica</h2>
+        <span data-lbl>Obligatorios *</span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <Input
-          label="Nombre de la Clínica"
-          placeholder="Ej: Clínica Dental Premium"
-          value={name}
-          onChange={setName}
-          error={errors.name}
-          leftIcon={<Building size={16} />}
-          disabled={readOnly}
-          required
-        />
+      <div style={{ padding: '20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '16px' }}>
+        <div data-field>
+          <Input
+            label="Nombre de la clínica *"
+            placeholder="Ej: Deviaty Dental Care"
+            value={name}
+            onChange={setName}
+            error={errors.name}
+            disabled={readOnly}
+            required
+          />
+        </div>
 
-        <Input
-          label="Teléfono de Contacto"
-          placeholder="Ej: +56912345678"
-          value={phone}
-          onChange={setPhone}
-          error={errors.phone}
-          leftIcon={<Phone size={16} />}
-          disabled={readOnly}
-          required
-        />
+        <div data-field>
+          <Input
+            label="Teléfono de contacto *"
+            placeholder="Ej: +56 9 1234 5678"
+            value={phone}
+            onChange={setPhone}
+            error={errors.phone}
+            disabled={readOnly}
+            required
+          />
+        </div>
 
-        <Input
-          label="Correo Electrónico"
-          placeholder="Ej: contacto@clinica.com"
-          type="email"
-          value={email}
-          onChange={setEmail}
-          error={errors.email}
-          leftIcon={<Mail size={16} />}
-          disabled={readOnly}
-          required
-        />
+        <div data-field>
+          <Input
+            label="Correo electrónico *"
+            placeholder="Ej: contacto@deviaty.cl"
+            type="email"
+            value={email}
+            onChange={setEmail}
+            error={errors.email}
+            disabled={readOnly}
+            required
+          />
+        </div>
 
-        <Input
-          label="Dirección Física"
-          placeholder="Ej: Av. Providencia 1234, Oficina 501"
-          value={address}
-          onChange={setAddress}
-          leftIcon={<Building size={16} />}
-          disabled={readOnly}
-        />
+        <div data-field>
+          <Input
+            label="Dirección física"
+            placeholder="Ej: Av. Providencia 1234, Oficina 501"
+            value={address}
+            onChange={setAddress}
+            disabled={readOnly}
+          />
+        </div>
 
         {/* Timezone Select */}
-        <div className="flex flex-col gap-1.5">
-          <label
-            htmlFor="timezone-select"
-            className="text-sm font-semibold text-slate-700 ml-1 flex items-center gap-1"
-          >
-            <Globe size={16} className="text-slate-400" />
-            Zona Horaria
-            <span className="text-rose-500">*</span>
+        <div data-field>
+          <label htmlFor="st-tz">
+            Zona horaria *
           </label>
           <select
-            id="timezone-select"
+            id="st-tz"
+            data-inp
             value={timezone}
             onChange={(e) => setTimezone(e.target.value)}
             disabled={readOnly}
-            className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-700 transition-all duration-200 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 hover:border-slate-300 cursor-pointer disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed"
           >
             <option value="America/Santiago">Santiago (America/Santiago)</option>
             <option value="America/Bogota">Bogotá (America/Bogota)</option>
@@ -202,21 +201,16 @@ export const ClinicConfigForm: React.FC<ClinicConfigFormProps> = ({ readOnly }) 
         </div>
 
         {/* Language Select */}
-        <div className="flex flex-col gap-1.5">
-          <label
-            htmlFor="language-select"
-            className="text-sm font-semibold text-slate-700 ml-1 flex items-center gap-1"
-          >
-            <Languages size={16} className="text-slate-400" />
-            Idioma por Defecto
-            <span className="text-rose-500">*</span>
+        <div data-field>
+          <label htmlFor="st-lang">
+            Idioma por defecto *
           </label>
           <select
-            id="language-select"
+            id="st-lang"
+            data-inp
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
             disabled={readOnly}
-            className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-700 transition-all duration-200 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 hover:border-slate-300 cursor-pointer disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed"
           >
             <option value="es">Español (es)</option>
             <option value="en">English (en)</option>
@@ -225,15 +219,24 @@ export const ClinicConfigForm: React.FC<ClinicConfigFormProps> = ({ readOnly }) 
       </div>
 
       {!readOnly && (
-        <div className="flex justify-end pt-4 border-t border-slate-50">
-          <Button
+        <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '13px 20px', borderTop: '1px solid var(--line)', background: 'var(--surface)' }}>
+          <button
+            data-btn="primary"
             type="submit"
-            loading={isPending}
-            icon={<Save size={18} />}
-            className="min-w-[140px]"
+            disabled={isPending}
           >
-            Guardar Cambios
-          </Button>
+            {isPending ? (
+              <>
+                <Spinner size="sm" />
+                <span>Procesando...</span>
+              </>
+            ) : (
+              <>
+                <Save size={14} strokeWidth={1.75} />
+                <span>Guardar cambios</span>
+              </>
+            )}
+          </button>
         </div>
       )}
     </form>

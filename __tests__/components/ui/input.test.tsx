@@ -18,7 +18,7 @@ describe('UI Atoms — Input', () => {
     
     const errorMsg = screen.getByText('Required field')
     expect(errorMsg).toBeInTheDocument()
-    expect(errorMsg.className).toContain('text-rose-500')
+    expect(errorMsg.className).toContain('text-[var(--neg)]')
   })
 
   it('successfully renders icons when provided', () => {
@@ -39,7 +39,7 @@ describe('UI Atoms — Input', () => {
     render(<Input value="Fixed" onChange={() => {}} disabled />)
     const input = screen.getByDisplayValue('Fixed')
     expect(input).toBeDisabled()
-    expect(input.className).toContain('disabled:bg-slate-50')
+    expect(input.className).toContain('disabled:bg-[var(--surface)]')
   })
 
   it('renders a label and associates it with the input', () => {

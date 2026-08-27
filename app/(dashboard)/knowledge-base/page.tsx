@@ -1,8 +1,8 @@
 'use client'
 
 import React, { Suspense } from 'react'
+import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
 import {
   Building,
   Clock,
@@ -11,7 +11,8 @@ import {
   Users,
   Stethoscope,
   AlertCircle,
-  BookOpen
+  Check,
+  ArrowRight
 } from 'lucide-react'
 import { useAuthStore } from '@/lib/stores/auth.store'
 import { ClinicConfigForm } from '@/components/clinic/ClinicConfigForm'
@@ -20,7 +21,7 @@ import { TreatmentsManager } from '@/components/clinic/TreatmentsManager'
 import { UnavailabilityManager } from '@/components/clinic/UnavailabilityManager'
 import { PoliciesManager } from '@/components/clinic/PoliciesManager'
 import { DoctorsManager } from '@/components/clinic/DoctorsManager'
-import { EmptyState } from '@/components/ui/EmptyState'
+import { Badge } from '@/components/ui/Badge'
 
 const TABS = [
   { id: 'general', label: 'Configuración general', icon: Building },
@@ -39,26 +40,27 @@ function KnowledgeBaseContent() {
   const activeTab = (searchParams.get('tab') || 'general') as TabId
   const { hasPermission } = useAuthStore()
 
-  // 1. Permission checks
+  // Permission checks
   const canView = hasPermission('knowledge_base.view')
   const readOnly = !hasPermission('knowledge_base.edit')
 
   if (!canView) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-slate-50/50 min-h-[calc(100vh-10rem)]">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-white border border-slate-100 rounded-3xl p-8 max-w-md w-full text-center shadow-xl shadow-slate-100/50"
+      <div className="flex flex-col items-center justify-center p-8 bg-[var(--card)] border border-[var(--line)] rounded-[10px] min-h-[380px] max-w-md mx-auto text-center shadow-[0_1px_2px_rgba(20,20,25,0.05)]">
+        <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
+          <AlertCircle size={22} />
+        </div>
+        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
+        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+          No tienes los permisos necesarios para ver o modificar la base de conocimiento clínica. Por favor contacta al administrador.
+        </p>
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[13px] transition-opacity gap-2"
         >
-          <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 mx-auto mb-6">
-            <AlertCircle size={32} />
-          </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Acceso Denegado</h2>
-          <p className="text-slate-500 text-sm mb-6">
-            No tienes los permisos necesarios para ver o modificar la base de conocimiento clínica. Por favor contacta al administrador.
-          </p>
-        </motion.div>
+          Ir al Dashboard
+          <ArrowRight size={14} />
+        </Link>
       </div>
     )
   }
@@ -89,54 +91,51 @@ function KnowledgeBaseContent() {
   }
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
-      {/* Premium Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-            <BookOpen size={22} className="animate-pulse" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-slate-900 leading-tight">Base de Conocimiento</h1>
-            <p className="text-xs text-slate-400 font-medium tracking-wide uppercase mt-0.5">
-              Configuración Clínica & Catálogo General
-            </p>
-          </div>
+    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+      {/* Header Bar */}
+      <div className="flex items-end justify-between gap-5 flex-wrap pb-4 border-b border-[var(--line)]">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
+            Base de conocimiento
+          </h1>
+          <p className="text-[13.5px] text-[var(--muted)]">
+            Configuración clínica y catálogo general que utiliza el agente.
+          </p>
         </div>
-        {readOnly && (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-100 rounded-full text-xs font-bold text-amber-700">
-            <AlertCircle size={14} />
+
+        {readOnly ? (
+          <Badge variant="neutral" size="sm" dot>
             Modo Solo Lectura
+          </Badge>
+        ) : (
+          <div data-badge style={{ height: '32px' }}>
+            <Check size={13} strokeWidth={2} />
+            Sincronizado hace 4 min
           </div>
         )}
       </div>
 
       {/* Segmented Horizontal Tabs Navigation */}
-      <div className="flex overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
-        <div className="flex bg-slate-50 border border-slate-100 rounded-2xl p-1 shadow-inner gap-1 min-w-max">
-          {TABS.map((tab) => {
-            const Icon = tab.icon
-            const isActive = activeTab === tab.id
-            return (
-              <button
-                key={tab.id}
-                onClick={() => handleTabChange(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 uppercase tracking-wider ${
-                  isActive
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-100'
-                    : 'text-slate-500 hover:text-slate-800'
-                }`}
-              >
-                <Icon size={14} />
-                {tab.label}
-              </button>
-            )
-          })}
-        </div>
+      <div data-tabs>
+        {TABS.map((tab) => {
+          const Icon = tab.icon
+          const isActive = activeTab === tab.id
+          return (
+            <button
+              key={tab.id}
+              data-tab
+              data-active={isActive}
+              onClick={() => handleTabChange(tab.id)}
+            >
+              <Icon size={14} strokeWidth={1.75} />
+              {tab.label}
+            </button>
+          )
+        })}
       </div>
 
-      {/* Content Area */}
-      <div className="mt-6">
+      {/* Tab Content Display Area */}
+      <div>
         {renderActiveTabContent()}
       </div>
     </div>
@@ -147,8 +146,9 @@ export default function KnowledgeBasePage() {
   return (
     <Suspense
       fallback={
-        <div className="flex items-center justify-center p-24">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+        <div className="flex flex-col gap-6 max-w-[1340px] mx-auto animate-dentral-shimmer">
+          <div className="h-8 w-48 bg-[var(--surface-2)] rounded-[6px]" />
+          <div className="h-48 bg-[var(--card)] border border-[var(--line)] rounded-[10px]" />
         </div>
       }
     >

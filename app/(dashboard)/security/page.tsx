@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { AlertCircle, Lock, Shield, History, ArrowRight, Plus } from 'lucide-react'
+import { AlertCircle, Shield, History, ArrowRight, Plus, X } from 'lucide-react'
 import { useAuthStore } from '@/lib/stores/auth.store'
 import { useUIStore } from '@/lib/stores/ui.store'
 import { useRoles, useUpdateRole, useCreateRole } from '@/lib/api/hooks/use-users-roles'
@@ -11,17 +10,7 @@ import { useAuditLogs } from '@/lib/api/hooks/use-audit-logs'
 import { PermissionsEditor } from '@/components/features/security/PermissionsEditor'
 import { AuditLogsTable } from '@/components/features/security/AuditLogsTable'
 import { Spinner } from '@/components/ui/Spinner'
-import { Button } from '@/components/ui/Button'
-import { Modal } from '@/components/ui/Modal'
-import { Input } from '@/components/ui/Input'
-import { AuditLogPeriod, IRole, IPermissions } from '@/lib/types'
-
-const TABS = [
-  { id: 'permissions', label: 'Roles y Permisos', icon: Shield },
-  { id: 'audit', label: 'Logs de Auditoría', icon: History },
-] as const
-
-type TabId = typeof TABS[number]['id']
+import { AuditLogPeriod, IPermissions } from '@/lib/types'
 
 const DEFAULT_PERMISSIONS: IPermissions = {
   conversations:  { view: false, takeover: false },
@@ -41,7 +30,7 @@ export default function SecurityPage() {
   const addToast = useUIStore((state) => state.addToast)
 
   // Current tab view state
-  const [activeTab, setActiveTab] = useState<TabId>('permissions')
+  const [activeTab, setActiveTab] = useState<'permissions' | 'audit'>('permissions')
 
   // Roles query & update mutations
   const { data: roles, isLoading: rolesLoading, refetch: refetchRoles } = useRoles()
@@ -92,245 +81,214 @@ export default function SecurityPage() {
 
   // Permissions guarding
   const canView = hasPermission('security.view')
-  const canEditRoles = hasPermission('users.edit') // users.edit manages user permissions
+  const canEditRoles = hasPermission('users.edit')
 
   if (!canView) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-slate-50/50 min-h-[calc(100vh-10rem)]">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-          className="bg-white border border-slate-100 rounded-3xl p-8 max-w-md w-full text-center shadow-xl shadow-slate-100/50"
+      <div className="flex flex-col items-center justify-center p-8 bg-[var(--card)] border border-[var(--line)] rounded-[10px] min-h-[380px] max-w-md mx-auto text-center shadow-[0_1px_2px_rgba(20,20,25,0.05)]">
+        <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
+          <AlertCircle size={22} />
+        </div>
+        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
+        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+          No tienes los permisos necesarios para gestionar directivas de seguridad ni auditar logs. Por favor contacta al administrador.
+        </p>
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[13px] transition-opacity gap-2"
         >
-          <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 mx-auto mb-6">
-            <AlertCircle size={32} />
-          </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Acceso Denegado</h2>
-          <p className="text-slate-500 text-sm mb-6">
-            No tienes los permisos necesarios para ver las configuraciones de seguridad o logs de auditoría. Por favor contacta al administrador.
-          </p>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center justify-center px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold rounded-xl text-xs uppercase tracking-wider transition-colors gap-2"
-          >
-            Ir al Dashboard
-            <ArrowRight size={14} />
-          </Link>
-        </motion.div>
+          Ir al Dashboard
+          <ArrowRight size={14} />
+        </Link>
       </div>
     )
   }
 
-  // Handle saving permissions
-  const handleSavePermissions = async (updatedPermissions: IPermissions) => {
-    if (!selectedRoleId) return
+  // Selected role object
+  const activeRole = roles?.find((r) => r.id === selectedRoleId) || roles?.[0]
+  const currentRoleId = activeRole?.id || ''
+  const isSuperadmin = activeRole?.name?.toLowerCase() === 'superadmin'
 
-    try {
-      await updateRoleMutation.mutateAsync({
-        id: selectedRoleId,
-        permissions: updatedPermissions,
-      })
-      addToast({
-        title: 'Permisos actualizados',
-        message: 'Los permisos del rol han sido actualizados con éxito.',
-        type: 'success',
-      })
-      refetchRoles()
-    } catch (err: any) {
-      addToast({
-        title: 'Error al actualizar',
-        message: err?.message || 'No se pudieron actualizar los permisos del rol',
-        type: 'error',
-      })
-    }
-  }
+  const handleSavePermissions = (newPermissions: IPermissions) => {
+    if (!currentRoleId) return
 
-  const selectedRole = roles?.find((r) => r.id === selectedRoleId)
-
-  // Autoselect first role once roles are loaded
-  if (roles && roles.length > 0 && !selectedRoleId) {
-    setSelectedRoleId(roles[0].id)
+    updateRoleMutation.mutate(
+      {
+        id: currentRoleId,
+        permissions: newPermissions,
+      },
+      {
+        onSuccess: () => {
+          addToast({
+            title: 'Permisos actualizados',
+            message: `Los permisos del rol "${activeRole?.name}" se han guardado exitosamente.`,
+            type: 'success',
+          })
+          refetchRoles()
+        },
+        onError: (err: any) => {
+          addToast({
+            title: 'Error al actualizar permisos',
+            message: err?.message || 'Ocurrió un error al guardar los permisos.',
+            type: 'error',
+          })
+        },
+      }
+    )
   }
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto p-4 md:p-6 lg:p-8 animate-in fade-in duration-300">
-      {/* Premium Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-            <Lock size={22} />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-slate-900 leading-tight">Seguridad & Auditoría</h1>
-            <p className="text-xs text-slate-400 font-medium tracking-wide uppercase mt-0.5">
-              Controla las directivas de seguridad y audita los cambios del sistema
-            </p>
-          </div>
+    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+      {/* Header Bar */}
+      <div className="flex items-end justify-between gap-5 flex-wrap pb-4 border-b border-[var(--line)]">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
+            Seguridad & Auditoría
+          </h1>
+          <p className="text-[13.5px] text-[var(--muted)]">
+            Controla las directivas de seguridad y audita los cambios del sistema.
+          </p>
         </div>
 
-        {!canEditRoles && activeTab === 'permissions' && (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-100 rounded-full text-xs font-bold text-amber-700">
-            <AlertCircle size={14} />
-            Modo Solo Lectura
-          </div>
-        )}
-      </div>
-
-      {/* Segmented Horizontal Tabs Navigation */}
-      <div className="flex overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
-        <div className="flex bg-slate-50 border border-slate-100 rounded-2xl p-1 shadow-inner gap-1 min-w-max">
-          {TABS.map((tab) => {
-            const Icon = tab.icon
-            const isActive = activeTab === tab.id
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 uppercase tracking-wider ${
-                  isActive
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-100'
-                    : 'text-slate-500 hover:text-slate-800'
-                }`}
-              >
-                <Icon size={14} />
-                {tab.label}
-              </button>
-            )
-          })}
+        {/* View Tabs Selector */}
+        <div data-tabs>
+          <button
+            data-tab
+            data-active={activeTab === 'permissions'}
+            onClick={() => setActiveTab('permissions')}
+          >
+            <Shield size={14} strokeWidth={1.75} />
+            Roles y Permisos
+          </button>
+          <button
+            data-tab
+            data-active={activeTab === 'audit'}
+            onClick={() => setActiveTab('audit')}
+          >
+            <History size={14} strokeWidth={1.75} />
+            Logs de auditoría
+          </button>
         </div>
       </div>
 
-      {/* Content Area */}
-      <div className="mt-6">
-        {activeTab === 'permissions' ? (
-          <div className="space-y-6">
-            {rolesLoading ? (
-              <div className="flex items-center justify-center p-12 bg-white rounded-3xl border border-slate-100 shadow-sm min-h-[300px]">
-                <Spinner size="lg" className="text-indigo-600 mb-4 animate-spin" />
-              </div>
-            ) : !roles || roles.length === 0 ? (
-              <div className="bg-white rounded-2xl p-12 border border-slate-100 shadow-sm text-center text-slate-500">
-                No hay roles disponibles
-              </div>
-            ) : (
-              <div className="space-y-6 max-w-4xl mx-auto">
-                {/* Role selection dropdown */}
-                <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="space-y-1">
-                    <label htmlFor="role-select" className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">
-                      Seleccionar Rol a Configurar
-                    </label>
-                    <p className="text-xs text-slate-500 font-medium">Los permisos se aplicarán a todos los usuarios asignados a este rol.</p>
-                  </div>
-                  <div className="flex items-center gap-3 w-full md:w-auto">
-                    <select
-                      id="role-select"
-                      value={selectedRoleId}
-                      onChange={(e) => setSelectedRoleId(e.target.value)}
-                      className="flex-1 md:flex-none px-4 py-2.5 bg-slate-50 hover:bg-slate-100/70 border border-slate-100 focus:border-slate-200 rounded-xl text-sm outline-none font-semibold text-slate-700 cursor-pointer min-w-[200px]"
-                    >
-                      {roles.map((r) => (
-                        <option key={r.id} value={r.id}>
-                          {r.name}
-                        </option>
-                      ))}
-                    </select>
-                    {canEditRoles && (
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        icon={<Plus size={16} />}
-                        onClick={() => setIsCreateRoleOpen(true)}
-                        className="font-bold shrink-0"
-                      >
-                        Crear Rol
-                      </Button>
-                    )}
-                  </div>
+      {/* Main Tab Content */}
+      {activeTab === 'permissions' ? (
+        <div className="flex flex-col gap-5">
+          {rolesLoading ? (
+            <div data-card style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px', gap: '8px' }}>
+              <Spinner size="md" />
+              <span className="microlabel text-[10px]">Cargando roles y permisos</span>
+            </div>
+          ) : (
+            <div data-card>
+              {/* Header Selector */}
+              <div data-hd>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                  <h2>Editor de Permisos</h2>
+                  <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
+                    Los permisos se aplican a todos los usuarios asignados a este rol.
+                  </span>
                 </div>
 
-                {/* Permissions Editor */}
-                {selectedRole && (
-                  <motion.div
-                    key={selectedRoleId}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.2 }}
+                <div style={{ display: 'flex', gap: '9px', alignItems: 'center' }}>
+                  {!canEditRoles && (
+                    <span data-badge>Modo Solo Lectura</span>
+                  )}
+
+                  <label htmlFor="role-selector" className="sr-only">Seleccionar Rol a Configurar</label>
+                  <select
+                    id="role-selector"
+                    data-inp
+                    aria-label="Seleccionar rol"
+                    value={currentRoleId}
+                    onChange={(e) => setSelectedRoleId(e.target.value)}
+                    style={{ width: '190px', height: '32px' }}
                   >
-                    <PermissionsEditor
-                      initialPermissions={selectedRole.permissions}
-                      onSave={handleSavePermissions}
-                      readOnly={!canEditRoles}
-                      isSaving={updateRoleMutation.isPending}
-                      isSuperadmin={selectedRole.is_superadmin || selectedRole.isSuperadmin || selectedRole.name === 'Superadmin'}
-                    />
-                  </motion.div>
-                )}
+                    {roles?.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {r.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  {canEditRoles && (
+                    <button
+                      data-btn="primary"
+                      onClick={() => setIsCreateRoleOpen(true)}
+                    >
+                      <Plus size={14} strokeWidth={1.9} />
+                      Crear rol
+                    </button>
+                  )}
+                </div>
               </div>
-            )}
-          </div>
-        ) : (
-          <div className="max-w-6xl mx-auto">
-            <AuditLogsTable
-              logs={auditLogs || []}
-              period={auditPeriod}
-              onPeriodChange={setAuditPeriod}
-              canView={canView}
-              isLoading={auditLoading}
-            />
-          </div>
-        )}
-      </div>
+
+              {/* Permissions Matrix */}
+              {activeRole && (
+                <PermissionsEditor
+                  initialPermissions={activeRole.permissions || DEFAULT_PERMISSIONS}
+                  onSave={handleSavePermissions}
+                  readOnly={!canEditRoles}
+                  isSaving={updateRoleMutation.isPending}
+                  isSuperadmin={isSuperadmin}
+                />
+              )}
+            </div>
+          )}
+        </div>
+      ) : (
+        <AuditLogsTable
+          logs={auditLogs || []}
+          period={auditPeriod}
+          onPeriodChange={setAuditPeriod}
+          canView={canView}
+          isLoading={auditLoading}
+        />
+      )}
 
       {/* Create Role Modal */}
-      <Modal
-        isOpen={isCreateRoleOpen}
-        onClose={() => {
-          setIsCreateRoleOpen(false)
-          setNewRoleName('')
-          setNewRoleErrors({})
-        }}
-        title="Crear Nuevo Rol de Seguridad"
-      >
-        <form onSubmit={handleCreateRoleSubmit} data-testid="create-role-form" className="space-y-5">
-          <Input
-            label="Nombre del Rol"
-            placeholder="Ej: Asistente Dental, Recepcionista"
-            value={newRoleName}
-            onChange={setNewRoleName}
-            error={newRoleErrors.name}
-            required
-          />
-
-          <p className="text-xs text-slate-400">
-            * Al crear el rol, se inicializará con permisos vacíos. Podrás configurar sus permisos granulares inmediatamente después de crearlo.
-          </p>
-
-          <div className="flex justify-end pt-4 gap-3 border-t border-slate-100">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setIsCreateRoleOpen(false)
-                setNewRoleName('')
-                setNewRoleErrors({})
-              }}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              size="sm"
-              loading={createRoleMutation.isPending}
-            >
-              Crear Rol
-            </Button>
+      {isCreateRoleOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 60, display: 'grid', placeItems: 'center', padding: '24px' }}>
+          <div onClick={() => setIsCreateRoleOpen(false)} style={{ position: 'absolute', inset: 0, background: 'rgba(33,33,33,.45)', backdropFilter: 'blur(2px)' }} />
+          <div role="dialog" aria-modal="true" data-card style={{ position: 'relative', width: '100%', maxWidth: '420px', boxShadow: '0 24px 60px rgba(0,0,0,.18)' }}>
+            <div data-hd>
+              <h2>Crear Nuevo Rol de Seguridad</h2>
+              <button data-btn onClick={() => setIsCreateRoleOpen(false)} style={{ width: '28px', height: '28px', padding: 0, borderColor: 'transparent', background: 'none' }}>
+                <X size={15} strokeWidth={1.75} />
+              </button>
+            </div>
+            <form data-testid="create-role-form" onSubmit={handleCreateRoleSubmit}>
+              <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div data-field>
+                  <label htmlFor="new-role-name">Nombre del rol *</label>
+                  <input
+                    id="new-role-name"
+                    data-inp
+                    type="text"
+                    placeholder="Ej: Asistente Dental, Recepcionista"
+                    value={newRoleName}
+                    onChange={(e) => {
+                      setNewRoleName(e.target.value)
+                      setNewRoleErrors({})
+                    }}
+                    required
+                  />
+                  {newRoleErrors.name && (
+                    <span style={{ fontSize: '11px', color: 'var(--neg)' }}>{newRoleErrors.name}</span>
+                  )}
+                </div>
+                <p style={{ margin: 0, fontSize: '12px', lineHeight: 1.55, color: 'var(--muted)' }}>
+                  El nuevo rol se creará con los permisos mínimos por defecto. Podrás configurarlo inmediatamente.
+                </p>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '9px', padding: '13px 18px', borderTop: '1px solid var(--line)', background: 'var(--surface)' }}>
+                <button data-btn type="button" onClick={() => setIsCreateRoleOpen(false)}>Cancelar</button>
+                <button data-btn="primary" type="submit" disabled={createRoleMutation.isPending}>Crear rol</button>
+              </div>
+            </form>
           </div>
-        </form>
-      </Modal>
+        </div>
+      )}
     </div>
   )
 }

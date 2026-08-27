@@ -1,9 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft,
   AlertCircle,
@@ -15,7 +14,6 @@ import {
   Plus,
   Trash2,
   Percent,
-  CheckCircle,
   Save,
   BookOpen,
   Sparkles
@@ -32,11 +30,11 @@ import { Spinner } from '@/components/ui/Spinner'
 import { Badge } from '@/components/ui/Badge'
 import { Modal } from '@/components/ui/Modal'
 import { Input } from '@/components/ui/Input'
-import { EmptyState } from '@/components/ui/EmptyState'
+
+const fmtPrice = (n: number) => `$${(n ?? 0).toLocaleString('es-CL')}`
 
 export default function TreatmentDetailPage() {
   const { id } = useParams()
-  const router = useRouter()
   const addToast = useUIStore((state) => state.addToast)
   const { hasPermission } = useAuthStore()
 
@@ -68,50 +66,47 @@ export default function TreatmentDetailPage() {
 
   if (!canView) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-slate-50/50 min-h-[calc(100vh-10rem)] animate-in fade-in">
-        <div className="bg-white border border-slate-100 rounded-3xl p-8 max-w-md w-full text-center shadow-xl shadow-slate-100/50">
-          <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 mx-auto mb-6">
-            <AlertCircle size={32} />
-          </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Acceso Denegado</h2>
-          <p className="text-slate-500 text-sm mb-6">
-            No tienes permisos para ver el catálogo clínico de tratamientos.
-          </p>
-          <Link
-            href="/knowledge-base"
-            className="inline-flex items-center justify-center px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold rounded-xl text-xs uppercase tracking-wider transition-colors"
-          >
-            Volver
-          </Link>
+      <div className="flex flex-col items-center justify-center p-8 bg-[var(--card)] border border-[var(--line)] rounded-[10px] min-h-[380px] max-w-md mx-auto text-center shadow-[0_1px_2px_rgba(20,20,25,0.05)]">
+        <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
+          <AlertCircle size={22} />
         </div>
+        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
+        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+          No tienes permisos para ver el catálogo clínico de tratamientos.
+        </p>
+        <Link
+          href="/knowledge-base"
+          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[13px] transition-opacity"
+        >
+          Volver
+        </Link>
       </div>
     )
   }
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center p-24 min-h-[500px]">
-        <Spinner size="lg" className="text-indigo-600 mb-4" />
-        <p className="text-sm font-semibold text-slate-500">Cargando ficha del tratamiento...</p>
+      <div className="flex flex-col items-center justify-center p-24 min-h-[500px] gap-3">
+        <Spinner size="lg" />
+        <span className="microlabel text-[10px]">Cargando ficha del tratamiento...</span>
       </div>
     )
   }
 
   if (isError || !treatment) {
     return (
-      <div className="p-8 bg-rose-50 border border-rose-100 rounded-3xl text-center max-w-2xl mx-auto flex flex-col items-center gap-4 mt-12">
-        <AlertCircle className="text-rose-500 w-10 h-10" />
+      <div className="flex flex-col items-center gap-4 p-8 bg-[var(--card)] border border-[var(--line)] rounded-[10px] text-center max-w-2xl mx-auto mt-12 shadow-[0_1px_2px_rgba(20,20,25,0.05)]">
+        <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)]">
+          <AlertCircle size={22} />
+        </div>
         <div>
-          <h3 className="text-base font-bold text-rose-800">Error al cargar ficha</h3>
-          <p className="text-sm text-rose-600 mt-1">
+          <h3 className="text-[15px] font-semibold text-[var(--ink)]">Error al cargar ficha</h3>
+          <p className="text-[13px] text-[var(--muted)] mt-1">
             No se pudo obtener la información de este tratamiento clínico. Es posible que haya sido eliminado.
           </p>
         </div>
-        <Link
-          href="/knowledge-base?tab=treatments"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-rose-200 hover:bg-rose-100 rounded-xl text-xs font-bold text-rose-700 transition-colors shadow-sm"
-        >
-          <ArrowLeft size={14} />
+        <Link href="/knowledge-base?tab=treatments" data-btn>
+          <ArrowLeft size={14} strokeWidth={1.75} />
           Volver a Tratamientos
         </Link>
       </div>
@@ -235,137 +230,140 @@ export default function TreatmentDetailPage() {
     }
   }
 
+  const getInitials = (name: string) => {
+    if (!name) return 'DR'
+    const parts = name.replace(/^(Dra?\.?\s+)/i, '').trim().split(/\s+/)
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase()
+    return (parts[0][0] + parts[1][0]).toUpperCase()
+  }
+
   return (
-    <div className="space-y-6 max-w-6xl mx-auto p-4 md:p-6 lg:p-8 animate-in fade-in duration-300">
-      {/* Header element */}
-      <div className="flex flex-col gap-4 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-[var(--line)]">
         <div className="flex items-center gap-3">
           <Link
             href="/knowledge-base?tab=treatments"
-            className="p-3 text-slate-400 hover:text-slate-800 bg-slate-50 hover:bg-slate-100 rounded-2xl transition-all group"
+            data-btn
+            style={{ width: '32px', height: '32px', padding: 0 }}
             title="Volver al catálogo"
+            aria-label="Volver al catálogo"
             data-testid="back-to-treatments"
           >
-            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+            <ArrowLeft size={16} strokeWidth={1.75} />
           </Link>
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-lg font-bold text-slate-900 leading-tight">
+          <div className="flex flex-col gap-1">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
                 {treatment.name}
               </h1>
-              <Badge
-                variant={treatment.active ? 'success' : 'neutral'}
-                label={treatment.active ? 'Activo en Clínica' : 'Desactivado'}
-                size="sm"
-              />
+              <Badge variant={treatment.active ? 'success' : 'neutral'} size="sm" dot>
+                {treatment.active ? 'Activo en Clínica' : 'Desactivado'}
+              </Badge>
             </div>
-            <p className="text-xs text-slate-400 font-medium tracking-wide uppercase mt-0.5">
-              Ficha Técnica Clínico-Arancelaria & Ofertas Vigentes
+            <p className="text-[13.5px] text-[var(--muted)]">
+              Ficha técnica clínico-arancelaria y ofertas vigentes
             </p>
           </div>
         </div>
       </div>
 
-      {/* Grid of Main information */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left column: Technical Card */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-5">
-            <div>
-              <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-50 pb-2">
-                <BookOpen size={16} className="text-indigo-500" />
-                Descripción e Indicaciones Clínicas
-              </h2>
-              <p className="text-sm text-slate-500 font-medium mt-3 leading-relaxed">
+      {/* Main grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
+        {/* Left column */}
+        <div className="lg:col-span-2 flex flex-col gap-5">
+          {/* Description */}
+          <div data-card>
+            <div data-hd>
+              <h2>Descripción e indicaciones clínicas</h2>
+            </div>
+            <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <p className="text-[13.5px] text-[var(--muted)] leading-relaxed m-0">
                 {treatment.description || 'No se han ingresado detalles descriptivos adicionales para este tratamiento médico.'}
               </p>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-              <div className="flex items-center gap-3 bg-slate-50/50 p-4 rounded-2xl border border-slate-100/60">
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
-                  <Clock size={20} />
-                </div>
-                <div>
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Duración Estándar</p>
-                  <p className="text-sm font-bold text-slate-700">{treatment.duration_min} minutos por sesión</p>
-                </div>
-              </div>
-
-              {treatment.encyclopedia_ref && (
-                <div className="flex items-center gap-3 bg-slate-50/50 p-4 rounded-2xl border border-slate-100/60">
-                  <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 shrink-0">
-                    <Sparkles size={20} />
-                  </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="flex items-center gap-3 bg-[var(--surface)] border border-[var(--line)] rounded-[8px] p-3">
+                  <span data-icon><Clock size={16} strokeWidth={1.75} /></span>
                   <div>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Enciclopedia Médica</p>
-                    <p className="text-xs font-semibold text-purple-700 truncate max-w-[200px]" title={treatment.encyclopedia_ref}>
-                      {treatment.encyclopedia_ref}
-                    </p>
+                    <p className="microlabel m-0">Duración estándar</p>
+                    <p className="text-[13px] font-medium text-[var(--ink)] m-0 mt-0.5">{treatment.duration_min} minutos por sesión</p>
                   </div>
                 </div>
-              )}
+
+                {treatment.encyclopedia_ref && (
+                  <div className="flex items-center gap-3 bg-[var(--surface)] border border-[var(--line)] rounded-[8px] p-3">
+                    <span data-icon><Sparkles size={16} strokeWidth={1.75} /></span>
+                    <div className="min-w-0">
+                      <p className="microlabel m-0">Enciclopedia médica</p>
+                      <p className="text-[13px] font-medium text-[var(--ink)] m-0 mt-0.5 truncate" title={treatment.encyclopedia_ref}>
+                        {treatment.encyclopedia_ref}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Pricing Grid */}
-          <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-            <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-50 pb-2">
-              <DollarSign size={16} className="text-indigo-500" />
-              Estructura de Aranceles Clínicos
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-slate-50 border border-slate-100 p-4 rounded-2xl text-center space-y-1">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Precio General</p>
-                <p className="text-lg font-black text-slate-800">${(treatment.price ?? 0).toLocaleString('es-CL')}</p>
+          {/* Pricing */}
+          <div data-card>
+            <div data-hd>
+              <h2>Estructura de aranceles clínicos</h2>
+            </div>
+            <div style={{ padding: '18px' }} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-[8px] p-4 text-center flex flex-col gap-1">
+                <p className="microlabel m-0">Precio general</p>
+                <p data-mono className="text-[18px] font-medium text-[var(--ink)] m-0">{fmtPrice(treatment.price)}</p>
               </div>
 
-              <div className="bg-sky-50/40 border border-sky-100 p-4 rounded-2xl text-center space-y-1">
+              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-[8px] p-4 text-center flex flex-col gap-1">
                 <div className="flex items-center justify-center gap-1.5">
-                  <p className="text-[10px] font-bold text-sky-800 uppercase tracking-wider">Arancel Isapre</p>
-                  <Badge variant={treatment.accepts_isapre ? 'success' : 'neutral'} label={treatment.accepts_isapre ? 'Sí' : 'No'} size="sm" />
+                  <p className="microlabel m-0">Arancel Isapre</p>
+                  <Badge variant={treatment.accepts_isapre ? 'success' : 'neutral'} size="sm" dot>
+                    {treatment.accepts_isapre ? 'Sí' : 'No'}
+                  </Badge>
                 </div>
-                <p className="text-lg font-black text-sky-900">${(treatment.price_isapre ?? treatment.price ?? 0).toLocaleString('es-CL')}</p>
+                <p data-mono className="text-[18px] font-medium text-[var(--ink)] m-0">{fmtPrice(treatment.price_isapre ?? treatment.price)}</p>
               </div>
 
-              <div className="bg-emerald-50/40 border border-emerald-100 p-4 rounded-2xl text-center space-y-1">
+              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-[8px] p-4 text-center flex flex-col gap-1">
                 <div className="flex items-center justify-center gap-1.5">
-                  <p className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider">Arancel Fonasa</p>
-                  <Badge variant={treatment.accepts_fonasa ? 'success' : 'neutral'} label={treatment.accepts_fonasa ? 'Sí' : 'No'} size="sm" />
+                  <p className="microlabel m-0">Arancel Fonasa</p>
+                  <Badge variant={treatment.accepts_fonasa ? 'success' : 'neutral'} size="sm" dot>
+                    {treatment.accepts_fonasa ? 'Sí' : 'No'}
+                  </Badge>
                 </div>
-                <p className="text-lg font-black text-emerald-900">${(treatment.price_fonasa ?? treatment.price ?? 0).toLocaleString('es-CL')}</p>
+                <p data-mono className="text-[18px] font-medium text-[var(--ink)] m-0">{fmtPrice(treatment.price_fonasa ?? treatment.price)}</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Right column: Doctors */}
-        <div className="space-y-6">
-          <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-            <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-50 pb-2">
-              <Users size={16} className="text-indigo-500" />
-              Especialistas Habilitados
-            </h2>
-
+        <div data-card>
+          <div data-hd>
+            <h2>Especialistas habilitados</h2>
+          </div>
+          <div style={{ padding: '18px' }}>
             {treatment.doctors?.length === 0 ? (
-              <p className="text-xs text-slate-400 font-medium italic py-2">
+              <p className="text-[12.5px] text-[var(--muted)] m-0">
                 No hay doctores vinculados a este tratamiento.
               </p>
             ) : (
-              <div className="space-y-2">
+              <div className="flex flex-col gap-2">
                 {treatment.doctors?.map((doc) => (
                   <div
                     key={doc.id}
-                    className="flex items-center justify-between p-3 bg-slate-50/80 border border-slate-100 rounded-xl hover:bg-slate-100/60 transition-colors"
+                    className="flex items-center justify-between p-2.5 bg-[var(--surface)] border border-[var(--line)] rounded-[8px]"
                   >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-700 font-black text-xs uppercase">
-                        {doc.name.substring(0, 2)}
-                      </div>
-                      <span className="text-xs font-bold text-slate-700">{doc.name}</span>
-                    </div>
-                    <Badge variant="purple" size="sm" label="Habilitado" />
+                    <span className="flex items-center gap-2.5">
+                      <span style={{ width: '28px', height: '28px', borderRadius: '7px', background: 'var(--head)', border: '1px solid var(--line)', display: 'grid', placeItems: 'center', fontSize: '11px', fontWeight: 600, color: 'var(--ink)' }}>
+                        {getInitials(doc.name)}
+                      </span>
+                      <span className="text-[13px] font-medium text-[var(--ink)]">{doc.name}</span>
+                    </span>
+                    <Badge variant="info" size="sm" dot>Habilitado</Badge>
                   </div>
                 ))}
               </div>
@@ -374,96 +372,91 @@ export default function TreatmentDetailPage() {
         </div>
       </div>
 
-      {/* Offers and Promotions Section */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-50 pb-4">
+      {/* Offers */}
+      <div data-card>
+        <div data-hd>
           <div className="flex items-center gap-2">
-            <Tag size={18} className="text-indigo-600" />
-            <div>
-              <h2 className="text-sm font-bold text-slate-900">Promociones & Ofertas Temporales</h2>
-              <p className="text-[10px] text-slate-400 font-medium">Asocia campañas de descuento o precios especiales válidos en rangos de fechas definidos.</p>
-            </div>
+            <Tag size={15} strokeWidth={1.75} className="text-[var(--blue)]" />
+            <h2>Promociones y ofertas temporales</h2>
           </div>
           {canEdit && (
-            <Button
-              onClick={handleOpenOfferModal}
-              icon={<Plus size={16} />}
-              size="sm"
-              data-testid="add-offer-btn"
-            >
-              Nueva Oferta
-            </Button>
+            <button data-btn="primary" onClick={handleOpenOfferModal} data-testid="add-offer-btn">
+              <Plus size={14} strokeWidth={1.9} />
+              Nueva oferta
+            </button>
           )}
         </div>
 
-        {/* List of Offers */}
-        {!treatment.offers || treatment.offers.length === 0 ? (
-          <div className="py-8 text-center bg-slate-50/40 border border-dashed border-slate-200 rounded-2xl max-w-xl mx-auto flex flex-col items-center gap-2">
-            <Tag size={32} className="text-slate-300" />
-            <p className="text-xs font-bold text-slate-500">Sin promociones activas</p>
-            <p className="text-[10px] text-slate-400">
-              Configura ofertas para este tratamiento para campañas o temporadas específicas.
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {treatment.offers.map((offer) => (
-              <div
-                key={offer.id}
-                className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between gap-4 relative group overflow-hidden"
-                data-testid={`offer-card-${offer.id}`}
-              >
-                {/* Decorative Side Tag */}
-                <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500" />
+        <div style={{ padding: '18px' }}>
+          {!treatment.offers || treatment.offers.length === 0 ? (
+            <div className="flex flex-col items-center gap-2 py-8 text-center">
+              <div style={{ width: '44px', height: '44px', border: '1px solid var(--line)', borderRadius: '7px', background: 'var(--head)', display: 'grid', placeItems: 'center', color: 'var(--muted)' }}>
+                <Tag size={22} strokeWidth={1.75} />
+              </div>
+              <p className="text-[14.5px] font-semibold text-[var(--ink)] m-0">Sin promociones activas</p>
+              <p className="text-[12.5px] text-[var(--muted)] m-0 max-w-[340px]">
+                Configura ofertas para este tratamiento para campañas o temporadas específicas.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {treatment.offers.map((offer) => (
+                <div
+                  key={offer.id}
+                  className="relative bg-[var(--card)] border border-[var(--line)] rounded-[10px] p-4 pl-5 flex flex-col justify-between gap-3 overflow-hidden"
+                  data-testid={`offer-card-${offer.id}`}
+                >
+                  <div className="absolute top-0 left-0 w-[3px] h-full bg-[var(--blue)]" />
 
-                <div className="space-y-1">
-                  <div className="flex items-start justify-between gap-2">
-                    <h3 className="text-xs font-extrabold text-slate-800 leading-tight">
-                      {offer.label}
-                    </h3>
-                    <div className="flex items-center gap-1 shrink-0">
-                      <Badge
-                        variant={offer.active ? 'success' : 'neutral'}
-                        label={offer.active ? 'Activa' : 'Pausada'}
-                        size="sm"
-                      />
-                      {canEdit && (
-                        <button
-                          onClick={() => handleOpenDeleteModal(offer.id)}
-                          className="p-1 hover:bg-rose-50 hover:text-rose-600 rounded-lg text-slate-400 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
-                          title="Eliminar Oferta"
-                          data-testid={`delete-offer-${offer.id}`}
-                        >
-                          <Trash2 size={13} />
-                        </button>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="text-[13.5px] font-semibold text-[var(--ink)] leading-tight m-0">
+                        {offer.label}
+                      </h3>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <Badge variant={offer.active ? 'success' : 'neutral'} size="sm" dot>
+                          {offer.active ? 'Activa' : 'Pausada'}
+                        </Badge>
+                        {canEdit && (
+                          <button
+                            data-btn
+                            onClick={() => handleOpenDeleteModal(offer.id)}
+                            style={{ width: '26px', height: '26px', padding: 0 }}
+                            title="Eliminar Oferta"
+                            aria-label={`Eliminar ${offer.label}`}
+                            data-testid={`delete-offer-${offer.id}`}
+                          >
+                            <Trash2 size={13} strokeWidth={1.75} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      {offer.discount_pct > 0 && (
+                        <div className="flex items-center gap-1.5 text-[12.5px] text-[var(--blue)] font-medium">
+                          <Percent size={12} />
+                          <span>{offer.discount_pct}% de descuento</span>
+                        </div>
+                      )}
+                      {offer.fixed_price > 0 && (
+                        <div className="flex items-center gap-1.5 text-[12.5px] text-[var(--pos)] font-medium">
+                          <DollarSign size={12} />
+                          <span>Arancel especial: <span data-mono>{fmtPrice(offer.fixed_price)}</span></span>
+                        </div>
                       )}
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-1.5 pt-2">
-                    {offer.discount_pct > 0 && (
-                      <div className="flex items-center gap-1.5 text-xs text-indigo-600 font-bold">
-                        <Percent size={12} />
-                        <span>{offer.discount_pct}% de descuento</span>
-                      </div>
-                    )}
-                    {offer.fixed_price > 0 && (
-                      <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-bold">
-                        <DollarSign size={12} />
-                        <span>Arancel especial: ${offer.fixed_price.toLocaleString('es-CL')}</span>
-                      </div>
-                    )}
+                  <div className="border-t border-[var(--line-soft)] pt-2.5 text-[11px] text-[var(--muted)] flex items-center gap-1.5">
+                    <Calendar size={11} />
+                    <span>Vigencia: <span data-mono>{formatDate(offer.valid_from)} – {formatDate(offer.valid_until)}</span></span>
                   </div>
                 </div>
-
-                <div className="border-t border-slate-50 pt-3 text-[10px] text-slate-400 font-medium flex items-center gap-1">
-                  <Calendar size={11} className="text-slate-300" />
-                  <span>Vigencia: {formatDate(offer.valid_from)} - {formatDate(offer.valid_until)}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* CREATE OFFER MODAL */}
@@ -471,8 +464,23 @@ export default function TreatmentDetailPage() {
         isOpen={isOfferModalOpen}
         onClose={() => setIsOfferModalOpen(false)}
         title="Crear Nueva Promoción"
+        size="lg"
+        footer={
+          <>
+            <Button variant="secondary" type="button" onClick={() => setIsOfferModalOpen(false)}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={() => handleSaveOffer({ preventDefault: () => {} } as React.FormEvent)}
+              loading={createOffer.isPending}
+              icon={<Save size={14} />}
+            >
+              Guardar Promoción
+            </Button>
+          </>
+        }
       >
-        <form onSubmit={handleSaveOffer} className="space-y-4" aria-label="offer-form">
+        <form onSubmit={handleSaveOffer} className="flex flex-col gap-4" aria-label="offer-form">
           <Input
             label="Etiqueta / Nombre de la Campaña"
             placeholder="ej. Descuento Cyber dental, Promo de Invierno"
@@ -527,12 +535,14 @@ export default function TreatmentDetailPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="valid-from" className="text-sm font-semibold text-slate-700 ml-1">
-                Vigente Desde <span className="text-rose-500">*</span>
+              <label htmlFor="valid-from" className="microlabel flex items-center gap-1">
+                Vigente Desde <span className="text-[var(--muted)]">*</span>
               </label>
               <input
                 id="valid-from"
                 type="date"
+                data-inp
+                className="tabular"
                 value={validFrom}
                 onChange={(e) => {
                   setValidFrom(e.target.value)
@@ -542,23 +552,23 @@ export default function TreatmentDetailPage() {
                     return next
                   })
                 }}
-                className={`w-full px-4 py-2.5 bg-white border rounded-xl text-slate-700 text-xs transition-all duration-200 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 ${
-                  errors.validFrom ? 'border-rose-300' : 'border-slate-200'
-                }`}
+                style={{ borderColor: errors.validFrom ? 'var(--neg)' : undefined }}
                 required
               />
               {errors.validFrom && (
-                <p className="text-[10px] font-medium text-rose-500 ml-1 mt-1">{errors.validFrom}</p>
+                <p className="text-[11px] font-medium text-[var(--neg)] mt-0.5">{errors.validFrom}</p>
               )}
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="valid-until" className="text-sm font-semibold text-slate-700 ml-1">
-                Vigente Hasta <span className="text-rose-500">*</span>
+              <label htmlFor="valid-until" className="microlabel flex items-center gap-1">
+                Vigente Hasta <span className="text-[var(--muted)]">*</span>
               </label>
               <input
                 id="valid-until"
                 type="date"
+                data-inp
+                className="tabular"
                 value={validUntil}
                 onChange={(e) => {
                   setValidUntil(e.target.value)
@@ -568,59 +578,54 @@ export default function TreatmentDetailPage() {
                     return next
                   })
                 }}
-                className={`w-full px-4 py-2.5 bg-white border rounded-xl text-slate-700 text-xs transition-all duration-200 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 ${
-                  errors.validUntil ? 'border-rose-300' : 'border-slate-200'
-                }`}
+                style={{ borderColor: errors.validUntil ? 'var(--neg)' : undefined }}
                 required
               />
               {errors.validUntil && (
-                <p className="text-[10px] font-medium text-rose-500 ml-1 mt-1">{errors.validUntil}</p>
+                <p className="text-[11px] font-medium text-[var(--neg)] mt-0.5">{errors.validUntil}</p>
               )}
             </div>
           </div>
 
           {/* Active status */}
-          <div className="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-2xl p-4 mt-2">
-            <div className="flex gap-2.5 items-center">
-              <CheckCircle size={16} className="text-indigo-500" />
-              <div>
-                <p className="text-sm font-bold text-slate-700">Oferta Activa</p>
-                <p className="text-[10px] text-slate-400 font-medium">
-                  Habilita la aplicación de esta promoción en cotizaciones del bot
-                </p>
-              </div>
+          <div className="flex items-center justify-between border border-[var(--line)] bg-[var(--surface)] rounded-[7px] p-3.5">
+            <div>
+              <p className="text-[13px] font-medium text-[var(--ink)] m-0">Oferta activa</p>
+              <p className="text-[12px] text-[var(--muted)] m-0 mt-0.5">
+                Habilita la aplicación de esta promoción en cotizaciones del bot
+              </p>
             </div>
             <button
               type="button"
               aria-label="Toggle Estado Oferta"
               onClick={() => setOfferActive(!offerActive)}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out outline-none focus:ring-2 focus:ring-indigo-100 focus:ring-offset-1 ${
-                offerActive ? 'bg-indigo-600' : 'bg-slate-200'
-              }`}
+              style={{
+                width: '38px',
+                height: '22px',
+                borderRadius: '999px',
+                border: '1px solid var(--line)',
+                background: offerActive ? 'var(--blue)' : 'var(--surface-2)',
+                position: 'relative',
+                cursor: 'pointer',
+                padding: 0,
+                transition: 'background-color .15s',
+                flexShrink: 0,
+              }}
             >
               <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                  offerActive ? 'translate-x-5' : 'translate-x-0'
-                }`}
+                style={{
+                  position: 'absolute',
+                  top: '2px',
+                  left: offerActive ? '18px' : '2px',
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '50%',
+                  background: '#FFFFFF',
+                  transition: 'left .15s',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.15)',
+                }}
               />
             </button>
-          </div>
-
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-50">
-            <Button
-              variant="secondary"
-              type="button"
-              onClick={() => setIsOfferModalOpen(false)}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              loading={createOffer.isPending}
-              icon={<Save size={16} />}
-            >
-              Guardar Promoción
-            </Button>
           </div>
         </form>
       </Modal>
@@ -630,33 +635,29 @@ export default function TreatmentDetailPage() {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         title="Confirmar Eliminación"
-      >
-        <div className="space-y-4">
-          <div className="flex items-start gap-3 p-4 bg-rose-50 border border-rose-100 rounded-2xl text-rose-700 text-sm">
-            <AlertCircle size={20} className="shrink-0 mt-0.5 text-rose-500" />
-            <div>
-              <p className="font-bold">¿Deseas desvincular esta promoción?</p>
-              <p className="text-xs text-rose-600 mt-1 leading-relaxed">
-                Esta acción eliminará el descuento y arancel especial asociado a este tratamiento de forma permanente.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-3 pt-2">
-            <Button
-              variant="secondary"
-              onClick={() => setIsDeleteModalOpen(false)}
-            >
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setIsDeleteModalOpen(false)}>
               Cancelar
             </Button>
             <Button
               variant="danger"
               onClick={handleDeleteOfferConfirm}
               loading={deleteOffer.isPending}
-              icon={<Trash2 size={16} />}
+              icon={<Trash2 size={14} />}
             >
               Eliminar Promoción
             </Button>
+          </>
+        }
+      >
+        <div className="flex items-start gap-3 p-3.5 bg-[var(--surface)] border border-[var(--line)] rounded-[7px]">
+          <AlertCircle size={20} className="shrink-0 mt-0.5 text-[var(--neg)]" />
+          <div>
+            <p className="text-[13.5px] font-medium text-[var(--ink)] m-0">¿Deseas desvincular esta promoción?</p>
+            <p className="text-[12.5px] text-[var(--muted)] mt-1 leading-relaxed m-0">
+              Esta acción eliminará el descuento y arancel especial asociado a este tratamiento de forma permanente.
+            </p>
           </div>
         </div>
       </Modal>

@@ -2,442 +2,318 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { AlertCircle, Users, ArrowRight, Plus, Mail, Shield, Save, UserMinus, UserCheck, Key } from 'lucide-react'
+import { AlertCircle, Plus, ArrowRight, X } from 'lucide-react'
 import { useAuthStore } from '@/lib/stores/auth.store'
-import { useUIStore } from '@/lib/stores/ui.store'
-import { 
-  useUsers, 
-  useInviteUser, 
-  useUpdateUser, 
-  useDeleteUser, 
-  useRoles 
+import {
+  useUsers,
+  useRoles,
+  useInviteUser,
+  useUpdateUser,
+  useDeleteUser,
 } from '@/lib/api/hooks/use-users-roles'
 import { UsersTable } from '@/components/features/users/UsersTable'
-import { Modal } from '@/components/ui/Modal'
-import { Input } from '@/components/ui/Input'
-import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
 import { IUser } from '@/lib/types'
 
 export default function UsersPage() {
   const { hasPermission } = useAuthStore()
-  const addToast = useUIStore((state) => state.addToast)
 
-  // API Query Hooks
-  const { data: users, isLoading: usersLoading, isError: usersError, refetch: refetchUsers } = useUsers()
-  const { data: roles, isLoading: rolesLoading } = useRoles()
+  // Permissions check
+  const canView = hasPermission('users.view')
+  const canEdit = hasPermission('users.edit')
+  const canCreate = hasPermission('users.create') || hasPermission('users.edit')
+  const canDelete = hasPermission('users.delete')
 
-  // API Mutation Hooks
+  // API hooks
+  const { data: users = [], isLoading: loadingUsers, isError: errorUsers } = useUsers()
+  const { data: roles = [] } = useRoles()
   const inviteMutation = useInviteUser()
   const updateMutation = useUpdateUser()
   const deleteMutation = useDeleteUser()
 
-  // Modal control states
+  // State for modals
   const [isInviteOpen, setIsInviteOpen] = useState(false)
-  const [isEditOpen, setIsEditOpen] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<IUser | null>(null)
-
-  // Form states
-  const [emailInput, setEmailInput] = useState('')
-  const [roleInput, setRoleInput] = useState('')
-  const [passwordInput, setPasswordInput] = useState('')
-  const [errors, setErrors] = useState<{ email?: string; role?: string; password?: string }>({})
-
-  // Permission checks
-  const canView = hasPermission('users.view')
-  const canCreate = hasPermission('users.create')
-  const canEdit = hasPermission('users.edit')
-  const canDelete = hasPermission('users.delete')
+  const [editingUser, setEditingUser] = useState<IUser | null>(null)
+  const [inviteEmail, setInviteEmail] = useState('')
+  const [inviteRoleId, setInviteRoleId] = useState('')
+  const [editRoleId, setEditRoleId] = useState('')
+  const [editPassword, setEditPassword] = useState('')
+  const [deletingUser, setDeletingUser] = useState<IUser | null>(null)
 
   if (!canView) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-slate-50/50 min-h-[calc(100vh-10rem)]">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-          className="bg-white border border-slate-100 rounded-3xl p-8 max-w-md w-full text-center shadow-xl shadow-slate-100/50"
+      <div className="flex flex-col items-center justify-center p-8 bg-[var(--card)] border border-[var(--line)] rounded-[10px] min-h-[380px] max-w-md mx-auto text-center shadow-[0_1px_2px_rgba(20,20,25,0.05)]">
+        <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
+          <AlertCircle size={22} />
+        </div>
+        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
+        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+          No tienes los permisos necesarios para gestionar los usuarios del sistema. Por favor contacta al administrador.
+        </p>
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[13px] transition-opacity gap-2"
         >
-          <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 mx-auto mb-6">
-            <AlertCircle size={32} />
-          </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Acceso Denegado</h2>
-          <p className="text-slate-500 text-sm mb-6">
-            No tienes los permisos necesarios para ver o modificar los usuarios y roles de la clínica. Por favor contacta al administrador.
-          </p>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center justify-center px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold rounded-xl text-xs uppercase tracking-wider transition-colors gap-2"
-          >
-            Ir al Dashboard
-            <ArrowRight size={14} />
-          </Link>
-        </motion.div>
+          Ir al Dashboard
+          <ArrowRight size={14} />
+        </Link>
       </div>
     )
   }
 
-  // Handle Invite Submit
   const handleInviteSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
-    // Validation
-    const newErrors: typeof errors = {}
-    if (!emailInput.trim()) {
-      newErrors.email = 'El correo electrónico es requerido'
-    } else {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(emailInput)) {
-        newErrors.email = 'El formato del correo electrónico no es válido'
-      }
-    }
-    if (!roleInput) {
-      newErrors.role = 'Debes seleccionar un rol para el usuario'
-    }
+    if (!inviteEmail || !inviteRoleId) return
 
-    setErrors(newErrors)
-    if (Object.keys(newErrors).length > 0) return
+    await inviteMutation.mutateAsync({
+      email: inviteEmail,
+      roleId: inviteRoleId,
+    })
 
-    try {
-      await inviteMutation.mutateAsync({
-        email: emailInput,
-        roleId: roleInput,
-      })
-      addToast({
-        title: 'Usuario invitado',
-        message: `Se ha enviado la invitación a ${emailInput}`,
-        type: 'success',
-      })
-      // Reset & close
-      setIsInviteOpen(false)
-      setEmailInput('')
-      setRoleInput('')
-    } catch (err: any) {
-      addToast({
-        title: 'Error al invitar',
-        message: err?.message || 'No se pudo invitar al usuario',
-        type: 'error',
-      })
-    }
+    setIsInviteOpen(false)
+    setInviteEmail('')
+    setInviteRoleId('')
   }
 
-  // Handle Edit Submit (role change)
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!selectedUser) return
+    if (!editingUser || !editRoleId) return
 
-    if (!roleInput) {
-      setErrors({ role: 'Debes seleccionar un rol para el usuario' })
-      return
-    }
+    await updateMutation.mutateAsync({
+      id: editingUser.id,
+      roleId: editRoleId,
+      ...(editPassword ? { password: editPassword } : {}),
+    })
 
-    if (passwordInput.trim() !== '' && passwordInput.length < 6) {
-      setErrors({ password: 'La contraseña debe tener al menos 6 caracteres' })
-      return
-    }
-
-    try {
-      await updateMutation.mutateAsync({
-        id: selectedUser.id,
-        roleId: roleInput,
-        ...(passwordInput.trim() !== '' ? { password: passwordInput } : {}),
-      })
-      addToast({
-        title: 'Usuario actualizado',
-        message: `Se ha actualizado la información de ${selectedUser.email}`,
-        type: 'success',
-      })
-      setIsEditOpen(false)
-      setSelectedUser(null)
-      setRoleInput('')
-      setPasswordInput('')
-      setErrors({})
-    } catch (err: any) {
-      addToast({
-        title: 'Error al actualizar',
-        message: err?.message || 'No se pudo actualizar el usuario',
-        type: 'error',
-      })
-    }
+    setEditingUser(null)
+    setEditRoleId('')
+    setEditPassword('')
   }
 
-  // Handle Toggle Active/Inactive state
-  const handleToggleActive = async (user: IUser) => {
-    try {
-      await updateMutation.mutateAsync({
-        id: user.id,
-        active: !user.active,
-      })
-      addToast({
-        title: user.active ? 'Usuario desactivado' : 'Usuario activado',
-        message: `El usuario ${user.email} ha sido ${user.active ? 'desactivado' : 'activado'} con éxito.`,
-        type: 'success',
-      })
-    } catch (err: any) {
-      addToast({
-        title: 'Error al actualizar estado',
-        message: err?.message || 'No se pudo actualizar el estado del usuario',
-        type: 'error',
-      })
-    }
+  const handleDeleteConfirm = () => {
+    if (!deletingUser) return
+    deleteMutation.mutate(deletingUser.id, {
+      onSuccess: () => setDeletingUser(null),
+    })
   }
 
-  // Handle Delete User
-  const handleDeleteUser = async (id: string) => {
-    if (!confirm('¿Estás seguro de que deseas eliminar este usuario permanentemente?')) return
-
-    try {
-      await deleteMutation.mutateAsync(id)
-      addToast({
-        title: 'Usuario eliminado',
-        message: 'El usuario ha sido eliminado correctamente.',
-        type: 'success',
-      })
-    } catch (err: any) {
-      addToast({
-        title: 'Error al eliminar',
-        message: err?.message || 'No se pudo eliminar el usuario',
-        type: 'error',
-      })
-    }
+  const handleToggleActive = (user: IUser) => {
+    updateMutation.mutate({
+      id: user.id,
+      active: !user.active,
+    })
   }
 
-  // Open Edit Dialog
-  const openEditDialog = (user: IUser) => {
-    setSelectedUser(user)
-    setRoleInput(user.role?.id || '')
-    setPasswordInput('')
-    setIsEditOpen(true)
-    setErrors({})
-  }
-
-  // Loading indicator for queries
-  const isLoading = usersLoading || rolesLoading
-  const isMutating = inviteMutation.isPending || updateMutation.isPending || deleteMutation.isPending
+  const isMutating =
+    inviteMutation.isPending ||
+    updateMutation.isPending ||
+    deleteMutation.isPending
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto p-4 md:p-6 lg:p-8 animate-in fade-in duration-300">
-      {/* Premium Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-            <Users size={22} />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-slate-900 leading-tight">Usuarios & Accesos</h1>
-            <p className="text-xs text-slate-400 font-medium tracking-wide uppercase mt-0.5">
-              Gestiona el personal de la clínica y sus niveles de acceso
-            </p>
-          </div>
+    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+      {/* Header Bar */}
+      <div className="flex items-end justify-between gap-5 flex-wrap pb-4 border-b border-[var(--line)]">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
+            Usuarios & Accesos
+          </h1>
+          <p className="text-[13.5px] text-[var(--muted)]">
+            Gestiona el personal de la clínica y sus niveles de acceso.
+          </p>
         </div>
 
         {canCreate && (
-          <div>
-            <Button
-              variant="primary"
-              size="sm"
-              icon={<Plus size={16} />}
-              onClick={() => {
-                setIsInviteOpen(true)
-                setErrors({})
-                setEmailInput('')
-                setRoleInput(roles?.[0]?.id || '')
-              }}
-              disabled={isLoading}
-              className="font-bold"
-            >
-              Invitar Usuario
-            </Button>
-          </div>
+          <button
+            data-btn="primary"
+            onClick={() => setIsInviteOpen(true)}
+          >
+            <Plus size={14} strokeWidth={1.9} />
+            Invitar usuario
+          </button>
         )}
       </div>
 
-      {/* Main Content */}
-      {isLoading ? (
-        <div className="flex items-center justify-center min-h-[400px]">
-          <Spinner size="lg" />
+      {/* Main Content Area */}
+      {loadingUsers ? (
+        <div className="flex flex-col items-center justify-center min-h-[360px] bg-[var(--card)] border border-[var(--line)] rounded-[10px]">
+          <Spinner size="md" />
+          <span className="microlabel text-[10px] mt-2">Cargando usuarios</span>
         </div>
-      ) : usersError ? (
-        <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-500">
-            <AlertCircle size={26} />
-          </div>
-          <p className="text-sm font-semibold text-slate-700">Error al cargar usuarios</p>
-          <Button variant="outline" size="sm" onClick={() => refetchUsers()}>
-            Reintentar
-          </Button>
+      ) : errorUsers ? (
+        <div className="flex flex-col items-center justify-center min-h-[360px] bg-[var(--card)] border border-[var(--line)] rounded-[10px] p-6 text-center">
+          <AlertCircle size={24} className="text-[var(--neg)] mb-2" />
+          <p className="text-[13.5px] font-semibold text-[var(--ink)]">Error al cargar la lista de usuarios</p>
         </div>
       ) : (
-        <motion.div
-          initial={{ y: 15, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-        >
-          <UsersTable
-            users={users || []}
-            onEdit={openEditDialog}
-            onDelete={handleDeleteUser}
-            onToggleActive={handleToggleActive}
-            readOnly={!canEdit && !canDelete}
-            canEdit={canEdit}
-            canDelete={canDelete}
-            isMutating={isMutating}
-          />
-        </motion.div>
+        <UsersTable
+          users={users}
+          onEdit={(user) => {
+            setEditingUser(user)
+            setEditRoleId(user.role?.id || (user as any).role_id || '')
+            setEditPassword('')
+          }}
+          onDelete={(id) => {
+            const target = users.find((u) => u.id === id)
+            if (target) setDeletingUser(target)
+          }}
+          onToggleActive={handleToggleActive}
+          readOnly={!canEdit && !canDelete}
+          canEdit={canEdit}
+          canDelete={canDelete}
+          isMutating={isMutating}
+        />
       )}
 
-      {/* invite User Modal */}
-      <Modal
-        isOpen={isInviteOpen}
-        onClose={() => setIsInviteOpen(false)}
-        title="Invitar Nuevo Usuario"
-      >
-        <form onSubmit={handleInviteSubmit} className="space-y-5">
-          <Input
-            label="Correo Electrónico"
-            placeholder="Ej: doctor@deviaty.com"
-            type="email"
-            value={emailInput}
-            onChange={setEmailInput}
-            error={errors.email}
-            leftIcon={<Mail size={16} />}
-            required
-          />
-
-          <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="invite-role-select"
-              className="text-sm font-semibold text-slate-700 ml-1 flex items-center gap-1"
-            >
-              <Shield size={16} className="text-slate-400" />
-              Rol de Seguridad
-              <span className="text-rose-500">*</span>
-            </label>
-            <select
-              id="invite-role-select"
-              value={roleInput}
-              onChange={(e) => setRoleInput(e.target.value)}
-              className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-700 transition-all duration-200 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 hover:border-slate-300 cursor-pointer text-sm"
-            >
-              <option value="">Selecciona un rol...</option>
-              {roles?.map((r) => (
-                <option key={r.id} value={r.id}>
-                  {r.name}
-                </option>
-              ))}
-            </select>
-            {errors.role && <p className="text-xs text-rose-600 mt-1 ml-1">{errors.role}</p>}
+      {/* Invite Modal */}
+      {isInviteOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 60, display: 'grid', placeItems: 'center', padding: '24px' }}>
+          <div onClick={() => setIsInviteOpen(false)} style={{ position: 'absolute', inset: 0, background: 'rgba(33,33,33,.45)', backdropFilter: 'blur(2px)' }} />
+          <div role="dialog" aria-modal="true" data-card style={{ position: 'relative', width: '100%', maxWidth: '420px', boxShadow: '0 24px 60px rgba(0,0,0,.18)' }}>
+            <div data-hd>
+              <h2>Invitar nuevo usuario</h2>
+              <button data-btn onClick={() => setIsInviteOpen(false)} style={{ width: '28px', height: '28px', padding: 0, borderColor: 'transparent', background: 'none' }}>
+                <X size={15} strokeWidth={1.75} />
+              </button>
+            </div>
+            <form onSubmit={handleInviteSubmit}>
+              <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div data-field>
+                  <label htmlFor="inv-mail">Correo electrónico *</label>
+                  <input
+                    id="inv-mail"
+                    data-inp
+                    type="email"
+                    placeholder="ejemplo@clinica.com"
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div data-field>
+                  <label htmlFor="inv-role">Rol de seguridad *</label>
+                  <select
+                    id="inv-role"
+                    data-inp
+                    aria-label="Rol de Seguridad"
+                    value={inviteRoleId}
+                    onChange={(e) => setInviteRoleId(e.target.value)}
+                    required
+                  >
+                    <option value="" disabled>Selecciona un rol...</option>
+                    {roles.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {r.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <p style={{ margin: 0, fontSize: '12px', lineHeight: 1.55, color: 'var(--muted)' }}>
+                  El usuario recibirá un enlace para establecer su contraseña y activar la cuenta.
+                </p>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '9px', padding: '13px 18px', borderTop: '1px solid var(--line)', background: 'var(--surface)' }}>
+                <button data-btn type="button" onClick={() => setIsInviteOpen(false)}>Cancelar</button>
+                <button data-btn="primary" type="submit" disabled={inviteMutation.isPending}>Enviar invitación</button>
+              </div>
+            </form>
           </div>
+        </div>
+      )}
 
-          <div className="flex justify-end pt-4 gap-3 border-t border-slate-100">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setIsInviteOpen(false)}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              size="sm"
-              loading={inviteMutation.isPending}
-            >
-              Enviar Invitación
-            </Button>
+      {/* Edit Role Modal */}
+      {editingUser && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 60, display: 'grid', placeItems: 'center', padding: '24px' }}>
+          <div onClick={() => setEditingUser(null)} style={{ position: 'absolute', inset: 0, background: 'rgba(33,33,33,.45)', backdropFilter: 'blur(2px)' }} />
+          <div role="dialog" aria-modal="true" data-card style={{ position: 'relative', width: '100%', maxWidth: '420px', boxShadow: '0 24px 60px rgba(0,0,0,.18)' }}>
+            <div data-hd>
+              <h2>Editar Usuario</h2>
+              <button data-btn onClick={() => setEditingUser(null)} style={{ width: '28px', height: '28px', padding: 0, borderColor: 'transparent', background: 'none' }}>
+                <X size={15} strokeWidth={1.75} />
+              </button>
+            </div>
+            <form onSubmit={handleEditSubmit}>
+              <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div data-field>
+                  <label>Usuario</label>
+                  <p style={{ margin: 0, fontFamily: 'var(--font-geist-mono)', fontSize: '13px', color: 'var(--ink)', background: 'var(--surface)', padding: '8px 12px', borderRadius: '7px', border: '1px solid var(--line)' }}>
+                    {editingUser?.email}
+                  </p>
+                </div>
+                <div data-field>
+                  <label htmlFor="edit-role">Rol de seguridad *</label>
+                  <select
+                    id="edit-role"
+                    data-inp
+                    aria-label="Rol de Seguridad"
+                    value={editRoleId}
+                    onChange={(e) => setEditRoleId(e.target.value)}
+                    required
+                  >
+                    <option value="" disabled>Selecciona un rol...</option>
+                    {roles.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {r.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div data-field>
+                  <label htmlFor="edit-pass">Nueva contraseña (Opcional)</label>
+                  <input
+                    id="edit-pass"
+                    data-inp
+                    type="password"
+                    placeholder="Dejar en blanco para mantener actual"
+                    value={editPassword}
+                    onChange={(e) => setEditPassword(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '9px', padding: '13px 18px', borderTop: '1px solid var(--line)', background: 'var(--surface)' }}>
+                <button data-btn type="button" onClick={() => setEditingUser(null)}>Cancelar</button>
+                <button data-btn="primary" type="submit" disabled={updateMutation.isPending}>Guardar cambios</button>
+              </div>
+            </form>
           </div>
-        </form>
-      </Modal>
+        </div>
+      )}
 
-      {/* Edit User Modal */}
-      <Modal
-        isOpen={isEditOpen}
-        onClose={() => {
-          setIsEditOpen(false)
-          setSelectedUser(null)
-        }}
-        title="Editar Usuario"
-      >
-        <form onSubmit={handleEditSubmit} className="space-y-5">
-          <div>
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">
-              Usuario
-            </span>
-            <p className="text-sm font-bold text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5">
-              {selectedUser?.email}
-            </p>
+      {/* Delete Confirmation Modal */}
+      {deletingUser && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 60, display: 'grid', placeItems: 'center', padding: '24px' }}>
+          <div onClick={() => setDeletingUser(null)} style={{ position: 'absolute', inset: 0, background: 'rgba(33,33,33,.45)', backdropFilter: 'blur(2px)' }} />
+          <div role="dialog" aria-modal="true" data-card style={{ position: 'relative', width: '100%', maxWidth: '420px', boxShadow: '0 24px 60px rgba(0,0,0,.18)' }}>
+            <div data-hd>
+              <h2>Eliminar usuario</h2>
+              <button data-btn onClick={() => setDeletingUser(null)} style={{ width: '28px', height: '28px', padding: 0, borderColor: 'transparent', background: 'none' }}>
+                <X size={15} strokeWidth={1.75} />
+              </button>
+            </div>
+            <div style={{ padding: '18px' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px', background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: '7px' }}>
+                <AlertCircle size={20} style={{ color: 'var(--neg)', flexShrink: 0, marginTop: '2px' }} />
+                <div>
+                  <p style={{ margin: 0, fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>¿Estás seguro de eliminar este usuario?</p>
+                  <p style={{ margin: '4px 0 0', fontSize: '12.5px', lineHeight: 1.55, color: 'var(--muted)' }}>
+                    Se revocará el acceso de <strong style={{ color: 'var(--ink)' }}>{deletingUser.email}</strong> al panel de forma permanente. Esta acción no se puede deshacer.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '9px', padding: '13px 18px', borderTop: '1px solid var(--line)', background: 'var(--surface)' }}>
+              <button data-btn type="button" onClick={() => setDeletingUser(null)}>Cancelar</button>
+              <button
+                type="button"
+                onClick={handleDeleteConfirm}
+                disabled={deleteMutation.isPending}
+                className="h-8 px-3.5 inline-flex items-center gap-2 rounded-[7px] text-[13px] font-medium border border-[var(--line)] text-[var(--neg)] hover:border-[var(--neg)] transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                {deleteMutation.isPending ? 'Eliminando...' : 'Eliminar usuario'}
+              </button>
+            </div>
           </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="edit-role-select"
-              className="text-sm font-semibold text-slate-700 ml-1 flex items-center gap-1"
-            >
-              <Shield size={16} className="text-slate-400" />
-              Rol de Seguridad
-              <span className="text-rose-500">*</span>
-            </label>
-            <select
-              id="edit-role-select"
-              value={roleInput}
-              onChange={(e) => setRoleInput(e.target.value)}
-              className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-700 transition-all duration-200 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 hover:border-slate-300 cursor-pointer text-sm"
-            >
-              <option value="">Selecciona un rol...</option>
-              {roles?.map((r) => (
-                <option key={r.id} value={r.id}>
-                  {r.name}
-                </option>
-              ))}
-            </select>
-            {errors.role && <p className="text-xs text-rose-600 mt-1 ml-1">{errors.role}</p>}
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="edit-password-input"
-              className="text-sm font-semibold text-slate-700 ml-1 flex items-center gap-1"
-            >
-              <Key size={16} className="text-slate-400" />
-              Nueva Contraseña (Opcional)
-            </label>
-            <input
-              id="edit-password-input"
-              type="password"
-              placeholder="Deja en blanco para no cambiarla"
-              value={passwordInput}
-              onChange={(e) => setPasswordInput(e.target.value)}
-              className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-700 transition-all duration-200 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 hover:border-slate-300 text-sm"
-            />
-            {errors.password && <p className="text-xs text-rose-600 mt-1 ml-1">{errors.password}</p>}
-          </div>
-
-          <div className="flex justify-end pt-4 gap-3 border-t border-slate-100">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setIsEditOpen(false)
-                setSelectedUser(null)
-              }}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              size="sm"
-              icon={<Save size={16} />}
-              loading={updateMutation.isPending}
-            >
-              Guardar Cambios
-            </Button>
-          </div>
-        </form>
-      </Modal>
+        </div>
+      )}
     </div>
   )
 }

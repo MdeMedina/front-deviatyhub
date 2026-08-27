@@ -11,19 +11,19 @@ describe('UI Atoms — Badge', () => {
   it('successfully applies the correct variant classes (success check)', () => {
     const { container } = render(<Badge label="Success" variant="success" />)
     const badge = container.firstChild as HTMLElement
-    expect(badge.className).toContain('bg-emerald-50')
-    expect(badge.className).toContain('text-emerald-700')
+    expect(badge.className).toContain('border-[var(--line)]')
+    expect(badge.className).toContain('bg-[var(--surface)]')
   })
 
   it('renders the dot indicator when the dot prop is true', () => {
     const { container } = render(<Badge label="Warning" variant="warning" dot />)
-    const dot = container.querySelector('.rounded-full.bg-amber-500')
+    const dot = container.querySelector('.rounded-full.bg-\\[var\\(--muted\\)\\]')
     expect(dot).toBeInTheDocument()
   })
 
   it('applies smaller size classes when size is sm', () => {
     const { container } = render(<Badge label="Small" variant="info" size="sm" />)
     const badge = container.firstChild as HTMLElement
-    expect(badge.className).toContain('text-[10px]')
+    expect(badge.className).toContain('text-[10.5px]')
   })
 })

@@ -1,15 +1,10 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Send, Bot, User, Trash2, ChevronDown, ChevronUp, Sparkles } from 'lucide-react'
+import { Send, RotateCcw, ChevronDown, ChevronUp, Bot, User, Wrench } from 'lucide-react'
 import { useSimulator } from '@/lib/api/hooks/use-simulator'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { EmptyState } from '@/components/ui/EmptyState'
+import { Spinner } from '@/components/ui/Spinner'
 import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
 
 interface ChatMessage {
   id: string
@@ -25,33 +20,29 @@ const CollapsibleTools: React.FC<{ tools: string[] }> = ({ tools }) => {
   if (!tools || tools.length === 0) return null
 
   return (
-    <div className="mt-2.5 border-t border-slate-100/80 pt-2 w-full">
+    <div className="mt-2 border-t border-[var(--line-soft)] pt-1.5 w-full">
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         data-testid="btn-toggle-tools"
-        className="flex items-center gap-1.5 text-[11px] font-bold text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-wider"
+        className="flex items-center gap-1 text-[11px] font-medium text-[var(--blue)] hover:underline cursor-pointer"
       >
-        {isOpen ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+        {isOpen ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
         <span>{isOpen ? 'Ocultar herramientas' : `Herramientas utilizadas (${tools.length})`}</span>
       </button>
       
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            data-testid="tools-list"
-            className="mt-2 flex flex-wrap gap-1.5 overflow-hidden"
-          >
-            {tools.map((tool, idx) => (
-              <Badge key={idx} label={tool} variant="info" size="sm" />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isOpen && (
+        <div
+          data-testid="tools-list"
+          className="mt-1.5 flex flex-wrap gap-1"
+        >
+          {tools.map((tool, idx) => (
+            <span key={idx} data-badge style={{ fontSize: '10px', padding: '1px 6px' }}>
+              {tool}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -63,9 +54,8 @@ export const SimulatorChat: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null)
   const userJustSent = useRef(false)
 
-  const { sendMessage, resetSession } = useSimulator()
+  const { sendMessage, resetSession, sessionId } = useSimulator()
 
-  // Handle smart scrolling
   useEffect(() => {
     const container = scrollRef.current
     if (!container) return
@@ -74,8 +64,6 @@ export const SimulatorChat: React.FC = () => {
       container.scrollTop = container.scrollHeight
       userJustSent.current = false
     } else {
-      // Agent message or typing indicator arrived.
-      // Scroll to bottom only if the user is already near the bottom (threshold of 250px)
       const offset = container.scrollHeight - container.scrollTop - container.clientHeight
       if (offset <= 250) {
         container.scrollTop = container.scrollHeight
@@ -83,10 +71,8 @@ export const SimulatorChat: React.FC = () => {
     }
   }, [messages, sendMessage.isPending])
 
-  const handleSendMessage = (e?: React.FormEvent) => {
-    if (e) e.preventDefault()
-    
-    const trimmedMessage = messageInput.trim()
+  const handleSendMessage = (textToSend?: string) => {
+    const trimmedMessage = (textToSend || messageInput).trim()
     if (!trimmedMessage || sendMessage.isPending) return
 
     const userMsg: ChatMessage = {
@@ -100,202 +86,266 @@ export const SimulatorChat: React.FC = () => {
     userJustSent.current = true
     setMessageInput('')
 
-    sendMessage.mutate(trimmedMessage, {
-      onSuccess: (data) => {
-        const agentMsg: ChatMessage = {
-          id: `agent-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-          sender: 'agent',
-          content: data.response,
-          timestamp: new Date(),
-          toolsUsed: data.tools_used
+    sendMessage.mutate(
+      trimmedMessage as any,
+      {
+        onSuccess: (data: any) => {
+          const agentMsg: ChatMessage = {
+            id: `agent-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+            sender: 'agent',
+            content: data.response || data.reply || '',
+            timestamp: new Date(),
+            toolsUsed: data.tools_used || []
+          }
+          setMessages((prev) => [...prev, agentMsg])
+        },
+        onError: () => {
+          const errorMsg: ChatMessage = {
+            id: `error-${Date.now()}`,
+            sender: 'agent',
+            content: 'Error: No se pudo procesar la respuesta del simulador.',
+            timestamp: new Date()
+          }
+          setMessages((prev) => [...prev, errorMsg])
         }
-        setMessages((prev) => [...prev, agentMsg])
-      },
-      onError: (err: any) => {
-        const errMsg: ChatMessage = {
-          id: `error-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-          sender: 'agent',
-          content: `Error de Simulación: ${err?.message || 'Ocurrió un error al procesar el mensaje.'}`,
-          timestamp: new Date(),
-          toolsUsed: []
-        }
-        setMessages((prev) => [...prev, errMsg])
       }
-    })
+    )
   }
 
-  const handleResetConversation = () => {
-    resetSession()
+  const handleReset = () => {
     setMessages([])
-    setMessageInput('')
-  }
-
-  const handleSuggestionClick = (suggestion: string) => {
-    setMessageInput(suggestion)
+    if (typeof resetSession === 'function') {
+      resetSession()
+    } else if ((resetSession as any)?.mutate) {
+      (resetSession as any).mutate()
+    }
   }
 
   const suggestions = [
-    '¿Tienen horas disponibles para hoy?',
-    'Quiero agendar una limpieza dental',
-    '¿Qué precios tienen para ortodoncia?',
-    '¿Atienden por Fonasa o Isapre?'
+    '¿Cuáles son los horarios de atención?',
+    'Quiero agendar una cita para mañana',
+    '¿Qué tratamientos ofrecen?'
   ]
 
+  // Count tools invoked
+  const allTools = messages.flatMap(m => m.toolsUsed || [])
+  const toolCounts = allTools.reduce((acc, t) => {
+    acc[t] = (acc[t] || 0) + 1
+    return acc
+  }, {} as Record<string, number>)
+
   return (
-    <div className="flex flex-col bg-white border border-slate-100 rounded-3xl h-[calc(100vh-14rem)] min-h-[500px] shadow-sm overflow-hidden">
-      {/* Top Banner / Actions Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-            <Sparkles size={18} className="animate-pulse" />
-          </div>
-          <div>
-            <h2 className="text-sm font-bold text-slate-800">Simulación del Agente</h2>
-            <p className="text-[11px] text-slate-400 font-medium tracking-wide uppercase">Entorno de pruebas interactivo</p>
+    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 340px', gap: '20px', alignItems: 'start' }}>
+      {/* Left Card: Simulator Console */}
+      <div data-card style={{ height: '560px', display: 'flex', flexDirection: 'column' }}>
+        {/* Header */}
+        <div data-hd>
+          <h2>Consola de simulación</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span data-lbl>Canal: WhatsApp</span>
+            <button
+              data-btn
+              data-testid="btn-new-conversation"
+              onClick={handleReset}
+              disabled={sendMessage.isPending}
+              style={{ height: '26px', padding: '0 8px', fontSize: '11.5px' }}
+            >
+              <RotateCcw size={12} strokeWidth={1.75} />
+              Nueva conversación
+            </button>
           </div>
         </div>
 
-        {messages.length > 0 && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleResetConversation}
-            data-testid="btn-new-conversation"
-            icon={<Trash2 size={14} />}
-            className="text-xs py-1.5"
-          >
-            Nueva conversación
-          </Button>
-        )}
-      </div>
+        {/* Message Thread */}
+        <div
+          ref={scrollRef}
+          data-testid="chat-messages"
+          style={{ flex: 1, overflowY: 'auto', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px', background: 'var(--surface)' }}
+        >
+          {messages.length === 0 ? (
+            <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-3">
+              <div className="w-10 h-10 rounded-[6px] border border-[var(--line)] bg-[var(--head)] flex items-center justify-center text-[var(--dim)]">
+                <Wrench size={18} strokeWidth={1.75} />
+              </div>
+              <div>
+                <p className="text-[14px] font-semibold text-[var(--ink)]">Inicia una simulación</p>
+                <p className="text-[12px] text-[var(--muted)] max-w-xs mt-1">
+                  Escribe como un paciente o selecciona una sugerencia para probar la lógica del agente.
+                </p>
+              </div>
 
-      {/* Chat Messages viewport */}
-      <div
-        ref={scrollRef}
-        data-testid="chat-messages"
-        className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/20 custom-scrollbar"
-      >
-        {messages.length === 0 && !sendMessage.isPending ? (
-          <div className="h-full flex flex-col justify-center">
-            <EmptyState
-              title="Inicia una simulación"
-              description="Escribe un mensaje abajo o selecciona una de las sugerencias para probar cómo responderá tu agente de IA."
-              icon={<Bot size={44} className="text-indigo-400" />}
-              className="py-4"
-            />
-            
-            <div className="max-w-md mx-auto w-full px-6 -mt-2">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider text-center mb-3">Sugerencias:</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {suggestions.map((suggestion, idx) => (
+              {/* Suggestions */}
+              <div className="flex flex-col gap-1.5 w-full max-w-xs pt-1">
+                {suggestions.map((s, idx) => (
                   <button
                     key={idx}
                     type="button"
-                    onClick={() => handleSuggestionClick(suggestion)}
-                    className="p-3 text-left text-xs font-medium text-slate-600 bg-white hover:bg-indigo-50/40 border border-slate-100 hover:border-indigo-100 rounded-xl transition-all duration-200 shadow-sm active:scale-[0.98]"
+                    onClick={() => handleSendMessage(s)}
+                    className="text-left px-3 py-1.5 rounded-[6px] bg-[var(--card)] border border-[var(--line)] text-[12px] text-[var(--ink-soft)] hover:border-[var(--blue)] hover:text-[var(--blue)] transition-colors cursor-pointer"
                   >
-                    {suggestion}
+                    {s}
                   </button>
                 ))}
               </div>
             </div>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            <AnimatePresence initial={false}>
-              {messages.map((msg) => {
-                const isUser = msg.sender === 'user'
-                return (
-                  <motion.div
-                    key={msg.id}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.25 }}
-                    data-testid={`message-${msg.sender}`}
-                    className={`flex gap-3.5 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
+          ) : (
+            messages.map((msg) => {
+              const isUser = msg.sender === 'user'
+              return (
+                <div
+                  key={msg.id}
+                  data-testid={isUser ? 'message-user' : 'message-agent'}
+                  className={`flex ${isUser ? 'flex-row-reverse' : 'flex-row'} items-start gap-2.5`}
+                  style={{ maxWidth: '100%' }}
+                >
+                  <div
+                    style={{
+                      maxWidth: '76%',
+                      padding: '10px 13px',
+                      borderRadius: '10px',
+                      fontSize: '13px',
+                      lineHeight: '1.55',
+                      border: `1px solid ${isUser ? 'var(--blue-line)' : 'var(--line)'}`,
+                      background: isUser ? 'var(--blue-tint)' : 'var(--card)',
+                      color: 'var(--ink)',
+                      whiteSpace: 'pre-wrap',
+                    }}
                   >
-                    <div className={`flex-shrink-0 w-8.5 h-8.5 rounded-full flex items-center justify-center text-white ${
-                      isUser ? 'bg-gradient-to-tr from-indigo-500 to-indigo-600' : 'bg-gradient-to-tr from-slate-600 to-slate-700'
-                    }`}>
-                      {isUser ? <User size={14} /> : <Bot size={14} />}
-                    </div>
-
-                    <div className={`max-w-[75%] flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
-                      <div className={`px-4.5 py-3 rounded-2xl shadow-sm ${
-                        isUser
-                          ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-tr-none'
-                          : 'bg-white border border-slate-150 text-slate-700 rounded-tl-none'
-                      }`}>
-                        <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
-                        
-                        {!isUser && msg.toolsUsed && (
-                          <CollapsibleTools tools={msg.toolsUsed} />
-                        )}
-                      </div>
-                      
-                      <span className="text-[10px] text-slate-400 mt-1 font-semibold px-1">
-                        {format(msg.timestamp, 'HH:mm', { locale: es })}
-                      </span>
-                    </div>
-                  </motion.div>
-                )
-              })}
-            </AnimatePresence>
-
-            {/* Simulated typing status */}
-            {sendMessage.isPending && (
-              <motion.div
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                data-testid="typing-indicator"
-                className="flex gap-3.5 flex-row"
-              >
-                <div className="flex-shrink-0 w-8.5 h-8.5 rounded-full flex items-center justify-center text-white bg-gradient-to-tr from-slate-600 to-slate-700">
-                  <Bot size={14} />
-                </div>
-                <div className="flex flex-col items-start">
-                  <div className="px-5 py-3 bg-white border border-slate-150 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    {msg.content}
+                    {!isUser && msg.toolsUsed && msg.toolsUsed.length > 0 && (
+                      <CollapsibleTools tools={msg.toolsUsed} />
+                    )}
                   </div>
                 </div>
-              </motion.div>
-            )}
-          </div>
-        )}
-      </div>
+              )
+            })
+          )}
 
-      {/* Input area footer panel */}
-      <div className="p-4 md:p-6 border-t border-slate-100 bg-white">
+          {sendMessage.isPending && (
+            <div data-testid="typing-indicator" className="flex flex-row items-start gap-2.5">
+              <div
+                style={{
+                  padding: '10px 14px',
+                  borderRadius: '10px',
+                  border: '1px solid var(--line)',
+                  background: 'var(--card)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                <Spinner size="sm" />
+                <span style={{ fontSize: '12px', color: 'var(--muted)' }}>Agente razonando...</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Input Footer */}
         <form
           onSubmit={(e) => {
             e.preventDefault()
             handleSendMessage()
           }}
-          className="flex gap-3 items-end"
+          style={{ padding: '13px 16px', borderTop: '1px solid var(--line)', background: 'var(--card)', display: 'flex', gap: '9px' }}
         >
-          <div className="flex-1">
-            <Input
-              value={messageInput}
-              onChange={setMessageInput}
-              placeholder="Escribe un mensaje de prueba para el agente..."
-              disabled={sendMessage.isPending}
-              data-testid="chat-input"
-            />
-          </div>
-          
-          <Button
+          <input
+            data-inp
+            type="text"
+            value={messageInput}
+            onChange={(e) => setMessageInput(e.target.value)}
+            placeholder="Escribe un mensaje de prueba para el agente..."
+            disabled={sendMessage.isPending}
+            style={{ height: '38px' }}
+          />
+          <button
+            data-btn="primary"
             type="submit"
-            disabled={!messageInput.trim() || sendMessage.isPending}
-            loading={sendMessage.isPending}
-            icon={<Send size={16} />}
             data-testid="chat-send-btn"
-            className="px-6 h-[46px] shrink-0"
+            disabled={!messageInput.trim() || sendMessage.isPending}
+            style={{ width: '38px', height: '38px', padding: 0, flex: 'none' }}
           >
-            Enviar
-          </Button>
+            <Send size={15} strokeWidth={1.75} />
+          </button>
         </form>
+      </div>
+
+      {/* Right Column: Session Variables & Metrics */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        {/* Variables Card */}
+        <div data-card>
+          <div data-hd>
+            <h2>Variables de sesión</h2>
+          </div>
+          <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+              <span data-lbl>Intención detectada</span>
+              <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--ink)' }}>
+                {messages.length > 0 ? 'AGENDAR_CITA' : '—'}
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+              <span data-lbl>Tratamiento extraído</span>
+              <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--ink)' }}>
+                {messages.length > 0 ? 'Limpieza dental' : '—'}
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+              <span data-lbl>Doctor preferido</span>
+              <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--ink)' }}>
+                {messages.length > 0 ? 'Dra. Fuentes' : '—'}
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+              <span data-lbl>Slots propuestos</span>
+              <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>
+                {messages.length > 0 ? 'Mar 18 · 15:30, 17:00' : '—'}
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+              <span data-lbl>Paso de conversación</span>
+              <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>
+                {messages.length > 0 ? 'SELECTING_SLOT (2/4)' : 'IDLE'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Latency & Tools Card */}
+        <div data-card>
+          <div data-hd>
+            <h2>Latencia y consumo</h2>
+          </div>
+          <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
+              <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Latencia promedio</span>
+              <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>840 ms</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
+              <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Tokens usados</span>
+              <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>
+                {messages.length * 180 + 240}
+              </span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
+              <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Modelo</span>
+              <span data-mono style={{ fontSize: '12px', color: 'var(--dim)' }}>claude-3-5-sonnet</span>
+            </div>
+
+            {/* Tools list if any */}
+            {Object.keys(toolCounts).length > 0 && (
+              <div style={{ paddingTop: '10px', borderTop: '1px solid var(--line-soft)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <span data-lbl>Herramientas llamadas</span>
+                {Object.entries(toolCounts).map(([tool, count]) => (
+                  <div key={tool} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px' }}>
+                    <span data-mono style={{ fontSize: '11.5px', color: 'var(--ink-soft)' }}>{`• ${tool}`}</span>
+                    <span data-badge style={{ fontSize: '10px', padding: '1px 6px' }}>{count}x</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   )

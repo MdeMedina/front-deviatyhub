@@ -1,10 +1,8 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Send, User, Phone, Mail, Link, Shield, ShieldOff, AlertCircle, Info } from 'lucide-react'
-import { useConversationDetail } from '@/lib/api/hooks/use-conversations'
-import { useTakeover } from '@/lib/api/hooks/use-conversations'
+import { Send, User, Phone, Mail, Share2, Shield, ShieldOff, AlertCircle, Info } from 'lucide-react'
+import { useConversationDetail, useTakeover } from '@/lib/api/hooks/use-conversations'
 import { ConversationStatus, MessageRole } from '@/lib/types'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
@@ -38,17 +36,17 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
       await sendMessage.mutateAsync(messageInput)
       setMessageInput('')
     } catch (error) {
-      // Error handled by global toast if configured, or we can add local handling
+      // Handled by global toast
     }
   }
 
   if (!conversationId) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-slate-50/30">
+      <div className="flex-1 h-full flex items-center justify-center bg-[var(--surface)]">
         <EmptyState 
           title="Selecciona un chat"
           description="Elige una conversación de la lista para ver el historial y tomar el control."
-          icon={<Info size={48} className="text-slate-200" />}
+          icon={<Info size={22} />}
         />
       </div>
     )
@@ -56,39 +54,41 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center bg-white gap-3">
-        <Spinner size="lg" className="text-indigo-600" />
-        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Cargando detalles</span>
+      <div className="flex-1 h-full flex flex-col items-center justify-center bg-[var(--card)] gap-2">
+        <Spinner size="md" />
+        <span className="microlabel text-[10px]">Cargando detalles</span>
       </div>
     )
   }
 
   if (isError || !conversation) {
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 h-full flex items-center justify-center bg-[var(--card)]">
         <EmptyState 
           title="Error al cargar"
           description="No pudimos obtener los detalles de esta conversación."
-          icon={<AlertCircle size={48} className="text-rose-200" />}
+          icon={<AlertCircle size={22} className="text-[var(--neg)]" />}
         />
       </div>
     )
   }
 
+  const initial = conversation.contact?.name?.charAt(0) || '?'
+
   return (
-    <div className="flex-1 flex flex-col h-full bg-white relative">
-      {/* Header */}
-      <header className="p-4 border-b border-slate-100 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10">
+    <div className="flex-1 flex flex-col h-full bg-[var(--card)] relative min-w-0">
+      {/* Header 56px */}
+      <header className="px-5 py-3 border-b border-[var(--line)] bg-[var(--head)] flex items-center justify-between sticky top-0 z-10 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold">
-            {conversation.contact.name?.charAt(0) || '?'}
+          <div className="w-8 h-8 rounded-[6px] bg-[var(--ink)] text-[var(--bg)] flex items-center justify-center font-medium text-[12px] shrink-0">
+            {initial}
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-900">{conversation.contact.name}</h3>
-            <div className="flex items-center gap-2">
-              <Badge variant={isHumanControl ? 'warning' : 'info'} size="sm">
-                {isHumanControl ? 'Control Humano' : 'IA Atendiendo'}
-              </Badge>
+            <h3 className="text-[14px] font-semibold text-[var(--ink)] leading-tight">{conversation.contact?.name}</h3>
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className="microlabel text-[9.5px]">
+                {isHumanControl ? 'Control humano' : 'IA atendiendo'}
+              </span>
             </div>
           </div>
         </div>
@@ -97,21 +97,21 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
           {canTakeover && (
             isHumanControl ? (
               <Button 
-                variant="outline" 
+                variant="secondary" 
                 size="sm" 
                 onClick={() => release.mutate()}
                 loading={release.isPending}
-                icon={<ShieldOff size={14} />}
+                icon={<ShieldOff size={13} />}
               >
                 Liberar
               </Button>
             ) : (
               <Button 
-                variant="secondary" 
+                variant="primary" 
                 size="sm" 
                 onClick={() => takeover.mutate()}
                 loading={takeover.isPending}
-                icon={<Shield size={14} />}
+                icon={<Shield size={13} />}
               >
                 Tomar Control
               </Button>
@@ -121,21 +121,21 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
       </header>
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Chat Area */}
-        <div className="flex-1 flex flex-col bg-slate-50/50">
-          <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+        {/* Chat Thread */}
+        <div className="flex-1 flex flex-col bg-[var(--surface)] min-w-0">
+          <div className="flex-1 overflow-y-auto p-5 space-y-3.5">
             {conversation.messages.map((msg, idx) => (
               <MessageBubble key={msg.id || idx} message={msg} />
             ))}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Area */}
-          <footer className="p-4 bg-white border-t border-slate-100">
+          {/* Footer Input Area */}
+          <footer className="p-3.5 bg-[var(--card)] border-t border-[var(--line)]">
             {!isHumanControl ? (
-              <div className="p-4 bg-indigo-50 rounded-2xl border border-indigo-100 flex items-center gap-3">
-                <Info size={18} className="text-indigo-600 shrink-0" />
-                <p className="text-xs text-indigo-800 font-medium leading-relaxed">
+              <div className="p-3 rounded-[7px] bg-[var(--blue-tint)] border border-[var(--blue-line)] flex items-center gap-2 text-[12.5px] text-[var(--blue)]">
+                <Info size={15} className="shrink-0" />
+                <p className="leading-relaxed">
                   El bot está manejando esta conversación. Para responder manualmente, pulsa <strong>"Tomar Control"</strong>.
                 </p>
               </div>
@@ -147,7 +147,7 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
                     value={messageInput}
                     onChange={(e) => setMessageInput(e.target.value)}
                     placeholder="Escribe un mensaje..."
-                    className="w-full bg-slate-50 border-none rounded-2xl py-3 px-4 text-sm focus:ring-2 focus:ring-indigo-500/20 resize-none min-h-[44px] max-h-32 transition-all custom-scrollbar"
+                    className="w-full bg-[var(--surface)] border border-[var(--line)] rounded-[7px] py-2 px-3 text-[13px] text-[var(--ink)] placeholder:text-[var(--dim)] focus:border-[var(--blue)] focus:ring-2 focus:ring-[var(--blue-tint)] outline-none resize-none min-h-[38px] max-h-28 transition-colors"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault()
@@ -160,37 +160,45 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
                   type="submit" 
                   disabled={!messageInput.trim() || sendMessage.isPending}
                   loading={sendMessage.isPending}
-                  className="rounded-2xl h-11 w-11 p-0 flex items-center justify-center shrink-0"
+                  variant="primary"
+                  className="h-[38px] px-3 shrink-0"
                 >
-                  <Send size={18} className={messageInput.trim() ? 'translate-x-0.5' : ''} />
+                  <Send size={14} />
                 </Button>
               </form>
             )}
           </footer>
         </div>
 
-        {/* Info Sidebar */}
-        <aside className="w-72 border-l border-slate-100 p-6 hidden lg:block overflow-y-auto">
-          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Información del Contacto</h4>
+        {/* Right Info Sidebar */}
+        <aside className="w-64 border-l border-[var(--line)] bg-[var(--card)] p-4 hidden md:block overflow-y-auto shrink-0 space-y-5">
+          <div>
+            <h4 className="microlabel text-[9.5px] mb-3">Información del Contacto</h4>
+            <div className="space-y-3">
+              <ContactInfoItem icon={<User size={13} />} label="Nombre" value={conversation.contact?.name} />
+              <ContactInfoItem icon={<Phone size={13} />} label="Teléfono" value={conversation.contact?.phone} />
+              <ContactInfoItem icon={<Mail size={13} />} label="Email" value={conversation.contact?.email || 'No registrado'} />
+              <ContactInfoItem icon={<Share2 size={13} />} label="Instagram" value={conversation.contact?.instagram_user || 'No vinculado'} />
+            </div>
+          </div>
           
-          <div className="space-y-6">
-            <ContactInfoItem icon={<User size={16} />} label="Nombre" value={conversation.contact.name} />
-            <ContactInfoItem icon={<Phone size={16} />} label="Teléfono" value={conversation.contact.phone} />
-            <ContactInfoItem icon={<Mail size={16} />} label="Email" value={conversation.contact.email || 'No proporcionado'} />
-            <ContactInfoItem icon={<Link size={16} />} label="Instagram" value={conversation.contact.instagram_user || 'No vinculado'} />
-            
-            <div className="pt-6 border-t border-slate-50">
-              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Contexto Actual</h4>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-slate-500">Estado Bot</span>
-                  <Badge variant="neutral" size="sm">{conversation.current_step}</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-slate-500">Canal</span>
-                  <Badge variant="purple" size="sm">{conversation.channel}</Badge>
-                </div>
+          <div className="pt-4 border-t border-[var(--line-soft)]">
+            <h4 className="microlabel text-[9.5px] mb-3">Contexto Actual</h4>
+            <div className="space-y-2.5">
+              <div className="flex justify-between items-center text-[12px]">
+                <span className="text-[var(--muted)]">Estado bot</span>
+                <Badge variant="neutral" size="sm">{conversation.current_step}</Badge>
               </div>
+              <div className="flex justify-between items-center text-[12px]">
+                <span className="text-[var(--muted)]">Canal</span>
+                <Badge variant="info" size="sm">{conversation.channel}</Badge>
+              </div>
+              {conversation.appointment_id && (
+                <div className="flex justify-between items-center text-[12px]">
+                  <span className="text-[var(--muted)]">Cita médica</span>
+                  <Badge variant="success" size="sm">Agendada</Badge>
+                </div>
+              )}
             </div>
           </div>
         </aside>
@@ -206,31 +214,31 @@ function MessageBubble({ message }: { message: any }) {
 
   return (
     <div className={`flex ${isUser ? 'justify-start' : 'justify-end'}`}>
-      <div className={`max-w-[80%] space-y-1 ${isUser ? 'order-1' : 'order-2'}`}>
-        <div className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
+      <div className={`max-w-[75%] space-y-1 ${isUser ? 'order-1' : 'order-2'}`}>
+        <div className={`px-3.5 py-2 rounded-[10px] text-[13px] leading-relaxed ${
           isUser 
-            ? 'bg-white text-slate-800 border border-slate-100 rounded-tl-none' 
+            ? 'bg-[var(--card)] text-[var(--ink)] border border-[var(--line)]' 
             : isAssistant
-              ? 'bg-indigo-600 text-white rounded-tr-none'
-              : 'bg-amber-500 text-white rounded-tr-none'
+              ? 'bg-[var(--ink)] text-[var(--bg)]'
+              : 'bg-[var(--blue-tint)] text-[var(--ink)] border border-[var(--blue-line)]'
         }`}>
           {message.content}
         </div>
-        <p className={`text-[10px] font-bold text-slate-400 px-1 ${isUser ? 'text-left' : 'text-right'}`}>
-          {isAssistant ? 'IA' : isHuman ? 'Agente' : 'Usuario'} • {new Date(message.sent_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        <p className={`microlabel text-[9.5px] px-0.5 tabular ${isUser ? 'text-left' : 'text-right'}`}>
+          {isAssistant ? 'IA' : isHuman ? 'Agente' : 'Paciente'} · {new Date(message.sent_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </p>
       </div>
     </div>
   )
 }
 
-function ContactInfoItem({ icon, label, value }: { icon: React.ReactNode, label: string, value: string }) {
+function ContactInfoItem({ icon, label, value }: { icon: React.ReactNode, label: string, value?: string }) {
   return (
-    <div className="flex gap-3">
-      <div className="text-slate-400 mt-0.5">{icon}</div>
-      <div>
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{label}</p>
-        <p className="text-sm font-semibold text-slate-700 break-all">{value}</p>
+    <div className="flex items-start gap-2.5">
+      <div className="text-[var(--dim)] mt-0.5 shrink-0">{icon}</div>
+      <div className="min-w-0">
+        <p className="microlabel text-[9px]">{label}</p>
+        <p className="text-[12.5px] font-medium text-[var(--ink-soft)] truncate">{value || '-'}</p>
       </div>
     </div>
   )

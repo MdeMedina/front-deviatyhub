@@ -13,9 +13,15 @@ import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
 import { Modal } from '@/components/ui/Modal'
 import { Input } from '@/components/ui/Input'
-import { Badge } from '@/components/ui/Badge'
-import { Users, Plus, Edit2, Trash2, AlertCircle, Save, Stethoscope } from 'lucide-react'
+import { Users, Plus, Pencil, Trash2, AlertCircle, Save, Stethoscope, Check } from 'lucide-react'
 import { IDoctor, ITreatmentSummary } from '@/lib/types'
+
+const getInitials = (name: string) => {
+  if (!name) return 'DR'
+  const parts = name.replace(/^(Dra?\.?\s+)/i, '').trim().split(/\s+/)
+  if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase()
+  return (parts[0][0] + parts[1][0]).toUpperCase()
+}
 
 export interface DoctorsManagerProps {
   readOnly?: boolean
@@ -72,7 +78,7 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
 
   const validate = () => {
     const errors: Record<string, string> = {}
-    
+
     if (!name.trim()) {
       errors.name = 'El nombre del doctor es requerido'
     }
@@ -165,156 +171,144 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
 
   if (loadingDoctors) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 bg-white rounded-3xl border border-slate-100 shadow-sm min-h-[400px]">
-        <Spinner size="lg" className="text-indigo-600 mb-4" />
-        <p className="text-sm font-semibold text-slate-500">Cargando especialistas clínicos...</p>
+      <div data-card>
+        <div style={{ padding: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '260px', gap: '8px' }}>
+          <Spinner size="md" />
+          <span className="microlabel text-[10px]">Cargando especialistas clínicos...</span>
+        </div>
       </div>
     )
   }
 
   if (errorDoctors) {
     return (
-      <div className="p-8 bg-rose-50 border border-rose-100 rounded-3xl text-center max-w-2xl mx-auto flex flex-col items-center gap-3">
-        <AlertCircle className="text-rose-500 w-8 h-8" />
-        <p className="text-sm font-semibold text-rose-600">
-          No se pudo obtener el listado de doctores.
-        </p>
+      <div data-card>
+        <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', textAlign: 'center' }}>
+          <AlertCircle style={{ color: 'var(--neg)' }} size={22} />
+          <p style={{ fontSize: '13px', color: 'var(--neg)', margin: 0 }}>
+            No se pudo obtener el listado de doctores.
+          </p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
-      {/* Header element */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-lg font-bold text-slate-900 leading-tight">Doctores & Especialistas</h2>
-          <p className="text-xs text-slate-400 font-medium tracking-wide uppercase mt-0.5">
-            Administra el equipo médico, especialidades y tratamientos autorizados
-          </p>
+    <>
+      <div data-card>
+        <div data-hd>
+          <h2>Doctores</h2>
+          {!readOnly && (
+            <button data-btn onClick={handleOpenCreateModal}>
+              <Plus size={14} strokeWidth={1.9} />
+              Agregar Especialista
+            </button>
+          )}
         </div>
-        {!readOnly && (
-          <Button
-            onClick={handleOpenCreateModal}
-            icon={<Plus size={18} />}
-            className="sm:self-center"
-          >
-            Agregar Especialista
-          </Button>
+
+        {doctors.length === 0 ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px', gap: '8px', textAlign: 'center' }}>
+            <div style={{ width: '44px', height: '44px', border: '1px solid var(--line)', borderRadius: '7px', background: 'var(--head)', display: 'grid', placeItems: 'center', color: 'var(--muted)' }}>
+              <Users size={22} strokeWidth={1.75} />
+            </div>
+            <p style={{ fontSize: '14.5px', fontWeight: 600, color: 'var(--ink)', margin: 0 }}>Sin especialistas registrados</p>
+            <p style={{ fontSize: '12.5px', color: 'var(--muted)', margin: 0, maxWidth: '340px' }}>
+              Comienza agregando doctores para configurar los calendarios individuales de citas.
+            </p>
+          </div>
+        ) : (
+          <div style={{ overflowX: 'auto' }}>
+            <table data-tbl>
+              <thead>
+                <tr>
+                  <th>Doctor</th>
+                  <th>Título</th>
+                  <th>Tratamientos</th>
+                  <th>Estado</th>
+                  {!readOnly && <th style={{ textAlign: 'right' }}>Acciones</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {doctors.map((doctor) => (
+                  <tr key={doctor.id} data-testid={`doctor-card-${doctor.id}`}>
+                    <td>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <span style={{ width: '28px', height: '28px', borderRadius: '7px', background: 'var(--head)', border: '1px solid var(--line)', display: 'grid', placeItems: 'center', fontSize: '11px', fontWeight: 600, color: 'var(--ink)', flexShrink: 0 }}>
+                          {getInitials(doctor.name)}
+                        </span>
+                        <span style={{ color: 'var(--ink)', fontWeight: 500 }}>{doctor.name}</span>
+                      </span>
+                    </td>
+                    <td>{doctor.title}</td>
+                    <td>
+                      {doctor.treatments.length === 0 ? (
+                        <span style={{ color: 'var(--muted)' }}>Sin tratamientos vinculados.</span>
+                      ) : (
+                        <span style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                          {doctor.treatments.map((t) => (
+                            <span key={t.id} data-badge>{t.name}</span>
+                          ))}
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      <span data-badge>
+                        <span data-dot style={{ background: doctor.active ? 'var(--pos)' : undefined }} />
+                        {doctor.active ? 'Activo' : 'Inactivo'}
+                      </span>
+                    </td>
+                    {!readOnly && (
+                      <td>
+                        <span style={{ display: 'flex', justifyContent: 'flex-end', gap: '6px' }}>
+                          <button
+                            data-btn
+                            onClick={() => handleOpenEditModal(doctor)}
+                            style={{ width: '28px', height: '28px', padding: 0 }}
+                            title={`Editar ${doctor.name}`}
+                            aria-label={`Editar ${doctor.name}`}
+                          >
+                            <Pencil size={14} strokeWidth={1.75} />
+                          </button>
+                          <button
+                            data-btn
+                            onClick={() => handleDelete(doctor.id)}
+                            disabled={isDeleting}
+                            style={{ width: '28px', height: '28px', padding: 0 }}
+                            title={`Eliminar ${doctor.name}`}
+                            aria-label={`Eliminar ${doctor.name}`}
+                          >
+                            <Trash2 size={14} strokeWidth={1.75} />
+                          </button>
+                        </span>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
-
-      {/* Grid structure of cards */}
-      {doctors.length === 0 ? (
-        <div className="bg-slate-50/50 border border-dashed border-slate-200 rounded-3xl p-12 text-center max-w-lg mx-auto flex flex-col items-center gap-3">
-          <Users size={40} className="text-slate-300" />
-          <p className="text-sm font-bold text-slate-600">Sin especialistas registrados</p>
-          <p className="text-xs text-slate-400">
-            Comienza agregando doctores para configurar los calendarios individuales de citas.
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {doctors.map((doctor) => (
-            <div
-              key={doctor.id}
-              className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between gap-5 hover:shadow-md hover:border-slate-200/60 transition-all duration-200"
-              data-testid={`doctor-card-${doctor.id}`}
-            >
-              {/* Profile Card Header */}
-              <div className="flex items-start justify-between gap-2">
-                <div className="space-y-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-bold text-slate-800 text-sm md:text-base leading-tight">
-                      {doctor.name}
-                    </h3>
-                    <Badge
-                      variant={doctor.active ? 'success' : 'neutral'}
-                      size="sm"
-                      label={doctor.active ? 'Activo' : 'Inactivo'}
-                    />
-                  </div>
-                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
-                    {doctor.title}
-                  </p>
-                </div>
-
-                {/* Edit Actions */}
-                {!readOnly && (
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => handleOpenEditModal(doctor)}
-                      className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
-                      aria-label={`Editar ${doctor.name}`}
-                    >
-                      <Edit2 size={14} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(doctor.id)}
-                      disabled={isDeleting}
-                      className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
-                      aria-label={`Eliminar ${doctor.name}`}
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Treatments as specialized tags */}
-              <div className="space-y-1.5">
-                <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  Tratamientos Autorizados
-                </h4>
-                {doctor.treatments.length === 0 ? (
-                  <p className="text-xs text-slate-400 font-medium italic">
-                    Sin tratamientos vinculados.
-                  </p>
-                ) : (
-                  <div className="flex flex-wrap gap-1.5">
-                    {doctor.treatments.map((t) => (
-                      <Badge
-                        key={t.id}
-                        variant="purple"
-                        size="sm"
-                        label={t.name}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
 
       {/* Profile Dialog */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingDoctor ? 'Editar Ficha de Doctor' : 'Agregar Especialista Clínico'}
+        title={editingDoctor ? 'Editar ficha de doctor' : 'Agregar especialista clínico'}
         footer={
-          <div className="flex items-center gap-2 w-full justify-end">
-            <Button
-              variant="ghost"
-              onClick={() => setIsModalOpen(false)}
-              disabled={isCreating || isUpdating}
-            >
+          <>
+            <Button variant="secondary" onClick={() => setIsModalOpen(false)} disabled={isCreating || isUpdating}>
               Cancelar
             </Button>
-            <Button
-              onClick={() => handleSubmit()}
-              loading={isCreating || isUpdating}
-              icon={<Save size={18} />}
-            >
-              Guardar Ficha
+            <Button onClick={() => handleSubmit()} loading={isCreating || isUpdating} icon={<Save size={14} />}>
+              Guardar ficha
             </Button>
-          </div>
+          </>
         }
       >
-        <form onSubmit={handleSubmit} className="space-y-4" aria-label="doctor-form">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4" aria-label="doctor-form">
           <Input
-            label="Nombre Completo"
+            label="Nombre completo"
             placeholder="ej. Dra. María Elisa Valenzuela"
             value={name}
             onChange={(val) => {
@@ -330,7 +324,7 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
           />
 
           <Input
-            label="Especialidad / Cargo"
+            label="Especialidad / cargo"
             placeholder="ej. Ortodoncista, Periodoncista"
             value={title}
             onChange={(val) => {
@@ -347,46 +341,53 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
 
           {/* Treatment Multi-select */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-semibold text-slate-700 ml-1">
-              Tratamientos en los que Atiende
-            </label>
+            <label className="microlabel">Tratamientos en los que atiende</label>
             {loadingTreatments ? (
-              <div className="flex items-center gap-2 py-2 pl-2">
+              <div className="flex items-center gap-2 py-2 pl-1">
                 <Spinner size="sm" />
-                <span className="text-xs text-slate-400 font-medium">Cargando tratamientos del catálogo...</span>
+                <span className="text-[12px] text-[var(--muted)]">Cargando tratamientos del catálogo...</span>
               </div>
             ) : treatments.length === 0 ? (
-              <div className="p-3 bg-slate-50 border border-slate-100 rounded-2xl flex items-center gap-2 text-slate-400">
+              <div className="flex items-center gap-2 p-3 bg-[var(--surface)] border border-[var(--line)] rounded-[7px] text-[var(--muted)]">
                 <Stethoscope size={16} />
-                <span className="text-xs font-semibold">No hay tratamientos creados en la clínica.</span>
+                <span className="text-[12px] font-medium">No hay tratamientos creados en la clínica.</span>
               </div>
             ) : (
-              <div className="bg-slate-50/50 border border-slate-100 p-3 rounded-2xl max-h-[160px] overflow-y-auto divide-y divide-slate-100 flex flex-col gap-1">
+              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-[7px] p-1.5 max-h-[180px] overflow-y-auto flex flex-col">
                 {treatments.map((t) => {
                   const isChecked = assignedTreatmentIds.includes(t.id)
                   return (
-                    <button
+                    <label
                       key={t.id}
-                      type="button"
-                      onClick={() => handleTreatmentToggle(t.id)}
-                      className="flex items-center justify-between py-2 px-1 text-left w-full rounded-xl hover:bg-slate-100/60 transition-all group"
+                      className="flex items-center justify-between gap-2 py-2 px-2 w-full rounded-[6px] hover:bg-[var(--surface-2)] transition-colors cursor-pointer"
                     >
-                      <div className="flex items-center gap-2">
+                      <span className="flex items-center gap-2.5">
                         <input
                           type="checkbox"
+                          className="sr-only"
                           checked={isChecked}
-                          onChange={() => {}} // Handle on click of row
-                          className="rounded text-indigo-600 focus:ring-indigo-100 pointer-events-none"
+                          onChange={() => handleTreatmentToggle(t.id)}
                           aria-label={`Tratamiento ${t.name}`}
                         />
-                        <span className="text-xs font-bold text-slate-700 group-hover:text-slate-900 transition-colors">
-                          {t.name}
+                        <span
+                          className="grid place-items-center rounded-[5px] shrink-0 transition-colors"
+                          style={{
+                            width: '18px',
+                            height: '18px',
+                            border: `1px solid ${isChecked ? 'var(--blue)' : 'var(--line)'}`,
+                            background: isChecked ? 'var(--blue)' : 'var(--card)',
+                            color: 'var(--on-blue)',
+                          }}
+                          aria-hidden="true"
+                        >
+                          {isChecked && <Check size={12} strokeWidth={3} />}
                         </span>
-                      </div>
-                      <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mr-1">
+                        <span className="text-[13px] font-medium text-[var(--ink)]">{t.name}</span>
+                      </span>
+                      <span data-mono className="text-[11.5px] text-[var(--muted)]">
                         ${(t.price ?? 0).toLocaleString('es-CL')}
                       </span>
-                    </button>
+                    </label>
                   )
                 })}
               </div>
@@ -394,33 +395,47 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
           </div>
 
           {/* Active status */}
-          <div className="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-2xl p-4 mt-2">
-            <div className="flex gap-2.5 items-center">
-              <Users size={16} className="text-indigo-500" />
-              <div>
-                <p className="text-sm font-bold text-slate-700">Médico Activo</p>
-                <p className="text-[10px] text-slate-400 font-medium">
-                  Habilita la asignación de citas y horarios para este especialista
-                </p>
-              </div>
+          <div className="flex items-center justify-between border border-[var(--line)] bg-[var(--surface)] rounded-[7px] p-3.5 mt-1">
+            <div>
+              <p className="text-[13px] font-medium text-[var(--ink)] m-0">Médico activo</p>
+              <p className="text-[12px] text-[var(--muted)] m-0 mt-0.5">
+                Habilita la asignación de citas y horarios para este especialista
+              </p>
             </div>
             <button
               type="button"
               aria-label="Toggle Estado Doctor"
               onClick={() => setIsActive(!isActive)}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out outline-none focus:ring-2 focus:ring-indigo-100 focus:ring-offset-1 ${
-                isActive ? 'bg-indigo-600' : 'bg-slate-200'
-              }`}
+              style={{
+                width: '38px',
+                height: '22px',
+                borderRadius: '999px',
+                border: '1px solid var(--line)',
+                background: isActive ? 'var(--blue)' : 'var(--surface-2)',
+                position: 'relative',
+                cursor: 'pointer',
+                padding: 0,
+                transition: 'background-color .15s',
+                flexShrink: 0,
+              }}
             >
               <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                  isActive ? 'translate-x-5' : 'translate-x-0'
-                }`}
+                style={{
+                  position: 'absolute',
+                  top: '2px',
+                  left: isActive ? '18px' : '2px',
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '50%',
+                  background: '#FFFFFF',
+                  transition: 'left .15s',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.15)',
+                }}
               />
             </button>
           </div>
         </form>
       </Modal>
-    </div>
+    </>
   )
 }

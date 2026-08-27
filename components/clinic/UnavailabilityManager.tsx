@@ -12,8 +12,7 @@ import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
 import { Modal } from '@/components/ui/Modal'
 import { Input } from '@/components/ui/Input'
-import { Badge } from '@/components/ui/Badge'
-import { Calendar, Plus, Edit2, Trash2, AlertCircle, Clock, Save, Info } from 'lucide-react'
+import { Calendar, Plus, Pencil, Trash2, AlertCircle, Save } from 'lucide-react'
 import { IUnavailabilityBlock } from '@/lib/types'
 
 const DAYS_MAP: Record<number, string> = {
@@ -26,6 +25,18 @@ const DAYS_MAP: Record<number, string> = {
   0: 'Domingo',
 }
 
+const DAYS_ABBR: Record<number, string> = {
+  1: 'Lun',
+  2: 'Mar',
+  3: 'Mié',
+  4: 'Jue',
+  5: 'Vie',
+  6: 'Sáb',
+  0: 'Dom',
+}
+
+const DAYS_ORDER = [1, 2, 3, 4, 5, 6, 0]
+
 const DAYS_SHORT: { id: number; label: string }[] = [
   { id: 1, label: 'L' },
   { id: 2, label: 'M' },
@@ -35,6 +46,13 @@ const DAYS_SHORT: { id: number; label: string }[] = [
   { id: 6, label: 'S' },
   { id: 0, label: 'D' },
 ]
+
+const formatDays = (days: number[]) => {
+  return [...days]
+    .sort((a, b) => DAYS_ORDER.indexOf(a) - DAYS_ORDER.indexOf(b))
+    .map((d) => DAYS_ABBR[d] || `Día ${d}`)
+    .join(', ')
+}
 
 export interface UnavailabilityManagerProps {
   readOnly?: boolean
@@ -49,7 +67,7 @@ export const UnavailabilityManager: React.FC<UnavailabilityManagerProps> = ({ re
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingBlock, setEditingBlock] = useState<IUnavailabilityBlock | null>(null)
-  
+
   // Form State
   const [name, setName] = useState('')
   const [selectedDays, setSelectedDays] = useState<number[]>([])
@@ -95,7 +113,7 @@ export const UnavailabilityManager: React.FC<UnavailabilityManagerProps> = ({ re
 
   const validate = () => {
     const errors: Record<string, string> = {}
-    
+
     if (!name.trim()) {
       errors.name = 'El nombre del bloqueo es requerido'
     }
@@ -193,147 +211,128 @@ export const UnavailabilityManager: React.FC<UnavailabilityManagerProps> = ({ re
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 bg-white rounded-3xl border border-slate-100 shadow-sm min-h-[400px]">
-        <Spinner size="lg" className="text-indigo-600 mb-4" />
-        <p className="text-sm font-semibold text-slate-500">Cargando periodos de no disponibilidad...</p>
+      <div data-card style={{ maxWidth: '760px' }}>
+        <div style={{ padding: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '260px', gap: '8px' }}>
+          <Spinner size="md" />
+          <span className="microlabel text-[10px]">Cargando periodos de no disponibilidad...</span>
+        </div>
       </div>
     )
   }
 
   if (isError) {
     return (
-      <div className="p-8 bg-rose-50 border border-rose-100 rounded-3xl text-center max-w-2xl mx-auto flex flex-col items-center gap-3">
-        <AlertCircle className="text-rose-500 w-8 h-8" />
-        <p className="text-sm font-semibold text-rose-600">
-          No se pudieron cargar los periodos de no disponibilidad.
-        </p>
+      <div data-card style={{ maxWidth: '760px' }}>
+        <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', textAlign: 'center' }}>
+          <AlertCircle style={{ color: 'var(--neg)' }} size={22} />
+          <p style={{ fontSize: '13px', color: 'var(--neg)', margin: 0 }}>
+            No se pudieron cargar los periodos de no disponibilidad.
+          </p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
-      {/* Header and Add Action */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-lg font-bold text-slate-900 leading-tight">No disponibilidad</h2>
-          <p className="text-xs text-slate-400 font-medium tracking-wide uppercase mt-0.5">
-            Bloqueos periódicos, almuerzos médicos y feriados
-          </p>
+    <>
+      <div data-card style={{ maxWidth: '760px' }}>
+        <div data-hd>
+          <h2>Bloques de no disponibilidad</h2>
+          {!readOnly && (
+            <button data-btn onClick={handleOpenCreateModal}>
+              <Plus size={14} strokeWidth={1.9} />
+              Agregar Bloqueo
+            </button>
+          )}
         </div>
-        {!readOnly && (
-          <Button
-            onClick={handleOpenCreateModal}
-            icon={<Plus size={18} />}
-            className="sm:self-center"
-          >
-            Agregar Bloqueo
-          </Button>
+
+        {blocks.length === 0 ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px', gap: '8px', textAlign: 'center' }}>
+            <div style={{ width: '44px', height: '44px', border: '1px solid var(--line)', borderRadius: '7px', background: 'var(--head)', display: 'grid', placeItems: 'center', color: 'var(--muted)' }}>
+              <Calendar size={22} strokeWidth={1.75} />
+            </div>
+            <p style={{ fontSize: '14.5px', fontWeight: 600, color: 'var(--ink)', margin: 0 }}>Sin bloqueos registrados</p>
+            <p style={{ fontSize: '12.5px', color: 'var(--muted)', margin: 0, maxWidth: '340px' }}>
+              Define horarios repetitivos en los cuales no se deben agendar citas de forma automática.
+            </p>
+          </div>
+        ) : (
+          <div style={{ overflowX: 'auto' }}>
+            <table data-tbl>
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Días</th>
+                  <th>Horario</th>
+                  <th>Estado</th>
+                  {!readOnly && <th style={{ textAlign: 'right' }}>Acciones</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {blocks.map((block) => (
+                  <tr key={block.id} data-testid={`block-card-${block.id}`}>
+                    <td style={{ color: 'var(--ink)', fontWeight: 500 }}>{block.name}</td>
+                    <td>{formatDays(block.days_of_week)}</td>
+                    <td data-mono>{block.start_time} - {block.end_time}</td>
+                    <td>
+                      <span data-badge>
+                        <span data-dot style={{ background: block.active ? 'var(--pos)' : undefined }} />
+                        {block.active ? 'Activo' : 'Inactivo'}
+                      </span>
+                    </td>
+                    {!readOnly && (
+                      <td>
+                        <span style={{ display: 'flex', justifyContent: 'flex-end', gap: '6px' }}>
+                          <button
+                            data-btn
+                            onClick={() => handleOpenEditModal(block)}
+                            style={{ width: '28px', height: '28px', padding: 0 }}
+                            title={`Editar ${block.name}`}
+                            aria-label={`Editar ${block.name}`}
+                          >
+                            <Pencil size={14} strokeWidth={1.75} />
+                          </button>
+                          <button
+                            data-btn
+                            onClick={() => handleDelete(block.id)}
+                            disabled={isDeleting}
+                            style={{ width: '28px', height: '28px', padding: 0 }}
+                            title={`Eliminar ${block.name}`}
+                            aria-label={`Eliminar ${block.name}`}
+                          >
+                            <Trash2 size={14} strokeWidth={1.75} />
+                          </button>
+                        </span>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
-
-      {/* List of Blocks */}
-      {blocks.length === 0 ? (
-        <div className="bg-slate-50/50 border border-dashed border-slate-200 rounded-3xl p-12 text-center max-w-lg mx-auto flex flex-col items-center gap-3">
-          <Calendar size={40} className="text-slate-300" />
-          <p className="text-sm font-bold text-slate-600">Sin bloqueos registrados</p>
-          <p className="text-xs text-slate-400">
-            Define horarios repetitivos en los cuales no se deben agendar citas de forma automática.
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {blocks.map((block) => (
-            <div
-              key={block.id}
-              className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between gap-4 hover:shadow-md hover:border-slate-200/60 transition-all duration-200"
-              data-testid={`block-card-${block.id}`}
-            >
-              {/* Header inside Card */}
-              <div className="flex items-start justify-between gap-2">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-slate-800 text-sm md:text-base">{block.name}</h3>
-                    <Badge
-                      variant={block.active ? 'success' : 'neutral'}
-                      size="sm"
-                      label={block.active ? 'Activo' : 'Inactivo'}
-                    />
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                    <Clock size={12} className="text-indigo-500" />
-                    <span>
-                      {block.start_time} - {block.end_time}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Actions */}
-                {!readOnly && (
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => handleOpenEditModal(block)}
-                      className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
-                      aria-label={`Editar ${block.name}`}
-                    >
-                      <Edit2 size={15} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(block.id)}
-                      disabled={isDeleting}
-                      className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
-                      aria-label={`Eliminar ${block.name}`}
-                    >
-                      <Trash2 size={15} />
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Days List */}
-              <div className="flex flex-wrap gap-1">
-                {block.days_of_week.map((d) => (
-                  <Badge
-                    key={d}
-                    variant="purple"
-                    size="sm"
-                    label={DAYS_MAP[d] || `Día ${d}`}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
 
       {/* Create / Edit Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingBlock ? 'Editar Bloqueo de Horario' : 'Crear Bloqueo de Horario'}
+        title={editingBlock ? 'Editar bloqueo de horario' : 'Crear bloqueo de horario'}
         footer={
-          <div className="flex items-center gap-2 w-full justify-end">
-            <Button
-              variant="ghost"
-              onClick={() => setIsModalOpen(false)}
-              disabled={isCreating || isUpdating}
-            >
+          <>
+            <Button variant="secondary" onClick={() => setIsModalOpen(false)} disabled={isCreating || isUpdating}>
               Cancelar
             </Button>
-            <Button
-              onClick={() => handleSubmit()}
-              loading={isCreating || isUpdating}
-              icon={<Save size={18} />}
-            >
-              Guardar Bloqueo
+            <Button onClick={() => handleSubmit()} loading={isCreating || isUpdating} icon={<Save size={14} />}>
+              Guardar bloqueo
             </Button>
-          </div>
+          </>
         }
       >
-        <form onSubmit={handleSubmit} className="space-y-4" aria-label="unavailability-form">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4" aria-label="unavailability-form">
           <Input
-            label="Nombre del Bloqueo"
-            placeholder="ej. Almuerzo del Equipo, Reunión Clínica"
+            label="Nombre del bloqueo"
+            placeholder="ej. Almuerzo del equipo, Reunión clínica"
             value={name}
             onChange={(val) => {
               setName(val)
@@ -348,23 +347,23 @@ export const UnavailabilityManager: React.FC<UnavailabilityManagerProps> = ({ re
           />
 
           {/* Days of Week multiselect */}
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-slate-700 ml-1">
-              Días Aplicables <span className="text-rose-500">*</span>
+          <div className="flex flex-col gap-1.5">
+            <label className="microlabel flex items-center gap-1">
+              Días aplicables <span className="text-[var(--muted)]">*</span>
             </label>
-            <div className="flex bg-slate-50 border border-slate-100 p-1.5 rounded-2xl justify-between gap-1">
-              {DAYS_SHORT.map((day) => {
+            <div className="flex gap-1.5">
+              {DAYS_SHORT.map((day, idx) => {
                 const isSelected = selectedDays.includes(day.id)
                 return (
                   <button
-                    key={day.id}
+                    key={idx}
                     type="button"
                     onClick={() => handleDayToggle(day.id)}
                     aria-label={`Toggle día ${DAYS_MAP[day.id]}`}
-                    className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all duration-200 ${
+                    className={`flex-1 h-9 text-[12.5px] font-medium rounded-[7px] border transition-colors cursor-pointer ${
                       isSelected
-                        ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-100'
-                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/40'
+                        ? 'bg-[var(--blue-tint)] border-[var(--blue-line)] text-[var(--blue)]'
+                        : 'bg-[var(--surface)] border-[var(--line)] text-[var(--muted)] hover:text-[var(--ink)] hover:border-[var(--dim)]'
                     }`}
                   >
                     {day.label}
@@ -373,7 +372,7 @@ export const UnavailabilityManager: React.FC<UnavailabilityManagerProps> = ({ re
               })}
             </div>
             {formErrors.days && (
-              <p className="text-xs font-medium text-rose-500 ml-1 mt-1 flex items-center gap-1">
+              <p className="text-xs font-medium text-[var(--neg)] flex items-center gap-1 mt-0.5">
                 <AlertCircle size={12} />
                 {formErrors.days}
               </p>
@@ -383,12 +382,13 @@ export const UnavailabilityManager: React.FC<UnavailabilityManagerProps> = ({ re
           {/* Time Picker Row */}
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="unavailability-start-time" className="text-sm font-semibold text-slate-700 ml-1">
-                Hora de Inicio <span className="text-rose-500">*</span>
+              <label htmlFor="unavailability-start-time" className="microlabel flex items-center gap-1">
+                Hora de inicio <span className="text-[var(--muted)]">*</span>
               </label>
               <input
                 id="unavailability-start-time"
                 type="time"
+                data-inp
                 aria-label="Hora de Inicio"
                 value={startTime}
                 onChange={(e) => {
@@ -399,25 +399,23 @@ export const UnavailabilityManager: React.FC<UnavailabilityManagerProps> = ({ re
                     return next
                   })
                 }}
-                className={`w-full px-4 py-2.5 bg-white border rounded-xl text-slate-700 transition-all duration-200 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 ${
-                  formErrors.startTime ? 'border-rose-300' : 'border-slate-200'
-                }`}
+                className="tabular"
+                style={{ borderColor: formErrors.startTime ? 'var(--neg)' : undefined }}
                 required
               />
               {formErrors.startTime && (
-                <p className="text-xs font-medium text-rose-500 ml-1 mt-1 flex items-center gap-1">
-                  {formErrors.startTime}
-                </p>
+                <p className="text-xs font-medium text-[var(--neg)] mt-0.5">{formErrors.startTime}</p>
               )}
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="unavailability-end-time" className="text-sm font-semibold text-slate-700 ml-1">
-                Hora de Término <span className="text-rose-500">*</span>
+              <label htmlFor="unavailability-end-time" className="microlabel flex items-center gap-1">
+                Hora de término <span className="text-[var(--muted)]">*</span>
               </label>
               <input
                 id="unavailability-end-time"
                 type="time"
+                data-inp
                 aria-label="Hora de Término"
                 value={endTime}
                 onChange={(e) => {
@@ -428,47 +426,58 @@ export const UnavailabilityManager: React.FC<UnavailabilityManagerProps> = ({ re
                     return next
                   })
                 }}
-                className={`w-full px-4 py-2.5 bg-white border rounded-xl text-slate-700 transition-all duration-200 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 ${
-                  formErrors.endTime ? 'border-rose-300' : 'border-slate-200'
-                }`}
+                className="tabular"
+                style={{ borderColor: formErrors.endTime ? 'var(--neg)' : undefined }}
                 required
               />
               {formErrors.endTime && (
-                <p className="text-xs font-medium text-rose-500 ml-1 mt-1 flex items-center gap-1">
-                  {formErrors.endTime}
-                </p>
+                <p className="text-xs font-medium text-[var(--neg)] mt-0.5">{formErrors.endTime}</p>
               )}
             </div>
           </div>
 
           {/* Active toggle */}
-          <div className="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-2xl p-4 mt-2">
-            <div className="flex gap-2.5 items-center">
-              <Info size={16} className="text-indigo-500" />
-              <div>
-                <p className="text-sm font-bold text-slate-700">Bloqueo Activo</p>
-                <p className="text-[10px] text-slate-400 font-medium">
-                  Define si este bloqueo de reserva está actualmente en vigor
-                </p>
-              </div>
+          <div className="flex items-center justify-between border border-[var(--line)] bg-[var(--surface)] rounded-[7px] p-3.5 mt-1">
+            <div>
+              <p className="text-[13px] font-medium text-[var(--ink)] m-0">Bloqueo activo</p>
+              <p className="text-[12px] text-[var(--muted)] m-0 mt-0.5">
+                Define si este bloqueo de reserva está actualmente en vigor
+              </p>
             </div>
             <button
               type="button"
               aria-label="Toggle Estado Bloqueo"
               onClick={() => setIsActive(!isActive)}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out outline-none focus:ring-2 focus:ring-indigo-100 focus:ring-offset-1 ${
-                isActive ? 'bg-indigo-600' : 'bg-slate-200'
-              }`}
+              style={{
+                width: '38px',
+                height: '22px',
+                borderRadius: '999px',
+                border: '1px solid var(--line)',
+                background: isActive ? 'var(--blue)' : 'var(--surface-2)',
+                position: 'relative',
+                cursor: 'pointer',
+                padding: 0,
+                transition: 'background-color .15s',
+                flexShrink: 0,
+              }}
             >
               <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                  isActive ? 'translate-x-5' : 'translate-x-0'
-                }`}
+                style={{
+                  position: 'absolute',
+                  top: '2px',
+                  left: isActive ? '18px' : '2px',
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '50%',
+                  background: '#FFFFFF',
+                  transition: 'left .15s',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.15)',
+                }}
               />
             </button>
           </div>
         </form>
       </Modal>
-    </div>
+    </>
   )
 }

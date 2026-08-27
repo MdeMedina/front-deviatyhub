@@ -25,55 +25,36 @@ export interface IntegrationCardProps {
   onConfigure?: () => void
 }
 
-// Brand configurations for custom theme colors, descriptions, and icons
 const brandConfigs = {
   [IntegrationType.WHATSAPP]: {
     name: 'WhatsApp Business',
-    description: 'Canal directo para confirmaciones, recordatorios de citas y comunicación fluida con pacientes.',
+    description: 'Canal directo para confirmaciones, recordatorios de citas y comunicación con pacientes.',
     icon: MessageSquare,
-    themeClasses: 'from-emerald-50 to-teal-50/20 border-emerald-100 hover:border-emerald-200/80',
-    iconClasses: 'bg-emerald-50 text-emerald-600',
-    titleClasses: 'text-emerald-800',
   },
   [IntegrationType.INSTAGRAM]: {
     name: 'Instagram Direct',
-    description: 'Automatización de respuestas directas y captación de pacientes desde tus publicaciones y stories.',
+    description: 'Automatización de respuestas directas y captación de pacientes desde stories y publicaciones.',
     icon: Share2,
-    themeClasses: 'from-pink-50 to-purple-50/20 border-pink-100 hover:border-pink-200/80',
-    iconClasses: 'bg-pink-50 text-pink-600',
-    titleClasses: 'text-pink-850',
   },
   [IntegrationType.GOOGLE_CALENDAR]: {
     name: 'Google Calendar',
-    description: 'Sincronización en tiempo real de la agenda médica con calendarios de Google del personal y doctores.',
+    description: 'Sincronización en tiempo real de la agenda médica con calendarios de Google Workspace.',
     icon: Calendar,
-    themeClasses: 'from-blue-50 to-indigo-50/20 border-blue-100 hover:border-blue-200/80',
-    iconClasses: 'bg-blue-50 text-blue-600',
-    titleClasses: 'text-blue-800',
   },
   [IntegrationType.DENTALINK]: {
     name: 'Dentalink',
-    description: 'Integración bidireccional de fichas clínicas, presupuestos y agendas para clínicas dentales.',
+    description: 'Integración bidireccional de fichas clínicas, presupuestos y agendas odontológicas.',
     icon: Activity,
-    themeClasses: 'from-cyan-50 to-sky-50/20 border-cyan-100 hover:border-cyan-200/80',
-    iconClasses: 'bg-cyan-50 text-cyan-600',
-    titleClasses: 'text-cyan-800',
   },
   [IntegrationType.DENTIDESK]: {
     name: 'Dentidesk',
-    description: 'Sincronización de pacientes y horas clínicas con la plataforma de gestión odontológica Dentidesk.',
+    description: 'Sincronización de pacientes y horas clínicas con el sistema Dentidesk.',
     icon: Layers,
-    themeClasses: 'from-sky-50 to-indigo-50/20 border-sky-100 hover:border-sky-200/80',
-    iconClasses: 'bg-sky-50 text-sky-600',
-    titleClasses: 'text-sky-850',
   },
   [IntegrationType.GMAIL]: {
     name: 'Gmail & Google Workspace',
-    description: 'Envío automático de notificaciones de presupuestos, boletas y confirmaciones por correo electrónico.',
+    description: 'Envío automático de notificaciones de presupuestos, boletas y confirmaciones por email.',
     icon: Mail,
-    themeClasses: 'from-rose-50 to-red-50/20 border-rose-100 hover:border-rose-200/80',
-    iconClasses: 'bg-rose-50 text-rose-600',
-    titleClasses: 'text-rose-800',
   },
 }
 
@@ -85,16 +66,12 @@ export const IntegrationCard: React.FC<IntegrationCardProps> = ({
 }) => {
   const brand = brandConfigs[integration.type] || {
     name: integration.type,
-    description: 'Servicio de integración externo de Deviaty Hub.',
+    description: 'Servicio de integración externo de Dentral.',
     icon: Layers,
-    themeClasses: 'from-slate-50 to-slate-100 border-slate-200 hover:border-slate-350',
-    iconClasses: 'bg-slate-100 text-slate-600',
-    titleClasses: 'text-slate-800',
   }
 
   const BrandIcon = brand.icon
 
-  // Safely format the timestamp with date-fns
   let formattedDate = ''
   if (integration.last_tested_at) {
     try {
@@ -105,38 +82,31 @@ export const IntegrationCard: React.FC<IntegrationCardProps> = ({
   }
 
   return (
-    <div className={`flex flex-col justify-between p-6 bg-gradient-to-br ${brand.themeClasses} border rounded-3xl transition-all duration-300 shadow-sm hover:shadow-md hover:scale-[1.01] h-full`}>
-      <div className="space-y-4">
-        {/* Card Header (Icon & Status badge) */}
+    <div className="flex flex-col justify-between bg-[var(--card)] border border-[var(--line)] rounded-[10px] shadow-[0_1px_2px_rgba(20,20,25,0.05)] transition-colors hover:border-[var(--dim)] h-full overflow-hidden">
+      <div className="p-5 space-y-3.5">
+        {/* Card Header (34px icon box & Status badge) */}
         <div className="flex items-start justify-between gap-3">
-          <div className={`w-12 h-12 rounded-2xl ${brand.iconClasses} flex items-center justify-center`}>
-            <BrandIcon size={22} />
+          <div className="w-[34px] h-[34px] rounded-[6px] bg-[var(--head)] border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shrink-0">
+            <BrandIcon size={17} />
           </div>
-          
-          <Badge 
-            label={integration.connected ? 'Conectado' : 'Desconectado'} 
-            variant={integration.connected ? 'success' : 'neutral'} 
-            dot 
+
+          <Badge
+            label={integration.connected ? 'Conectado' : 'Desconectado'}
+            variant={integration.connected ? 'success' : 'neutral'}
+            dot
           />
         </div>
 
         {/* Brand Details */}
-        <div className="space-y-2">
-          <h3 className={`font-bold text-base ${brand.titleClasses}`}>{brand.name}</h3>
-          <p className="text-xs text-slate-500 leading-relaxed font-medium">{brand.description}</p>
+        <div className="space-y-1">
+          <h3 className="text-[14.5px] font-semibold text-[var(--ink)]">{brand.name}</h3>
+          <p className="text-[12.5px] text-[var(--muted)] leading-relaxed">{brand.description}</p>
         </div>
-      </div>
 
-      {/* Card Footer Actions & Status metrics */}
-      <div className="mt-5 space-y-4">
-        <div className="flex gap-2">
+        {/* Actions: two 50% buttons */}
+        <div className="flex gap-2 pt-1">
           {onConfigure && (
-            <Button
-              onClick={onConfigure}
-              variant="outline"
-              size="sm"
-              className="flex-1 text-xs py-2 shadow-none hover:shadow-sm"
-            >
+            <Button onClick={onConfigure} variant="outline" size="sm" className="flex-1">
               Configurar
             </Button>
           )}
@@ -147,46 +117,47 @@ export const IntegrationCard: React.FC<IntegrationCardProps> = ({
             disabled={isTesting}
             variant="outline"
             size="sm"
-            className={onConfigure ? 'flex-1 text-xs py-2 shadow-none hover:shadow-sm' : 'w-full text-xs py-2 shadow-none hover:shadow-sm'}
+            className={onConfigure ? 'flex-1' : 'w-full'}
           >
             Probar conexión
           </Button>
         </div>
-
-        {integration.last_tested_at && (
-          <div className="pt-3 border-t border-slate-100/80 flex items-center justify-between text-[11px] font-semibold text-slate-400">
-            <div className="flex items-center gap-1.5">
-              {integration.last_test_ok ? (
-                <CheckCircle2 size={13} className="text-emerald-500 shrink-0" />
-              ) : (
-                <XCircle size={13} className="text-rose-500 shrink-0" />
-              )}
-              <span className={integration.last_test_ok ? 'text-emerald-600/90' : 'text-rose-600/90'}>
-                {integration.last_test_ok ? 'Conexión OK' : 'Fallo de conexión'}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <span>{formattedDate}</span>
-              {integration.latency_ms !== undefined && (
-                <div className="relative group inline-block ml-0.5">
-                  <div className="flex items-center gap-0.5 text-slate-400 hover:text-slate-600 transition-colors cursor-help bg-slate-50 px-1 py-0.5 rounded border border-slate-100">
-                    <Info size={11} />
-                    <span className="text-[10px] font-bold">{integration.latency_ms} ms</span>
-                  </div>
-                  
-                  <div 
-                    data-testid="latency-tooltip"
-                    className="absolute bottom-full right-0 mb-1.5 px-2 py-1 bg-slate-900 text-white text-[9px] font-bold rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow z-20"
-                  >
-                    Latencia del último test
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Status footer bar on --surface */}
+      {integration.last_tested_at && (
+        <div className="flex items-center justify-between gap-2 px-5 py-2.5 bg-[var(--surface)] border-t border-[var(--line)] text-[11.5px]">
+          <div className="flex items-center gap-1.5">
+            {integration.last_test_ok ? (
+              <CheckCircle2 size={12} className="text-[var(--pos)] shrink-0" />
+            ) : (
+              <XCircle size={12} className="text-[var(--neg)] shrink-0" />
+            )}
+            <span className={integration.last_test_ok ? 'text-[var(--pos)]' : 'text-[var(--neg)]'}>
+              {integration.last_test_ok ? 'Conexión OK' : 'Fallo de conexión'}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 tabular text-[var(--dim)]">
+            <span>{formattedDate}</span>
+            {integration.latency_ms !== undefined && (
+              <div className="relative group inline-block">
+                <div className="flex items-center gap-0.5 text-[var(--muted)] hover:text-[var(--ink)] transition-colors cursor-help">
+                  <Info size={10} />
+                  <span className="font-mono">{integration.latency_ms} ms</span>
+                </div>
+
+                <div
+                  data-testid="latency-tooltip"
+                  className="absolute bottom-full right-0 mb-1.5 px-2 py-1 bg-[var(--ink)] text-[var(--bg)] text-[9px] font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow z-20"
+                >
+                  Latencia del último test
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -1,27 +1,30 @@
 'use client'
 
 import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Mail, Lock, LogIn, ArrowRight } from 'lucide-react'
-import { Input } from '@/components/ui/Input'
-import { Button } from '@/components/ui/Button'
+import Link from 'next/link'
+import { AlertCircle, SunMoon } from 'lucide-react'
 import { useLogin } from '@/lib/api/hooks/use-auth'
 import { useUIStore } from '@/lib/stores/ui.store'
 import { ApiError } from '@/lib/api/client'
+import { Logo } from '@/components/brand/Logo'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const { addToast } = useUIStore()
+  const [validationError, setValidationError] = useState<string | null>(null)
+  const { addToast, toggleTheme } = useUIStore()
   const { mutate: login, isPending } = useLogin()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    setValidationError(null)
     
     if (!email || !password) {
+      const msg = 'Por favor complete todos los campos'
+      setValidationError(msg)
       addToast({
         title: 'Error de validación',
-        message: 'Por favor complete todos los campos',
+        message: msg,
         type: 'error'
       })
       return
@@ -32,9 +35,11 @@ export default function LoginPage() {
       {
         onError: (error) => {
           const apiError = error as ApiError
+          const msg = apiError.message || 'Credenciales inválidas'
+          setValidationError(msg)
           addToast({
             title: 'Fallo al iniciar sesión',
-            message: apiError.message || 'Credenciales inválidas',
+            message: msg,
             type: 'error'
           })
         }
@@ -43,108 +48,159 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-stretch bg-white overflow-hidden">
-      {/* Form Section */}
-      <div className="flex-1 flex flex-col justify-center px-8 sm:px-12 lg:px-20 xl:px-32 z-10 bg-white">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-md w-full mx-auto"
-        >
-          {/* Logo / Brand */}
-          <div className="mb-12">
-            <div className="w-12 h-12 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-2xl mb-6 shadow-xl shadow-indigo-100 flex items-center justify-center text-white">
-              <LogIn size={24} />
-            </div>
-            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Bienvenido de nuevo</h1>
-            <p className="mt-2 text-slate-500 font-medium">Ingresa tus credenciales para acceder al panel de Deviaty Hub.</p>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(430px, 1fr))', minHeight: '100vh', background: 'var(--bg)' }}>
+      {/* Left Column: Brand & Form */}
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '40px 48px', minHeight: '100vh' }}>
+        {/* Brand Header */}
+        <Logo variant="lockup" size={14} />
+
+        {/* Form Container */}
+        <div style={{ maxWidth: '360px', width: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '28px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <h1 style={{ margin: 0, fontSize: '26px', fontWeight: 600, letterSpacing: '-0.025em', color: 'var(--ink)' }}>
+              Bienvenido de nuevo
+            </h1>
+            <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6, color: 'var(--muted)' }}>
+              Ingresa tus credenciales para acceder al panel de Dentral.
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <Input
-              label="Correo Electrónico"
-              placeholder="ejemplo@clínica.com"
-              value={email}
-              onChange={setEmail}
-              type="email"
-              required
-              leftIcon={<Mail size={18} />}
-            />
+          {/* Inline Validation Alert */}
+          {validationError && (
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', padding: '11px 13px', border: '1px solid var(--blue-line)', background: 'var(--blue-tint)', borderRadius: '8px' }}>
+              <AlertCircle size={15} strokeWidth={1.75} style={{ color: 'var(--blue)', marginTop: '1px', flex: 'none' }} />
+              <span style={{ fontSize: '13px', lineHeight: 1.5, color: 'var(--ink-soft)' }}>{validationError}</span>
+            </div>
+          )}
 
-            <div className="space-y-1">
-              <Input
-                label="Contraseña"
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+            <div data-field>
+              <label htmlFor="email">Correo electrónico</label>
+              <input
+                id="email"
+                data-inp
+                type="email"
+                placeholder="ejemplo@clínica.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+                style={{ height: '40px' }}
+                required
+              />
+            </div>
+
+            <div data-field>
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
+                <label htmlFor="password">Contraseña</label>
+                <a href="#" style={{ fontSize: '12px', color: 'var(--muted)', textDecoration: 'none' }}>
+                  ¿Olvidaste tu contraseña?
+                </a>
+              </div>
+              <input
+                id="password"
+                data-inp
+                type="password"
                 placeholder="••••••••"
                 value={password}
-                onChange={setPassword}
-                type="password"
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+                style={{ height: '40px' }}
                 required
-                leftIcon={<Lock size={18} />}
               />
-              <div className="flex justify-end">
-                <button type="button" className="text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
-                  ¿Olvidaste tu contraseña?
-                </button>
-              </div>
             </div>
 
-            <Button
+            <button
               type="submit"
-              fullWidth
-              size="lg"
-              loading={isPending}
-              className="mt-8"
+              data-btn="primary"
+              disabled={isPending}
+              style={{ height: '40px', marginTop: '2px', fontSize: '13.5px', fontWeight: 500 }}
             >
-              Iniciar Sesión
-              {!isPending && <ArrowRight size={18} className="ml-2" />}
-            </Button>
+              {isPending ? 'Iniciando sesión...' : 'Iniciar sesión'}
+            </button>
           </form>
 
-          <p className="mt-10 text-center text-sm text-slate-400">
-            ¿No tienes cuenta? <span className="text-indigo-600 font-bold cursor-pointer hover:underline">Contacta con soporte</span>
+          <p style={{ margin: 0, fontSize: '13px', color: 'var(--muted)' }}>
+            ¿No tienes cuenta?{' '}
+            <a href="#" style={{ fontWeight: 500, color: 'var(--ink)', textDecoration: 'none' }}>
+              Contacta con soporte
+            </a>
           </p>
-        </motion.div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+          <span data-lbl>Dentral · Plataforma clínica</span>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Link
+              href="/set-password?token=demo"
+              data-btn
+              style={{ height: '28px', fontSize: '12px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
+            >
+              Establecer contraseña
+            </Link>
+            <button
+              data-btn
+              type="button"
+              onClick={toggleTheme}
+              style={{ height: '28px', width: '32px', padding: 0 }}
+              aria-label="Cambiar tema"
+            >
+              <SunMoon size={14} strokeWidth={1.75} />
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Visual Section - Premium Side */}
-      <div className="hidden lg:flex flex-1 relative bg-slate-900 overflow-hidden">
-        {/* Animated Gradients */}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/40 via-purple-900/40 to-slate-900 z-0"></div>
-        <motion.div 
-          animate={{ 
-            scale: [1, 1.2, 1],
-            rotate: [0, 5, 0]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/4 -right-1/4 w-[800px] h-[800px] bg-indigo-600/20 rounded-full blur-[120px]"
+      {/* Right Column: Dark Tech Panel */}
+      <div 
+        style={{
+          position: 'relative',
+          background: 'var(--panel)',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-end',
+          padding: '56px',
+          overflow: 'hidden'
+        }}
+      >
+        <div 
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: 'linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px)',
+            backgroundSize: '64px 64px'
+          }} 
         />
-        <motion.div 
-          animate={{ 
-            scale: [1, 1.3, 1],
-            rotate: [0, -10, 0]
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-purple-600/20 rounded-full blur-[100px]"
-        />
+        
+        <div style={{ position: 'absolute', top: '56px', left: '56px', right: '56px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#5FBF8D' }} />
+          <span style={{ fontFamily: 'var(--font-geist-mono), monospace', fontSize: '10.5px', letterSpacing: '0.09em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)' }}>
+            Nueva versión 2.4 ya disponible
+          </span>
+        </div>
 
-        {/* Content */}
-        <div className="relative z-10 flex flex-col justify-center items-center text-center p-20 w-full">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="max-w-lg"
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white/80 text-xs font-bold mb-8 backdrop-blur-md">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-400"></span>
-              Nueva versión 2.4 ya disponible
+        <div style={{ position: 'relative', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <h2 style={{ margin: 0, fontSize: '34px', lineHeight: 1.15, fontWeight: 600, letterSpacing: '-0.03em', color: '#FFFFFF', textWrap: 'pretty' }}>
+            Optimiza la gestión de tu clínica dental
+          </h2>
+          <p style={{ margin: 0, fontSize: '15px', lineHeight: 1.65, color: 'rgba(255,255,255,.6)', textWrap: 'pretty' }}>
+            La plataforma integral impulsada por IA para manejar citas, conversaciones y pacientes de forma inteligente.
+          </p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '1px', background: 'rgba(255,255,255,.12)', border: '1px solid rgba(255,255,255,.12)', borderRadius: '10px', overflow: 'hidden', marginTop: '14px' }}>
+            <div style={{ background: 'var(--panel)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+              <span data-mono style={{ fontSize: '20px', color: '#FFFFFF' }}>24/7</span>
+              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,.45)', lineHeight: 1.4 }}>Atención continua</span>
             </div>
-            <h2 className="text-5xl font-extrabold text-white leading-tight mb-6">Optimiza la gestión de tu clínica dental</h2>
-            <p className="text-xl text-indigo-100/60 font-medium leading-relaxed">
-              La plataforma integral impulsada por IA para manejar citas, conversaciones y pacientes de forma inteligente.
-            </p>
-          </motion.div>
+            <div style={{ background: 'var(--panel)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+              <span data-mono style={{ fontSize: '20px', color: '#FFFFFF' }}>86%</span>
+              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,.45)', lineHeight: 1.4 }}>Tasa de contención</span>
+            </div>
+            <div style={{ background: 'var(--panel)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+              <span data-mono style={{ fontSize: '20px', color: '#FFFFFF' }}>1.2s</span>
+              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,.45)', lineHeight: 1.4 }}>Respuesta media</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

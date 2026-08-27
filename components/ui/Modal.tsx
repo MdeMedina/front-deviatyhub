@@ -41,10 +41,10 @@ export const Modal: React.FC<ModalProps> = ({
   if (!mounted) return null
 
   const sizeClasses = {
-    sm: 'max-w-sm',
-    md: 'max-w-md',
-    lg: 'max-w-2xl',
-    xl: 'max-w-4xl',
+    sm: 'max-w-[380px]',
+    md: 'max-w-[440px]',
+    lg: 'max-w-[620px]',
+    xl: 'max-w-[860px]',
   }
 
   const modalContent = (
@@ -57,43 +57,43 @@ export const Modal: React.FC<ModalProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm"
+            className="fixed inset-0 bg-[#212121]/45 backdrop-blur-[2px]"
             aria-hidden="true"
           />
 
           {/* Modal Content */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ type: 'spring', duration: 0.5, bounce: 0.3 }}
-            className={`relative w-full ${sizeClasses[size]} bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col ${className}`}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
+            className={`relative w-full ${sizeClasses[size]} bg-[var(--card)] border border-[var(--line)] rounded-[12px] shadow-[0_24px_60px_rgba(0,0,0,0.18)] overflow-hidden flex flex-col ${className}`}
             role="dialog"
             aria-modal="true"
             aria-labelledby="modal-title"
           >
             {/* Header */}
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-              <h3 id="modal-title" className="text-lg font-bold text-slate-800">
+            <div className="px-5 py-3.5 bg-[var(--head)] border-b border-[var(--line)] flex items-center justify-between">
+              <h3 id="modal-title" className="text-[14.5px] font-semibold text-[var(--ink)] tracking-[-0.012em]">
                 {title}
               </h3>
               <button
                 onClick={onClose}
-                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-full transition-colors"
+                className="w-7 h-7 flex items-center justify-center text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--surface-2)] rounded-[6px] transition-colors cursor-pointer"
                 aria-label="Cerrar modal"
               >
-                <X size={20} />
+                <X size={15} />
               </button>
             </div>
 
             {/* Body */}
-            <div className="px-6 py-6 overflow-y-auto max-h-[70vh]">
+            <div className="px-5 py-5 overflow-y-auto max-h-[70vh] text-[13.5px] text-[var(--ink-soft)]">
               {children}
             </div>
 
             {/* Footer */}
             {footer && (
-              <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
+              <div className="px-5 py-3 bg-[var(--surface)] border-t border-[var(--line)] flex justify-end gap-2.5">
                 {footer}
               </div>
             )}

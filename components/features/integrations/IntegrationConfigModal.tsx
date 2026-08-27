@@ -139,38 +139,38 @@ export const IntegrationConfigModal: React.FC<IntegrationConfigModalProps> = ({
       }
     >
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-12 gap-3 text-slate-400">
+        <div className="flex flex-col items-center justify-center py-12 gap-2">
           <Spinner size="md" />
-          <p className="text-xs font-semibold">Cargando esquema de campos...</p>
+          <span className="microlabel text-[10px]">Cargando esquema de campos...</span>
         </div>
       ) : isError ? (
-        <div className="text-center py-8 space-y-4">
-          <p className="text-sm font-semibold text-rose-500">Error al obtener los campos de la integración.</p>
+        <div className="text-center py-8 flex flex-col items-center gap-4">
+          <p className="text-[13px] font-medium text-[var(--neg)]">Error al obtener los campos de la integración.</p>
           <Button variant="outline" size="sm" onClick={() => refetch()}>
             Reintentar
           </Button>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           {/* Security Banner */}
-          <div className="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 flex gap-3 text-emerald-800">
-            <div className="text-emerald-500 mt-0.5 shrink-0">
+          <div className="bg-[var(--blue-tint)] border border-[var(--blue-line)] rounded-[8px] p-3.5 flex gap-3 text-[var(--ink-soft)]">
+            <div className="text-[var(--blue)] mt-0.5 shrink-0">
               <ShieldCheck size={18} />
             </div>
             <div>
-              <p className="text-xs font-bold leading-normal">Cifrado de Extremo a Extremo</p>
-              <p className="text-[11px] text-emerald-600/90 font-medium leading-normal mt-0.5">
-                Tus credenciales y claves de API serán cifradas bajo el estándar militar AES-256 en nuestros servidores antes de almacenarse en la base de datos.
+              <p className="text-[12.5px] font-semibold leading-normal text-[var(--ink)] m-0">Cifrado de extremo a extremo</p>
+              <p className="text-[11.5px] text-[var(--muted)] font-medium leading-normal mt-0.5 m-0">
+                Tus credenciales y claves de API serán cifradas bajo el estándar AES-256 en nuestros servidores antes de almacenarse en la base de datos.
               </p>
             </div>
           </div>
 
           {/* Dynamic Form Fields */}
-          <div className="space-y-4">
+          <div className="flex flex-col gap-4">
             {details?.fields.map((field) => {
               const isPasswordPlaceholder = field.type === 'password' && field.configured && !formValues[field.key]
               return (
-                <div key={field.key} className="space-y-1">
+                <div key={field.key} className="flex flex-col gap-1">
                   <Input
                     label={field.label}
                     type={field.type}
@@ -195,8 +195,8 @@ export const IntegrationConfigModal: React.FC<IntegrationConfigModalProps> = ({
                     disabled={saveMutation.isPending}
                   />
                   {field.type === 'password' && field.configured && (
-                    <div className="flex items-center gap-1 text-[11px] text-slate-400 font-semibold px-1 mt-1">
-                      <Info size={11} className="text-indigo-400 shrink-0" />
+                    <div className="flex items-center gap-1 text-[11px] text-[var(--muted)] font-medium px-1 mt-1">
+                      <Info size={11} className="text-[var(--blue)] shrink-0" />
                       <span>Ya tienes una clave guardada. Si la dejas vacía o en ••••••••, se mantendrá la existente.</span>
                     </div>
                   )}

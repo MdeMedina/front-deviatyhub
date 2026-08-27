@@ -12,8 +12,7 @@ import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
 import { Modal } from '@/components/ui/Modal'
 import { Input } from '@/components/ui/Input'
-import { Badge } from '@/components/ui/Badge'
-import { Shield, Plus, Edit2, Trash2, AlertCircle, Save, Info } from 'lucide-react'
+import { Shield, Plus, Pencil, Trash2, AlertCircle, Save } from 'lucide-react'
 import { IPolicy } from '@/lib/types'
 
 export interface PoliciesManagerProps {
@@ -58,7 +57,7 @@ export const PoliciesManager: React.FC<PoliciesManagerProps> = ({ readOnly }) =>
 
   const validate = () => {
     const errors: Record<string, string> = {}
-    
+
     if (!title.trim()) {
       errors.title = 'El título de la política es requerido'
     }
@@ -145,129 +144,126 @@ export const PoliciesManager: React.FC<PoliciesManagerProps> = ({ readOnly }) =>
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 bg-white rounded-3xl border border-slate-100 shadow-sm min-h-[400px]">
-        <Spinner size="lg" className="text-indigo-600 mb-4" />
-        <p className="text-sm font-semibold text-slate-500">Cargando políticas clínicas...</p>
+      <div data-card style={{ maxWidth: '760px' }}>
+        <div style={{ padding: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '260px', gap: '8px' }}>
+          <Spinner size="md" />
+          <span className="microlabel text-[10px]">Cargando políticas clínicas...</span>
+        </div>
       </div>
     )
   }
 
   if (isError) {
     return (
-      <div className="p-8 bg-rose-50 border border-rose-100 rounded-3xl text-center max-w-2xl mx-auto flex flex-col items-center gap-3">
-        <AlertCircle className="text-rose-500 w-8 h-8" />
-        <p className="text-sm font-semibold text-rose-600">
-          No se pudieron cargar las políticas de la clínica.
-        </p>
+      <div data-card style={{ maxWidth: '760px' }}>
+        <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', textAlign: 'center' }}>
+          <AlertCircle style={{ color: 'var(--neg)' }} size={22} />
+          <p style={{ fontSize: '13px', color: 'var(--neg)', margin: 0 }}>
+            No se pudieron cargar las políticas de la clínica.
+          </p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
-      {/* Header card */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-lg font-bold text-slate-900 leading-tight">Políticas Clínicas</h2>
-          <p className="text-xs text-slate-400 font-medium tracking-wide uppercase mt-0.5">
-            Define las directrices de agendamiento, inasistencias y reembolsos
-          </p>
+    <>
+      <div data-card style={{ maxWidth: '760px' }}>
+        <div data-hd>
+          <h2>Políticas de atención</h2>
+          {!readOnly && (
+            <button data-btn onClick={handleOpenCreateModal}>
+              <Plus size={14} strokeWidth={1.9} />
+              Agregar Política
+            </button>
+          )}
         </div>
-        {!readOnly && (
-          <Button
-            onClick={handleOpenCreateModal}
-            icon={<Plus size={18} />}
-            className="sm:self-center"
-          >
-            Agregar Política
-          </Button>
+
+        {policies.length === 0 ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px', gap: '8px', textAlign: 'center' }}>
+            <div style={{ width: '44px', height: '44px', border: '1px solid var(--line)', borderRadius: '7px', background: 'var(--head)', display: 'grid', placeItems: 'center', color: 'var(--muted)' }}>
+              <Shield size={22} strokeWidth={1.75} />
+            </div>
+            <p style={{ fontSize: '14.5px', fontWeight: 600, color: 'var(--ink)', margin: 0 }}>Sin políticas vigentes</p>
+            <p style={{ fontSize: '12.5px', color: 'var(--muted)', margin: 0, maxWidth: '340px' }}>
+              Crea políticas de inasistencia, cancelaciones fuera de plazo u otras reglas de comportamiento.
+            </p>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {policies.map((policy, idx) => (
+              <div
+                key={policy.id}
+                data-testid={`policy-card-${policy.id}`}
+                style={{
+                  padding: '16px 20px',
+                  borderBottom: idx < policies.length - 1 ? '1px solid var(--line-soft)' : 'none',
+                  display: 'flex',
+                  gap: '16px',
+                  alignItems: 'flex-start',
+                }}
+              >
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <span style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>{policy.title}</span>
+                  <span style={{ fontSize: '12.5px', lineHeight: 1.55, color: 'var(--muted)', whiteSpace: 'pre-line' }}>
+                    {policy.description}
+                  </span>
+                </div>
+
+                <span data-badge>
+                  <span data-dot style={{ background: policy.active ? 'var(--pos)' : undefined }} />
+                  {policy.active ? 'Activa' : 'Inactiva'}
+                </span>
+
+                {!readOnly && (
+                  <span style={{ display: 'flex', gap: '6px' }}>
+                    <button
+                      data-btn
+                      onClick={() => handleOpenEditModal(policy)}
+                      style={{ width: '28px', height: '28px', padding: 0 }}
+                      title={`Editar ${policy.title}`}
+                      aria-label={`Editar ${policy.title}`}
+                    >
+                      <Pencil size={14} strokeWidth={1.75} />
+                    </button>
+                    <button
+                      data-btn
+                      onClick={() => handleDelete(policy.id)}
+                      disabled={isDeleting}
+                      style={{ width: '28px', height: '28px', padding: 0 }}
+                      title={`Eliminar ${policy.title}`}
+                      aria-label={`Eliminar ${policy.title}`}
+                    >
+                      <Trash2 size={14} strokeWidth={1.75} />
+                    </button>
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
         )}
       </div>
 
-      {/* Grid of Policies */}
-      {policies.length === 0 ? (
-        <div className="bg-slate-50/50 border border-dashed border-slate-200 rounded-3xl p-12 text-center max-w-lg mx-auto flex flex-col items-center gap-3">
-          <Shield size={40} className="text-slate-300" />
-          <p className="text-sm font-bold text-slate-600">Sin políticas vigentes</p>
-          <p className="text-xs text-slate-400">
-            Crea políticas de inasistencia, cancelaciones fuera de plazo u otras reglas de comportamiento.
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-4">
-          {policies.map((policy) => (
-            <div
-              key={policy.id}
-              className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-start justify-between gap-4 hover:shadow-md hover:border-slate-200/60 transition-all duration-200"
-              data-testid={`policy-card-${policy.id}`}
-            >
-              <div className="space-y-2 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="font-bold text-slate-800 text-base">{policy.title}</h3>
-                  <Badge
-                    variant={policy.active ? 'success' : 'neutral'}
-                    size="sm"
-                    label={policy.active ? 'Activa' : 'Inactiva'}
-                  />
-                </div>
-                <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-line">
-                  {policy.description}
-                </p>
-              </div>
-
-              {/* Actions */}
-              {!readOnly && (
-                <div className="flex sm:flex-col items-center gap-1 self-end sm:self-start">
-                  <button
-                    onClick={() => handleOpenEditModal(policy)}
-                    className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
-                    aria-label={`Editar ${policy.title}`}
-                  >
-                    <Edit2 size={16} />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(policy.id)}
-                    disabled={isDeleting}
-                    className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
-                    aria-label={`Eliminar ${policy.title}`}
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Modal structure */}
+      {/* Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingPolicy ? 'Editar Política Clínica' : 'Crear Política Clínica'}
+        title={editingPolicy ? 'Editar política clínica' : 'Crear política clínica'}
         footer={
-          <div className="flex items-center gap-2 w-full justify-end">
-            <Button
-              variant="ghost"
-              onClick={() => setIsModalOpen(false)}
-              disabled={isCreating || isUpdating}
-            >
+          <>
+            <Button variant="secondary" onClick={() => setIsModalOpen(false)} disabled={isCreating || isUpdating}>
               Cancelar
             </Button>
-            <Button
-              onClick={() => handleSubmit()}
-              loading={isCreating || isUpdating}
-              icon={<Save size={18} />}
-            >
-              Guardar Política
+            <Button onClick={() => handleSubmit()} loading={isCreating || isUpdating} icon={<Save size={14} />}>
+              Guardar política
             </Button>
-          </div>
+          </>
         }
       >
-        <form onSubmit={handleSubmit} className="space-y-4" aria-label="policy-form">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4" aria-label="policy-form">
           <Input
-            label="Título de la Política"
-            placeholder="ej. Política de Cancelación de Citas"
+            label="Título de la política"
+            placeholder="ej. Política de cancelación de citas"
             value={title}
             onChange={(val) => {
               setTitle(val)
@@ -282,12 +278,12 @@ export const PoliciesManager: React.FC<PoliciesManagerProps> = ({ readOnly }) =>
           />
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="policy-description" className="text-sm font-semibold text-slate-700 ml-1">
-              Descripción detallada <span className="text-rose-500">*</span>
+            <label htmlFor="policy-description" className="microlabel flex items-center gap-1">
+              Descripción detallada <span className="text-[var(--muted)]">*</span>
             </label>
             <textarea
               id="policy-description"
-              placeholder="Escribe aquí las reglas del juego de forma clara para tus pacientes..."
+              placeholder="Escribe aquí las reglas de forma clara para tus pacientes..."
               value={description}
               onChange={(e) => {
                 setDescription(e.target.value)
@@ -298,46 +294,58 @@ export const PoliciesManager: React.FC<PoliciesManagerProps> = ({ readOnly }) =>
                 })
               }}
               rows={5}
-              className={`w-full px-4 py-2.5 bg-white border rounded-xl text-slate-700 transition-all duration-200 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 placeholder-slate-400 text-sm ${
-                formErrors.description ? 'border-rose-300' : 'border-slate-200'
-              }`}
+              data-inp
+              className="resize-none"
+              style={{ height: 'auto', padding: '10px 12px', lineHeight: 1.55, borderColor: formErrors.description ? 'var(--neg)' : undefined }}
               required
             />
             {formErrors.description && (
-              <p className="text-xs font-medium text-rose-500 ml-1 mt-1 flex items-center gap-1">
-                {formErrors.description}
-              </p>
+              <p className="text-xs font-medium text-[var(--neg)] mt-0.5">{formErrors.description}</p>
             )}
           </div>
 
-          {/* Status Toggle in Modal */}
-          <div className="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-2xl p-4 mt-2">
-            <div className="flex gap-2.5 items-center">
-              <Info size={16} className="text-indigo-500" />
-              <div>
-                <p className="text-sm font-bold text-slate-700">Política Activa</p>
-                <p className="text-[10px] text-slate-400 font-medium">
-                  Indica si esta política está actualmente vigente y es obligatoria
-                </p>
-              </div>
+          {/* Status Toggle */}
+          <div className="flex items-center justify-between border border-[var(--line)] bg-[var(--surface)] rounded-[7px] p-3.5 mt-1">
+            <div>
+              <p className="text-[13px] font-medium text-[var(--ink)] m-0">Política activa</p>
+              <p className="text-[12px] text-[var(--muted)] m-0 mt-0.5">
+                Indica si esta política está actualmente vigente y es obligatoria
+              </p>
             </div>
             <button
               type="button"
               aria-label="Toggle Estado Política"
               onClick={() => setIsActive(!isActive)}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out outline-none focus:ring-2 focus:ring-indigo-100 focus:ring-offset-1 ${
-                isActive ? 'bg-indigo-600' : 'bg-slate-200'
-              }`}
+              style={{
+                width: '38px',
+                height: '22px',
+                borderRadius: '999px',
+                border: '1px solid var(--line)',
+                background: isActive ? 'var(--blue)' : 'var(--surface-2)',
+                position: 'relative',
+                cursor: 'pointer',
+                padding: 0,
+                transition: 'background-color .15s',
+                flexShrink: 0,
+              }}
             >
               <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                  isActive ? 'translate-x-5' : 'translate-x-0'
-                }`}
+                style={{
+                  position: 'absolute',
+                  top: '2px',
+                  left: isActive ? '18px' : '2px',
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '50%',
+                  background: '#FFFFFF',
+                  transition: 'left .15s',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.15)',
+                }}
               />
             </button>
           </div>
         </form>
       </Modal>
-    </div>
+    </>
   )
 }

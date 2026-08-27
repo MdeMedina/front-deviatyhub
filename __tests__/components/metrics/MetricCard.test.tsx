@@ -37,11 +37,11 @@ describe('MetricCard Molecule (Fase 7.2)', () => {
     const badge = screen.getByTestId('trend-badge')
     expect(badge).toBeInTheDocument()
     expect(badge).toHaveTextContent('+12.5%')
-    
-    // Emerald color classes for positive/green indicators
-    expect(badge).toHaveClass('bg-emerald-50')
-    expect(badge).toHaveClass('text-emerald-600')
-    expect(badge).toHaveClass('border-emerald-100')
+
+    // Dentral: bordered chip with positive brand color
+    expect(badge).toHaveClass('text-[var(--pos)]')
+    expect(badge).toHaveClass('border-[var(--line)]')
+    expect(badge).toHaveClass('bg-[var(--surface)]')
   })
 
   // ==========================================
@@ -60,10 +60,10 @@ describe('MetricCard Molecule (Fase 7.2)', () => {
     expect(badge).toBeInTheDocument()
     expect(badge).toHaveTextContent('+5.4%')
 
-    // Rose color classes for negative/red indicators
-    expect(badge).toHaveClass('bg-rose-50')
-    expect(badge).toHaveClass('text-rose-600')
-    expect(badge).toHaveClass('border-rose-100')
+    // Dentral: bordered chip with negative brand color
+    expect(badge).toHaveClass('text-[var(--neg)]')
+    expect(badge).toHaveClass('border-[var(--line)]')
+    expect(badge).toHaveClass('bg-[var(--surface)]')
   })
 
   // ==========================================

@@ -50,6 +50,8 @@ describe('UI Molecules — Toast', () => {
   it('applies correct success styles', () => {
     const { container } = render(<Toast toast={mockToast} onRemove={() => {}} />)
     const toastEl = container.firstChild as HTMLElement
-    expect(toastEl.className).toContain('border-emerald-100')
+    expect(toastEl.className).toContain('border-[var(--line)]')
+    const dot = container.querySelector('.bg-\\[var\\(--pos\\)\\]')
+    expect(dot).toBeInTheDocument()
   })
 })
