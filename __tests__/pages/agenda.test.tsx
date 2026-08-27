@@ -53,7 +53,7 @@ describe('Agenda Page Integration', () => {
     }
   ]
 
-  it('renders the agenda page with appointments grouped by doctor', async () => {
+  it('renders the agenda week grid with the appointment in a time cell', async () => {
     simpleServer.use(ENDPOINTS.agenda.appointments, async () => ({
       status: 200,
       data: { success: true, data: { data: mockAppointments, meta: { total: 1, page: 1, limit: 10, total_pages: 1 } } }
@@ -64,17 +64,14 @@ describe('Agenda Page Integration', () => {
     // Check header
     expect(screen.getByText('Agenda & Citas')).toBeInTheDocument()
 
-    // screen.debug() // Uncomment for debugging if it fails again
-
-    // Check doctor grouping
-    const doctorHeading = await screen.findByText((content, element) => {
-      return element?.tagName.toLowerCase() === 'h2' && /smith/i.test(content)
-    })
-    expect(doctorHeading).toBeInTheDocument()
-    expect(screen.getByText('John Doe')).toBeInTheDocument()
+    // The week grid renders the appointment name + treatment in its time cell
+    expect(await screen.findByText('John Doe')).toBeInTheDocument()
+    expect(screen.getByText('Limpieza')).toBeInTheDocument()
+    // Legend lives in the week card header
+    expect(screen.getByText('Agendada por IA')).toBeInTheDocument()
   })
 
-  it('shows empty state when no appointments are found', async () => {
+  it('renders the week grid without appointments when none are returned', async () => {
     simpleServer.use(ENDPOINTS.agenda.appointments, async () => ({
       status: 200,
       data: { success: true, data: { data: [], meta: { total: 0, page: 1, limit: 10, total_pages: 0 } } }
@@ -82,7 +79,9 @@ describe('Agenda Page Integration', () => {
 
     render(<AgendaPage />, { wrapper: createWrapper() })
 
-    expect(await screen.findByText('No hay citas para este día')).toBeInTheDocument()
+    // The empty week grid still renders its card/legend, with no appointment cards
+    expect(await screen.findByText('Agendada por IA')).toBeInTheDocument()
+    expect(screen.queryByText('John Doe')).not.toBeInTheDocument()
   })
 
   it('opens detail modal when clicking an appointment card', async () => {

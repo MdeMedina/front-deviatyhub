@@ -33,21 +33,20 @@ function ConversationsContent() {
         </div>
       </div>
 
-      {/* 3-Column Layout Container */}
-      <div 
-        data-card 
-        className="w-full overflow-hidden flex"
+      {/* 3-Column Layout Container (data-conv grid: 320 | 1fr | 268, responsive) */}
+      <div
+        data-card
+        data-conv
+        className="w-full overflow-hidden"
         style={{ height: 'calc(100vh - 220px)', minHeight: '540px' }}
       >
-        {/* Columna Izquierda: Master (Lista 320px) */}
-        <div className="w-[320px] flex-shrink-0 border-r border-[var(--line)] h-full flex flex-col">
+        {/* Columna 1: Lista (se oculta bajo 820px) */}
+        <div data-conv-list="true" className="border-r border-[var(--line)] h-full flex flex-col min-w-0">
           <ConversationList onSelect={handleSelect} selectedId={selectedId} />
         </div>
 
-        {/* Columna Central & Derecha: Detail (Chat + Contact Sidebar) */}
-        <div className="flex-1 min-w-0 h-full flex">
-          <ConversationDetail conversationId={selectedId} />
-        </div>
+        {/* Columnas 2 y 3: hilo + panel de contacto (siblings del grid) */}
+        <ConversationDetail conversationId={selectedId} />
       </div>
     </div>
   )

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Search, MessageSquare, Calendar, Clock, MessageCircle } from 'lucide-react'
+import { Search, MessageSquare, Calendar } from 'lucide-react'
 import { useConversations } from '@/lib/api/hooks/use-conversations'
 import { useConversationSocketListeners } from '@/lib/socket/hooks/use-socket-listeners'
 import { ConversationStatus, Channel } from '@/lib/types'
@@ -122,8 +122,8 @@ function FilterTab({ active, onClick, label }: { active: boolean, onClick: () =>
     <button
       onClick={onClick}
       className={`flex-1 py-1 text-center rounded-[6px] text-[11.5px] font-medium transition-colors cursor-pointer ${
-        active 
-          ? 'bg-[var(--card)] text-[var(--ink)] shadow-[0_1px_2px_rgba(20,20,25,0.05)] border border-[var(--line)]' 
+        active
+          ? 'bg-[var(--card)] text-[var(--ink)] border border-[var(--line)]'
           : 'text-[var(--muted)] hover:text-[var(--ink)] border border-transparent'
       }`}
     >
@@ -159,8 +159,7 @@ function ConversationItem({
         <span className="text-[13.5px] font-semibold text-[var(--ink)] truncate pr-2">
           {conversation.contact?.name || 'Usuario desconocido'}
         </span>
-        <span className="microlabel text-[10px] whitespace-nowrap flex items-center gap-1 tabular">
-          <Clock size={10} />
+        <span data-mono className="text-[11px] text-[var(--dim)] whitespace-nowrap">
           {new Date(conversation.last_message?.sent_at || conversation.started_at || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </span>
       </div>
@@ -170,10 +169,10 @@ function ConversationItem({
       </p>
 
       <div className="flex items-center gap-1.5 flex-wrap">
-        <div className="w-5 h-5 rounded-[4px] border border-[var(--line)] bg-[var(--surface)] flex items-center justify-center text-[var(--muted)]">
-          <MessageCircle size={10} />
-        </div>
-        <Badge 
+        <Badge variant="neutral" size="sm">
+          {isWhatsApp ? 'WhatsApp' : 'Instagram'}
+        </Badge>
+        <Badge
           variant={isHuman ? 'warning' : isClosed ? 'neutral' : 'info'}
           size="sm"
         >

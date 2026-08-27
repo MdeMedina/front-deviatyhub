@@ -17,7 +17,7 @@ import { IAppointment, AppointmentStatus, AppointmentSource } from '@/lib/types'
 import { Badge } from '@/components/ui/Badge'
 import { Spinner } from '@/components/ui/Spinner'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { Calendar, Info } from 'lucide-react'
+import { Calendar } from 'lucide-react'
 
 interface CalendarGridProps {
   view: 'day' | 'week' | 'month'
@@ -184,83 +184,108 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
     )
   }
 
-  // Render Week View
+  // Render Week View — prototype time grid (64px hours column + 7 day columns, 58px rows)
   const renderWeekView = () => {
-    const startOfWeekDay = startOfWeek(currentDate, { weekStartsOn: 1 })
-    const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(startOfWeekDay, i))
+    const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 })
+    const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i))
+
+    // Bucket each appointment's hour into the visible range so it always renders
+    const bucketHour = (apt: IAppointment) => {
+      const h = getParsedDate(apt.scheduled_at).getHours()
+      return Math.min(HOURS[HOURS.length - 1], Math.max(HOURS[0], h))
+    }
+
+    const apptsFor = (day: Date, hour: number) =>
+      appointments.filter(
+        (apt) => isSameDay(getParsedDate(apt.scheduled_at), day) && bucketHour(apt) === hour
+      )
+
+    const HEADER_COLS = { display: 'grid', gridTemplateColumns: '64px repeat(7, minmax(0, 1fr))' } as const
 
     return (
-      <div className="bg-[var(--card)] border border-[var(--line)] rounded-[10px] overflow-hidden flex flex-col shadow-[0_1px_2px_rgba(20,20,25,0.05)]">
-        {/* Header Days Grid */}
-        <div className="grid grid-cols-7 border-b border-[var(--line)] bg-[var(--head)] py-2.5 text-center">
-          {daysOfWeek.map(day => {
-            const isToday = isSameDay(day, new Date())
-            return (
-              <div key={day.toString()} className="px-1">
-                <span className="block microlabel text-[9.5px] mb-0.5">
-                  {format(day, 'eee', { locale: es })}
-                </span>
-                <span className={`inline-flex items-center justify-center w-6 h-6 rounded-[5px] text-[12.5px] font-semibold tabular ${
-                  isToday 
-                    ? 'bg-[var(--blue)] text-white' 
-                    : 'text-[var(--ink)]'
-                }`}>
-                  {format(day, 'd')}
-                </span>
-              </div>
-            )
-          })}
+      <div data-card>
+        <div data-hd>
+          <h2>Semana del {format(weekStart, "d 'de' MMMM", { locale: es })}</h2>
+          <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', color: 'var(--muted)' }}>
+              <span style={{ width: '9px', height: '9px', borderRadius: '3px', border: '1px solid var(--blue-line)', background: 'var(--blue-tint)' }} />
+              Agendada por IA
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', color: 'var(--muted)' }}>
+              <span style={{ width: '9px', height: '9px', borderRadius: '3px', border: '1px solid var(--line)', background: 'var(--surface-2)' }} />
+              Manual
+            </span>
+          </div>
         </div>
 
-        {/* Days Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-7 divide-y md:divide-y-0 md:divide-x divide-[var(--line-soft)] min-h-[450px]">
-          {daysOfWeek.map(day => {
-            const dayAppointments = appointments.filter(apt => 
-              isSameDay(getParsedDate(apt.scheduled_at), day)
-            )
+        <div style={{ overflowX: 'auto' }}>
+          <div style={{ minWidth: '920px' }}>
+            {/* Day header row */}
+            <div style={{ ...HEADER_COLS, background: 'var(--head)', borderBottom: '1px solid var(--line)' }}>
+              <div />
+              {daysOfWeek.map((day) => (
+                <div
+                  key={day.toString()}
+                  style={{ padding: '9px 10px', borderLeft: '1px solid var(--line-soft)', display: 'flex', flexDirection: 'column', gap: '2px' }}
+                >
+                  <span data-lbl>{format(day, 'eee', { locale: es })}</span>
+                  <span data-mono style={{ fontSize: '13px', color: 'var(--ink)' }}>{format(day, 'd')}</span>
+                </div>
+              ))}
+            </div>
 
-            return (
-              <div key={day.toString()} className="p-2.5 bg-[var(--card)] min-h-[140px] md:min-h-[450px] relative">
-                {dayAppointments.length === 0 ? (
-                  <div className="h-full flex items-center justify-center py-6 text-[var(--dim)] text-[11px]">
-                    -
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    {dayAppointments.map(apt => {
-                      const isAI = apt.source === AppointmentSource.AGENT || (apt.source as any) === 'AI'
-                      return (
-                        <div
-                          key={apt.id}
-                          onClick={() => onSelectAppointment(apt.id)}
-                          className={`p-2.5 rounded-[6px] border cursor-pointer transition-colors group ${
-                            isAI 
-                              ? 'bg-[var(--blue-tint)] border-[var(--blue-line)] hover:border-[var(--blue)]' 
-                              : 'bg-[var(--surface-2)] border-[var(--line)] hover:border-[var(--dim)]'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between gap-1 mb-1">
-                            <h2 className="microlabel text-[9px] text-[var(--blue)] truncate">
-                              {apt.doctor?.name}
-                            </h2>
-                            <span className="microlabel text-[9px] text-[var(--muted)] tabular">
-                              {format(getParsedDate(apt.scheduled_at), 'HH:mm')}
+            {/* Hour rows */}
+            {HOURS.map((hour) => (
+              <div key={hour} style={{ ...HEADER_COLS, borderBottom: '1px solid var(--line-soft)' }}>
+                <div data-mono style={{ fontSize: '10.5px', color: 'var(--dim)', padding: '6px 8px', textAlign: 'right' }}>
+                  {String(hour).padStart(2, '0')}:00
+                </div>
+                {daysOfWeek.map((day) => {
+                  const cellAppts = apptsFor(day, hour)
+                  return (
+                    <div
+                      key={day.toString()}
+                      style={{ borderLeft: '1px solid var(--line-soft)', minHeight: '58px', padding: '3px', display: 'flex', flexDirection: 'column', gap: '3px' }}
+                    >
+                      {cellAppts.map((apt) => {
+                        const isAI = apt.source === AppointmentSource.AGENT || (apt.source as any) === 'AI'
+                        return (
+                          <button
+                            key={apt.id}
+                            onClick={() => onSelectAppointment(apt.id)}
+                            style={{
+                              width: '100%',
+                              flex: '1 1 auto',
+                              minHeight: '48px',
+                              border: `1px solid ${isAI ? 'var(--blue-line)' : 'var(--line)'}`,
+                              background: isAI ? 'var(--blue-tint)' : 'var(--surface-2)',
+                              borderRadius: '6px',
+                              padding: '5px 7px',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '2px',
+                              alignItems: 'flex-start',
+                              justifyContent: 'center',
+                              cursor: 'pointer',
+                              overflow: 'hidden',
+                              textAlign: 'left',
+                            }}
+                          >
+                            <span style={{ fontSize: '11.5px', fontWeight: 500, color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
+                              {apt.contact_name}
                             </span>
-                          </div>
-                          <h4 className="text-[11.5px] font-semibold text-[var(--ink)] truncate">
-                            {apt.contact_name}
-                          </h4>
-                          <p className="text-[10.5px] text-[var(--muted)] truncate">
-                            {apt.treatment?.name}
-                          </p>
-                        </div>
-                      )
-                    })}
-                  </div>
-                )}
+                            <span style={{ fontSize: '10.5px', color: 'var(--muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
+                              {apt.treatment?.name}
+                            </span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )
+                })}
               </div>
-            )
-          })}
+            ))}
+          </div>
         </div>
       </div>
     )
@@ -355,25 +380,19 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
 
   return (
     <div className="w-full space-y-4">
-      {/* Empty notification when 0 appointments */}
-      {appointments.length === 0 && (
-        <div className="p-3.5 rounded-[8px] bg-[var(--blue-tint)] border border-[var(--blue-line)] flex items-center gap-2.5 text-[12.5px] text-[var(--blue)]">
-          <Info size={15} className="shrink-0" />
-          <span>No hay citas para este día</span>
+      {/* Legend bar for day/month (week shows its legend in the card header) */}
+      {view !== 'week' && (
+        <div className="flex items-center gap-4 text-[11.5px] text-[var(--muted)]">
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-[3px] bg-[var(--blue-tint)] border border-[var(--blue-line)]" />
+            <span>Agendada por IA</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-[3px] bg-[var(--surface-2)] border border-[var(--line)]" />
+            <span>Manual</span>
+          </div>
         </div>
       )}
-
-      {/* Legend Bar */}
-      <div className="flex items-center gap-4 text-[11.5px] text-[var(--muted)]">
-        <div className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-[3px] bg-[var(--blue-tint)] border border-[var(--blue-line)]" />
-          <span>Agendada por IA</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-[3px] bg-[var(--surface-2)] border border-[var(--line)]" />
-          <span>Manual / Recepción</span>
-        </div>
-      </div>
 
       {view === 'day' && renderDayView()}
       {view === 'week' && renderWeekView()}

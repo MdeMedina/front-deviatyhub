@@ -1,13 +1,14 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
-import { AlertCircle, ArrowRight } from 'lucide-react'
+import { AlertCircle, ArrowRight, RotateCcw } from 'lucide-react'
 import { useAuthStore } from '@/lib/stores/auth.store'
 import { SimulatorChat } from '@/components/features/simulator/SimulatorChat'
 
 export default function SimulatorPage() {
   const { hasPermission } = useAuthStore()
+  const [resetNonce, setResetNonce] = useState(0)
 
   // Simulator permission check
   const canView = hasPermission('simulator.view')
@@ -46,14 +47,18 @@ export default function SimulatorPage() {
           </p>
         </div>
 
-        <div data-badge style={{ height: '32px' }}>
-          <span data-dot style={{ background: 'var(--pos)' }} />
-          Sesión activa
-        </div>
+        <button
+          data-btn
+          data-testid="btn-reset-session"
+          onClick={() => setResetNonce((n) => n + 1)}
+        >
+          <RotateCcw size={14} strokeWidth={1.75} />
+          Reiniciar sesión
+        </button>
       </div>
 
       {/* Simulator Chat Container */}
-      <SimulatorChat />
+      <SimulatorChat resetNonce={resetNonce} />
     </div>
   )
 }
