@@ -3,7 +3,6 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { motion } from 'framer-motion'
 import { 
   MessageSquare, 
   Calendar, 
@@ -15,108 +14,165 @@ import {
   Settings, 
   Users, 
   Lock,
+  LayoutDashboard,
+  Sun,
+  Moon,
   ChevronLeft,
-  ChevronRight,
-  LayoutDashboard
+  ChevronRight
 } from 'lucide-react'
 import { useAuthStore } from '@/lib/stores/auth.store'
 import { useUIStore } from '@/lib/stores/ui.store'
 
-const NAV_ITEMS = [
-  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, permission: null },
-  { label: 'Conversaciones', href: '/conversations', icon: MessageSquare, permission: 'conversations.view' },
-  { label: 'Agenda', href: '/agenda', icon: Calendar, permission: 'agenda.view' },
-  { label: 'Base conocimiento', href: '/knowledge-base', icon: Book, permission: 'knowledge_base.view' },
-  { label: 'Acciones agente', href: '/agent-actions', icon: Wand2, permission: 'agent_actions.view' },
-  { label: 'Simulador', href: '/simulator', icon: PlayCircle, permission: 'simulator.view' },
-  { label: 'Métricas', href: '/metrics', icon: BarChart3, permission: 'metrics.view' },
-  { label: 'Integraciones', href: '/integrations', icon: Puzzle, permission: 'integrations.view' },
-  { label: 'Configuración', href: '/settings', icon: Settings, permission: 'clinic_config.view' },
-  { label: 'Usuarios', href: '/users', icon: Users, permission: 'users.view' },
-  { label: 'Seguridad', href: '/security', icon: Lock, permission: 'security.view' },
+interface NavGroup {
+  name: string
+  items: {
+    label: string
+    href: string
+    icon: React.ElementType
+    permission: string | null
+  }[]
+}
+
+const NAV_GROUPS: NavGroup[] = [
+  {
+    name: 'Operación',
+    items: [
+      { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, permission: null },
+      { label: 'Conversaciones', href: '/conversations', icon: MessageSquare, permission: 'conversations.view' },
+      { label: 'Agenda', href: '/agenda', icon: Calendar, permission: 'agenda.view' },
+    ]
+  },
+  {
+    name: 'Inteligencia',
+    items: [
+      { label: 'Base conocimiento', href: '/knowledge-base', icon: Book, permission: 'knowledge_base.view' },
+      { label: 'Acciones agente', href: '/agent-actions', icon: Wand2, permission: 'agent_actions.view' },
+      { label: 'Simulador', href: '/simulator', icon: PlayCircle, permission: 'simulator.view' },
+      { label: 'Métricas', href: '/metrics', icon: BarChart3, permission: 'metrics.view' },
+    ]
+  },
+  {
+    name: 'Administración',
+    items: [
+      { label: 'Integraciones', href: '/integrations', icon: Puzzle, permission: 'integrations.view' },
+      { label: 'Configuración', href: '/settings', icon: Settings, permission: 'clinic_config.view' },
+      { label: 'Usuarios', href: '/users', icon: Users, permission: 'users.view' },
+      { label: 'Seguridad', href: '/security', icon: Lock, permission: 'security.view' },
+    ]
+  }
 ]
 
 export const Sidebar: React.FC = () => {
   const pathname = usePathname()
   const { hasPermission } = useAuthStore()
-  const { isSidebarOpen, toggleSidebar } = useUIStore()
-
-  const filteredItems = NAV_ITEMS.filter(item => 
-    !item.permission || hasPermission(item.permission as any)
-  )
+  const { isSidebarOpen, toggleSidebar, theme, toggleTheme } = useUIStore()
 
   return (
-    <motion.aside
-      initial={false}
-      animate={{ width: isSidebarOpen ? 280 : 80 }}
-      className="fixed left-0 top-0 h-screen bg-white border-r border-slate-100 flex flex-col z-40"
+    <aside
+      className={`fixed left-0 top-0 h-screen bg-[var(--nav)] border-r border-[var(--line)] flex flex-col z-40 transition-all duration-200 ${
+        isSidebarOpen ? 'w-[240px]' : 'w-[72px]'
+      }`}
     >
-      {/* Logo Section */}
-      <div className="h-20 flex items-center px-6 justify-between border-b border-slate-50">
-        {isSidebarOpen && (
-          <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-            DeviatyHub
-          </span>
-        )}
+      {/* Header 56px */}
+      <div className="h-14 flex items-center px-4 justify-between border-b border-[var(--line)] bg-[var(--card)]">
+        <div className="flex items-center gap-2.5 overflow-hidden">
+          {/* Dentral Isotype Box */}
+          <div className="w-[26px] h-[26px] border border-[var(--line)] rounded-[6px] grid place-items-center bg-[var(--surface)] shrink-0">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <circle cx="7" cy="7" r="2.2" fill="var(--blue)" />
+              <circle cx="2.5" cy="2.5" r="1.1" fill="var(--dim)" />
+              <circle cx="11.5" cy="2.5" r="1.1" fill="var(--dim)" />
+              <circle cx="2.5" cy="11.5" r="1.1" fill="var(--dim)" />
+              <circle cx="11.5" cy="11.5" r="1.1" fill="var(--dim)" />
+            </svg>
+          </div>
+          
+          {isSidebarOpen && (
+            <div className="flex items-center gap-1.5">
+              <span className="text-[14px] font-semibold tracking-[-0.01em] text-[var(--ink)]">
+                Dentral
+              </span>
+              <span className="microlabel px-1.5 py-0.5 rounded border border-[var(--line)] bg-[var(--surface)]">
+                PRO
+              </span>
+            </div>
+          )}
+        </div>
+
         <button 
           onClick={toggleSidebar}
-          className="p-1.5 rounded-lg hover:bg-slate-50 text-slate-400 hover:text-indigo-600 transition-colors ml-auto"
+          className="p-1 rounded-[6px] hover:bg-[var(--surface-2)] text-[var(--muted)] hover:text-[var(--ink)] transition-colors cursor-pointer"
+          aria-label={isSidebarOpen ? "Contraer menú lateral" : "Expandir menú lateral"}
         >
-          {isSidebarOpen ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
+          {isSidebarOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
         </button>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto overflow-x-hidden py-6 px-3 space-y-1 custom-scrollbar">
-        {filteredItems.map((item) => {
-          const isActive = pathname === item.href
-          const Icon = item.icon
+      {/* Navigation Groups */}
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden py-3.5 px-2.5 space-y-4">
+        {NAV_GROUPS.map((group) => {
+          const visibleItems = group.items.filter(
+            item => !item.permission || hasPermission(item.permission as any)
+          )
+
+          if (visibleItems.length === 0) return null
 
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group relative ${
-                isActive 
-                  ? 'bg-indigo-50 text-indigo-700 font-semibold' 
-                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
-              }`}
-            >
-              <Icon size={22} className={isActive ? 'text-indigo-600' : 'group-hover:text-indigo-500 transition-colors'} />
-              
+            <div key={group.name} className="space-y-1">
               {isSidebarOpen && (
-                <span className="whitespace-nowrap text-sm">
-                  {item.label}
-                </span>
-              )}
-
-              {/* Tooltip for collapsed mode */}
-              {!isSidebarOpen && (
-                <div className="absolute left-16 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap">
-                  {item.label}
+                <div className="px-2 py-1 microlabel text-[var(--dim)]">
+                  {group.name}
                 </div>
               )}
 
-              {isActive && (
-                <motion.div 
-                  layoutId="active-indicator"
-                  className="absolute left-0 w-1 h-6 bg-indigo-600 rounded-r-full"
-                />
-              )}
-            </Link>
+              {visibleItems.map((item) => {
+                const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))
+                const Icon = item.icon
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    title={!isSidebarOpen ? item.label : undefined}
+                    className={`flex items-center gap-2.5 px-2 py-[7px] rounded-[6px] transition-[background-color,color] duration-150 relative text-[13.5px] group ${
+                      isActive 
+                        ? 'bg-[var(--blue-tint)] text-[var(--blue)] font-medium before:content-[""] before:absolute before:left-[-10px] before:top-[7px] before:bottom-[7px] before:w-[2px] before:bg-[var(--blue)] before:rounded-r-[2px]' 
+                        : 'text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] font-normal'
+                    }`}
+                  >
+                    <Icon size={16} className={`shrink-0 ${isActive ? 'text-[var(--blue)]' : 'text-[var(--muted)] group-hover:text-[var(--ink)]'}`} />
+                    
+                    {isSidebarOpen && (
+                      <span className="truncate">
+                        {item.label}
+                      </span>
+                    )}
+                  </Link>
+                )
+              })}
+            </div>
           )
         })}
       </nav>
 
-      {/* Footer / Info */}
-      {isSidebarOpen && (
-        <div className="p-6 border-t border-slate-50">
-          <div className="bg-slate-50 rounded-xl p-4">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Plan Actual</p>
-            <p className="text-sm font-semibold text-slate-700">Enterprise Pro</p>
+      {/* Footer 56px */}
+      <div className="p-3 border-t border-[var(--line)] bg-[var(--card)] flex items-center justify-between">
+        {isSidebarOpen ? (
+          <div className="overflow-hidden">
+            <p className="microlabel">Plan Actual</p>
+            <p className="text-[12.5px] font-medium text-[var(--ink)] truncate">Enterprise Pro</p>
           </div>
-        </div>
-      )}
-    </motion.aside>
+        ) : <div />}
+
+        <button
+          onClick={toggleTheme}
+          className="w-7 h-7 flex items-center justify-center border border-[var(--line)] rounded-[6px] bg-[var(--head)] text-[var(--muted)] hover:text-[var(--ink)] transition-colors cursor-pointer shrink-0"
+          title={theme === 'dark' ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+          aria-label="Alternar tema"
+        >
+          {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+        </button>
+      </div>
+    </aside>
   )
 }

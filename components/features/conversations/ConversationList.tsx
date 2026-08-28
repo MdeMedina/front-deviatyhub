@@ -1,168 +1,185 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Search, MessageSquare, Camera, RefreshCcw } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { Search, MessageSquare, Calendar } from 'lucide-react'
 import { useConversations } from '@/lib/api/hooks/use-conversations'
 import { useConversationSocketListeners } from '@/lib/socket/hooks/use-socket-listeners'
+import { ConversationStatus, Channel } from '@/lib/types'
 import { Badge } from '@/components/ui/Badge'
 import { Spinner } from '@/components/ui/Spinner'
-import { EmptyState } from '@/components/ui/EmptyState'
-import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { EmptyState } from '@/components/ui/EmptyState'
 
 interface ConversationListProps {
-  onSelect: (id: string) => void
   selectedId?: string | null
+  onSelect: (id: string) => void
 }
 
-export const ConversationList: React.FC<ConversationListProps> = ({ onSelect, selectedId }) => {
-  const [statusFilter, setStatusFilter] = useState<string>('OPEN')
+export const ConversationList: React.FC<ConversationListProps> = ({ 
+  selectedId, 
+  onSelect 
+}) => {
+  const [statusFilter, setStatusFilter] = useState<ConversationStatus | 'all'>('all')
   const [searchQuery, setSearchQuery] = useState('')
 
-  const { data, isLoading, isError, refetch } = useConversations({ 
-    status: statusFilter as any,
+  const { data: response, isLoading, isError, refetch } = useConversations({
+    status: statusFilter === 'all' ? undefined : statusFilter,
+    search: searchQuery || undefined
   })
 
   useConversationSocketListeners()
 
-  const conversations = data?.data || []
-
-  const filteredConversations = conversations.filter(conv => 
-    conv.contact?.name?.toLowerCase().includes(searchQuery.toLowerCase())
-  )
-
-  const renderStatusTabs = () => {
-    const tabs = [
-      { id: 'OPEN', label: 'Abiertas' },
-      { id: 'HUMAN_TAKEOVER', label: 'En curso' },
-      { id: 'CLOSED', label: 'Cerradas' },
-    ]
-
-    return (
-      <div className="flex gap-2 p-4 border-b border-slate-100 bg-white sticky top-0 z-10">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setStatusFilter(tab.id)}
-            className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold transition-all duration-200 ${
-              statusFilter === tab.id
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-100'
-                : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-    )
-  }
-
-  if (isError) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full p-8 text-center space-y-4">
-        <div className="p-4 bg-red-50 rounded-full text-red-500">
-          <RefreshCcw size={32} />
-        </div>
-        <h3 className="font-bold text-slate-800">Error de conexión</h3>
-        <Button onClick={() => refetch()} variant="secondary" size="sm">
-          Reintentar
-        </Button>
-      </div>
-    )
-  }
+  const conversations = response?.data || []
 
   return (
-    <div className="flex flex-col h-full bg-white border-r border-slate-100 overflow-hidden">
-      <div className="p-4 space-y-4">
+    <div className="flex flex-col h-full bg-[var(--card)]">
+      {/* Header & Filter Tabs */}
+      <div className="p-3.5 border-b border-[var(--line)] bg-[var(--head)] space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-slate-800">Mensajes</h2>
-          <Badge label={`${conversations.length}`} variant="purple" size="sm" />
+          <div className="flex items-center gap-2">
+            <h2 className="text-[14.5px] font-semibold text-[var(--ink)] tracking-[-0.012em]">Chats</h2>
+            <Badge variant="neutral" size="sm">{conversations.length}</Badge>
+          </div>
         </div>
-        <Input
-          placeholder="Buscar contacto..."
+        
+        <Input 
+          placeholder="Buscar contacto..." 
           value={searchQuery}
-          onChange={(val) => setSearchQuery(val)}
-          leftIcon={<Search size={18} className="text-slate-400" />}
+          onChange={setSearchQuery}
+          leftIcon={<Search size={14} />}
+          className="w-full"
         />
+
+        {/* Segmented Filter Tabs */}
+        <div data-tabs style={{ width: '100%' }}>
+          <FilterTab
+            active={statusFilter === 'all'}
+            onClick={() => setStatusFilter('all')}
+            label="Todos"
+          />
+          <FilterTab
+            active={statusFilter === ConversationStatus.OPEN}
+            onClick={() => setStatusFilter(ConversationStatus.OPEN)}
+            label="Abiertos"
+          />
+          <FilterTab
+            active={statusFilter === ConversationStatus.HUMAN_TAKEOVER}
+            onClick={() => setStatusFilter(ConversationStatus.HUMAN_TAKEOVER)}
+            label="En curso"
+          />
+          <FilterTab
+            active={statusFilter === ConversationStatus.CLOSED}
+            onClick={() => setStatusFilter(ConversationStatus.CLOSED)}
+            label="Cerrados"
+          />
+        </div>
       </div>
 
-      {renderStatusTabs()}
-
-      <div className="flex-1 overflow-y-auto custom-scrollbar">
+      {/* List Area */}
+      <div className="flex-1 overflow-y-auto">
         {isLoading ? (
-          <div className="flex items-center justify-center h-64">
-            <Spinner size="lg" label="Cargando chats..." />
+          <div className="flex flex-col items-center justify-center py-16 gap-2">
+            <Spinner size="md" />
+            <span className="microlabel text-[10px]">Cargando chats</span>
           </div>
-        ) : filteredConversations.length === 0 ? (
+        ) : isError ? (
+          <div className="p-6 text-center">
+            <p className="text-[13px] text-[var(--neg)] mb-3">Error de conexión al cargar conversaciones</p>
+            <button 
+              onClick={() => refetch && refetch()}
+              className="text-[12px] font-medium text-[var(--blue)] hover:underline"
+            >
+              Reintentar
+            </button>
+          </div>
+        ) : conversations.length === 0 ? (
           <div className="py-12">
             <EmptyState 
-              title="No hay conversaciones" 
-              description={searchQuery ? 'Prueba con otros términos' : 'Las nuevas consultas aparecerán aquí'}
-              icon={<MessageSquare size={48} className="text-slate-200" />}
+              title="No hay conversaciones"
+              description="No se encontraron conversaciones con los filtros actuales."
+              icon={<MessageSquare size={20} />}
             />
           </div>
         ) : (
-          <div className="divide-y divide-slate-50">
-            <AnimatePresence mode="popLayout">
-              {filteredConversations.map((conv) => (
-                <motion.button
-                  key={conv.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  onClick={() => onSelect(conv.id)}
-                  className={`w-full p-4 flex gap-4 text-left transition-colors hover:bg-slate-50 relative ${
-                    selectedId === conv.id ? 'bg-indigo-50/50' : ''
-                  }`}
-                >
-                  <div className="relative flex-shrink-0">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-400 font-bold text-lg">
-                      {conv.contact?.name?.[0] || '?'}
-                    </div>
-                    <div className="absolute -bottom-1 -right-1 bg-white p-1 rounded-lg shadow-sm border border-slate-100">
-                      {conv.channel === 'WHATSAPP' ? (
-                        <MessageSquare size={12} className="text-emerald-500 fill-emerald-500" />
-                      ) : (
-                        <Camera size={12} className="text-purple-500" />
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-start mb-1">
-                      <h4 className="font-semibold text-slate-800 truncate">
-                        {conv.contact?.name || 'Desconocido'}
-                      </h4>
-                      <span className="text-[10px] font-medium text-slate-400">
-                        {conv.started_at ? format(new Date(conv.started_at), 'HH:mm', { locale: es }) : ''}
-                      </span>
-                    </div>
-                    <p className="text-sm text-slate-500 truncate leading-tight mb-2">
-                      {conv.last_message?.content || 'Sin mensajes'}
-                    </p>
-                    <Badge 
-                      label={conv.status === 'OPEN' ? 'IA' : 'Humano'} 
-                      variant={conv.status === 'OPEN' ? 'success' : 'warning'} 
-                      size="sm"
-                      dot 
-                    />
-                  </div>
-
-                  {selectedId === conv.id && (
-                    <motion.div 
-                      layoutId="active-chat"
-                      className="absolute left-0 top-2 bottom-2 w-1 bg-indigo-600 rounded-r-full"
-                    />
-                  )}
-                </motion.button>
-              ))}
-            </AnimatePresence>
+          <div className="divide-y divide-[var(--line-soft)]">
+            {conversations.map((conv) => (
+              <ConversationItem 
+                key={conv.id}
+                conversation={conv}
+                isActive={selectedId === conv.id}
+                onClick={() => onSelect(conv.id)}
+              />
+            ))}
           </div>
         )}
       </div>
     </div>
+  )
+}
+
+function FilterTab({ active, onClick, label }: { active: boolean, onClick: () => void, label: string }) {
+  return (
+    <button
+      data-tab
+      data-active={active}
+      onClick={onClick}
+      style={{ flex: 1 }}
+    >
+      {label}
+    </button>
+  )
+}
+
+function ConversationItem({ 
+  conversation, 
+  isActive, 
+  onClick 
+}: { 
+  conversation: any, 
+  isActive: boolean, 
+  onClick: () => void 
+}) {
+  const isWhatsApp = conversation.channel === Channel.WHATSAPP
+  const isHuman = conversation.status === ConversationStatus.HUMAN_TAKEOVER
+  const isClosed = conversation.status === ConversationStatus.CLOSED
+  const statusLabel = isHuman ? 'Humano' : isClosed ? 'Cerrado' : 'IA'
+  
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full text-left p-3.5 transition-colors cursor-pointer relative group ${
+        isActive 
+          ? 'bg-[var(--blue-tint)] before:content-[""] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-[var(--blue)]' 
+          : 'hover:bg-[var(--surface)]'
+      }`}
+    >
+      <div className="flex justify-between items-start mb-1">
+        <span className="text-[13.5px] font-semibold text-[var(--ink)] truncate pr-2">
+          {conversation.contact?.name || 'Usuario desconocido'}
+        </span>
+        <span data-mono className="text-[11px] text-[var(--dim)] whitespace-nowrap">
+          {new Date(conversation.last_message?.sent_at || conversation.started_at || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </span>
+      </div>
+
+      <p className="text-[12px] text-[var(--muted)] line-clamp-1 mb-2.5">
+        {conversation.last_message?.content || 'Iniciando conversación...'}
+      </p>
+
+      <div className="flex items-center gap-1.5 flex-wrap">
+        <Badge variant="neutral" size="sm">
+          {isWhatsApp ? 'WhatsApp' : 'Instagram'}
+        </Badge>
+        <Badge
+          variant={isHuman ? 'warning' : isClosed ? 'neutral' : 'info'}
+          size="sm"
+        >
+          {statusLabel}
+        </Badge>
+        {conversation.appointment_id && (
+          <Badge variant="success" size="sm" icon={<Calendar size={10} />}>Cita</Badge>
+        )}
+      </div>
+    </button>
   )
 }

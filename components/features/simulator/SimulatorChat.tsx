@@ -1,15 +1,9 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Send, Bot, User, Trash2, ChevronDown, ChevronUp, Sparkles } from 'lucide-react'
+import { Send, Wrench } from 'lucide-react'
 import { useSimulator } from '@/lib/api/hooks/use-simulator'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { EmptyState } from '@/components/ui/EmptyState'
-import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { Spinner } from '@/components/ui/Spinner'
 
 interface ChatMessage {
   id: string
@@ -19,53 +13,34 @@ interface ChatMessage {
   toolsUsed?: string[]
 }
 
-const CollapsibleTools: React.FC<{ tools: string[] }> = ({ tools }) => {
-  const [isOpen, setIsOpen] = useState(false)
-
-  if (!tools || tools.length === 0) return null
-
-  return (
-    <div className="mt-2.5 border-t border-slate-100/80 pt-2 w-full">
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        data-testid="btn-toggle-tools"
-        className="flex items-center gap-1.5 text-[11px] font-bold text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-wider"
-      >
-        {isOpen ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-        <span>{isOpen ? 'Ocultar herramientas' : `Herramientas utilizadas (${tools.length})`}</span>
-      </button>
-      
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            data-testid="tools-list"
-            className="mt-2 flex flex-wrap gap-1.5 overflow-hidden"
-          >
-            {tools.map((tool, idx) => (
-              <Badge key={idx} label={tool} variant="info" size="sm" />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
+export interface SimulatorChatProps {
+  /** Cambia este valor (desde la cabecera de página) para reiniciar la sesión. */
+  resetNonce?: number
 }
 
-export const SimulatorChat: React.FC = () => {
+export const SimulatorChat: React.FC<SimulatorChatProps> = ({ resetNonce = 0 }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [messageInput, setMessageInput] = useState('')
-  
+
   const scrollRef = useRef<HTMLDivElement>(null)
   const userJustSent = useRef(false)
+  const prevReset = useRef(resetNonce)
 
-  const { sendMessage, resetSession } = useSimulator()
+  const { sendMessage, resetSession, sessionId } = useSimulator()
 
-  // Handle smart scrolling
+  // Reset driven from the page header
+  useEffect(() => {
+    if (resetNonce !== prevReset.current) {
+      prevReset.current = resetNonce
+      setMessages([])
+      if (typeof resetSession === 'function') {
+        resetSession()
+      } else if ((resetSession as any)?.mutate) {
+        (resetSession as any).mutate()
+      }
+    }
+  }, [resetNonce, resetSession])
+
   useEffect(() => {
     const container = scrollRef.current
     if (!container) return
@@ -74,8 +49,6 @@ export const SimulatorChat: React.FC = () => {
       container.scrollTop = container.scrollHeight
       userJustSent.current = false
     } else {
-      // Agent message or typing indicator arrived.
-      // Scroll to bottom only if the user is already near the bottom (threshold of 250px)
       const offset = container.scrollHeight - container.scrollTop - container.clientHeight
       if (offset <= 250) {
         container.scrollTop = container.scrollHeight
@@ -83,219 +56,231 @@ export const SimulatorChat: React.FC = () => {
     }
   }, [messages, sendMessage.isPending])
 
-  const handleSendMessage = (e?: React.FormEvent) => {
-    if (e) e.preventDefault()
-    
-    const trimmedMessage = messageInput.trim()
+  const handleSendMessage = (textToSend?: string) => {
+    const trimmedMessage = (textToSend || messageInput).trim()
     if (!trimmedMessage || sendMessage.isPending) return
 
     const userMsg: ChatMessage = {
       id: `user-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
       sender: 'user',
       content: trimmedMessage,
-      timestamp: new Date()
+      timestamp: new Date(),
     }
 
     setMessages((prev) => [...prev, userMsg])
     userJustSent.current = true
     setMessageInput('')
 
-    sendMessage.mutate(trimmedMessage, {
-      onSuccess: (data) => {
+    sendMessage.mutate(trimmedMessage as any, {
+      onSuccess: (data: any) => {
         const agentMsg: ChatMessage = {
           id: `agent-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
           sender: 'agent',
-          content: data.response,
+          content: data.response || data.reply || '',
           timestamp: new Date(),
-          toolsUsed: data.tools_used
+          toolsUsed: data.tools_used || [],
         }
         setMessages((prev) => [...prev, agentMsg])
       },
-      onError: (err: any) => {
-        const errMsg: ChatMessage = {
-          id: `error-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+      onError: () => {
+        const errorMsg: ChatMessage = {
+          id: `error-${Date.now()}`,
           sender: 'agent',
-          content: `Error de Simulación: ${err?.message || 'Ocurrió un error al procesar el mensaje.'}`,
+          content: 'Error: No se pudo procesar la respuesta del simulador.',
           timestamp: new Date(),
-          toolsUsed: []
         }
-        setMessages((prev) => [...prev, errMsg])
-      }
+        setMessages((prev) => [...prev, errorMsg])
+      },
     })
   }
 
-  const handleResetConversation = () => {
-    resetSession()
-    setMessages([])
-    setMessageInput('')
-  }
-
-  const handleSuggestionClick = (suggestion: string) => {
-    setMessageInput(suggestion)
-  }
-
   const suggestions = [
-    '¿Tienen horas disponibles para hoy?',
-    'Quiero agendar una limpieza dental',
-    '¿Qué precios tienen para ortodoncia?',
-    '¿Atienden por Fonasa o Isapre?'
+    '¿Cuáles son los horarios de atención?',
+    'Quiero agendar una cita para mañana',
+    '¿Qué tratamientos ofrecen?',
   ]
 
+  // Count tools invoked
+  const allTools = messages.flatMap((m) => m.toolsUsed || [])
+  const toolCounts = allTools.reduce((acc, t) => {
+    acc[t] = (acc[t] || 0) + 1
+    return acc
+  }, {} as Record<string, number>)
+  const toolEntries = Object.entries(toolCounts)
+
+  const started = messages.length > 0
+
   return (
-    <div className="flex flex-col bg-white border border-slate-100 rounded-3xl h-[calc(100vh-14rem)] min-h-[500px] shadow-sm overflow-hidden">
-      {/* Top Banner / Actions Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-            <Sparkles size={18} className="animate-pulse" />
-          </div>
-          <div>
-            <h2 className="text-sm font-bold text-slate-800">Simulación del Agente</h2>
-            <p className="text-[11px] text-slate-400 font-medium tracking-wide uppercase">Entorno de pruebas interactivo</p>
-          </div>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px', alignItems: 'start' }}>
+      {/* Left Card: Test session */}
+      <div data-card style={{ height: '520px', display: 'flex', flexDirection: 'column' }}>
+        {/* Header: title + session id */}
+        <div data-hd>
+          <h2>Sesión de prueba</h2>
+          <span data-lbl>{sessionId || 'sess_local'}</span>
         </div>
 
-        {messages.length > 0 && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleResetConversation}
-            data-testid="btn-new-conversation"
-            icon={<Trash2 size={14} />}
-            className="text-xs py-1.5"
-          >
-            Nueva conversación
-          </Button>
-        )}
-      </div>
+        {/* Message Thread */}
+        <div
+          ref={scrollRef}
+          data-testid="chat-messages"
+          style={{ flex: 1, overflowY: 'auto', padding: '18px', display: 'flex', flexDirection: 'column', gap: '14px', background: 'var(--surface)' }}
+        >
+          {messages.length === 0 ? (
+            <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-3">
+              <div className="w-10 h-10 rounded-[6px] border border-[var(--line)] bg-[var(--head)] flex items-center justify-center text-[var(--dim)]">
+                <Wrench size={18} strokeWidth={1.75} />
+              </div>
+              <div>
+                <p className="text-[14px] font-semibold text-[var(--ink)]">Inicia una simulación</p>
+                <p className="text-[12px] text-[var(--muted)] max-w-xs mt-1">
+                  Escribe como un paciente o selecciona una sugerencia para probar la lógica del agente.
+                </p>
+              </div>
 
-      {/* Chat Messages viewport */}
-      <div
-        ref={scrollRef}
-        data-testid="chat-messages"
-        className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/20 custom-scrollbar"
-      >
-        {messages.length === 0 && !sendMessage.isPending ? (
-          <div className="h-full flex flex-col justify-center">
-            <EmptyState
-              title="Inicia una simulación"
-              description="Escribe un mensaje abajo o selecciona una de las sugerencias para probar cómo responderá tu agente de IA."
-              icon={<Bot size={44} className="text-indigo-400" />}
-              className="py-4"
-            />
-            
-            <div className="max-w-md mx-auto w-full px-6 -mt-2">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider text-center mb-3">Sugerencias:</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {suggestions.map((suggestion, idx) => (
+              <div className="flex flex-col gap-1.5 w-full max-w-xs pt-1">
+                {suggestions.map((s, idx) => (
                   <button
                     key={idx}
                     type="button"
-                    onClick={() => handleSuggestionClick(suggestion)}
-                    className="p-3 text-left text-xs font-medium text-slate-600 bg-white hover:bg-indigo-50/40 border border-slate-100 hover:border-indigo-100 rounded-xl transition-all duration-200 shadow-sm active:scale-[0.98]"
+                    onClick={() => handleSendMessage(s)}
+                    className="text-left px-3 py-1.5 rounded-[6px] bg-[var(--card)] border border-[var(--line)] text-[12px] text-[var(--ink-soft)] hover:border-[var(--blue)] hover:text-[var(--blue)] transition-colors cursor-pointer"
                   >
-                    {suggestion}
+                    {s}
                   </button>
                 ))}
               </div>
             </div>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            <AnimatePresence initial={false}>
-              {messages.map((msg) => {
-                const isUser = msg.sender === 'user'
-                return (
-                  <motion.div
-                    key={msg.id}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.25 }}
-                    data-testid={`message-${msg.sender}`}
-                    className={`flex gap-3.5 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
+          ) : (
+            messages.map((msg) => {
+              const isUser = msg.sender === 'user'
+              return (
+                <div
+                  key={msg.id}
+                  data-testid={isUser ? 'message-user' : 'message-agent'}
+                  style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: isUser ? 'flex-start' : 'flex-end' }}
+                >
+                  <div
+                    style={{
+                      maxWidth: '78%',
+                      padding: '10px 13px',
+                      borderRadius: '10px',
+                      fontSize: '13px',
+                      lineHeight: '1.55',
+                      border: `1px solid ${isUser ? 'var(--line)' : 'var(--blue-solid)'}`,
+                      background: isUser ? 'var(--card)' : 'var(--blue-solid)',
+                      color: isUser ? 'var(--ink)' : 'var(--on-blue)',
+                      whiteSpace: 'pre-wrap',
+                    }}
                   >
-                    <div className={`flex-shrink-0 w-8.5 h-8.5 rounded-full flex items-center justify-center text-white ${
-                      isUser ? 'bg-gradient-to-tr from-indigo-500 to-indigo-600' : 'bg-gradient-to-tr from-slate-600 to-slate-700'
-                    }`}>
-                      {isUser ? <User size={14} /> : <Bot size={14} />}
-                    </div>
-
-                    <div className={`max-w-[75%] flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
-                      <div className={`px-4.5 py-3 rounded-2xl shadow-sm ${
-                        isUser
-                          ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-tr-none'
-                          : 'bg-white border border-slate-150 text-slate-700 rounded-tl-none'
-                      }`}>
-                        <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
-                        
-                        {!isUser && msg.toolsUsed && (
-                          <CollapsibleTools tools={msg.toolsUsed} />
-                        )}
-                      </div>
-                      
-                      <span className="text-[10px] text-slate-400 mt-1 font-semibold px-1">
-                        {format(msg.timestamp, 'HH:mm', { locale: es })}
-                      </span>
-                    </div>
-                  </motion.div>
-                )
-              })}
-            </AnimatePresence>
-
-            {/* Simulated typing status */}
-            {sendMessage.isPending && (
-              <motion.div
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                data-testid="typing-indicator"
-                className="flex gap-3.5 flex-row"
-              >
-                <div className="flex-shrink-0 w-8.5 h-8.5 rounded-full flex items-center justify-center text-white bg-gradient-to-tr from-slate-600 to-slate-700">
-                  <Bot size={14} />
-                </div>
-                <div className="flex flex-col items-start">
-                  <div className="px-5 py-3 bg-white border border-slate-150 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    {msg.content}
                   </div>
+                  {!isUser && msg.toolsUsed && msg.toolsUsed.length > 0 && (
+                    <span data-testid="tools-badges" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                      {msg.toolsUsed.map((tool, idx) => (
+                        <span key={idx} data-badge style={{ fontSize: '10.5px', padding: '2px 7px', background: 'var(--card)' }}>
+                          {tool}
+                        </span>
+                      ))}
+                    </span>
+                  )}
                 </div>
-              </motion.div>
-            )}
-          </div>
-        )}
-      </div>
+              )
+            })
+          )}
 
-      {/* Input area footer panel */}
-      <div className="p-4 md:p-6 border-t border-slate-100 bg-white">
+          {sendMessage.isPending && (
+            <div data-testid="typing-indicator" className="flex flex-row items-start gap-2.5">
+              <div
+                style={{
+                  padding: '10px 14px',
+                  borderRadius: '10px',
+                  border: '1px solid var(--line)',
+                  background: 'var(--card)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                <Spinner size="sm" />
+                <span style={{ fontSize: '12px', color: 'var(--muted)' }}>Agente razonando...</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Input Footer */}
         <form
           onSubmit={(e) => {
             e.preventDefault()
             handleSendMessage()
           }}
-          className="flex gap-3 items-end"
+          style={{ padding: '14px 18px', borderTop: '1px solid var(--line)', background: 'var(--card)', display: 'flex', gap: '9px' }}
         >
-          <div className="flex-1">
-            <Input
-              value={messageInput}
-              onChange={setMessageInput}
-              placeholder="Escribe un mensaje de prueba para el agente..."
-              disabled={sendMessage.isPending}
-              data-testid="chat-input"
-            />
-          </div>
-          
-          <Button
+          <input
+            data-inp
+            type="text"
+            value={messageInput}
+            onChange={(e) => setMessageInput(e.target.value)}
+            placeholder="Escribe como si fueras un paciente..."
+            disabled={sendMessage.isPending}
+            style={{ height: '38px' }}
+          />
+          <button
+            data-btn="primary"
             type="submit"
-            disabled={!messageInput.trim() || sendMessage.isPending}
-            loading={sendMessage.isPending}
-            icon={<Send size={16} />}
             data-testid="chat-send-btn"
-            className="px-6 h-[46px] shrink-0"
+            disabled={!messageInput.trim() || sendMessage.isPending}
+            style={{ width: '38px', height: '38px', padding: 0, flex: 'none' }}
           >
-            Enviar
-          </Button>
+            <Send size={15} strokeWidth={1.75} />
+          </button>
         </form>
+      </div>
+
+      {/* Right Column */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        {/* Tools invoked */}
+        <div data-card>
+          <div data-hd>
+            <h2>Herramientas invocadas</h2>
+          </div>
+          <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {toolEntries.length === 0 ? (
+              <p style={{ margin: 0, fontSize: '12.5px', color: 'var(--muted)' }}>
+                Aún no se han invocado herramientas en esta sesión.
+              </p>
+            ) : (
+              toolEntries.map(([tool, count]) => (
+                <div key={tool} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+                  <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>{tool}</span>
+                  <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>{count}</span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Session context */}
+        <div data-card>
+          <div data-hd>
+            <h2>Contexto de la sesión</h2>
+          </div>
+          <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+              <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Paso actual</span>
+              <span data-badge style={{ fontSize: '10.5px' }}>{started ? 'ESPERANDO_HORARIO' : 'IDLE'}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+              <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Canal simulado</span>
+              <span data-badge style={{ fontSize: '10.5px' }}>WHATSAPP</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+              <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Latencia media</span>
+              <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>840 ms</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

@@ -45,20 +45,20 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
   if (!mounted || !isAuthenticated) return null
 
   return (
-    <div className="min-h-screen bg-slate-50/50">
+    <div className="min-h-screen bg-[var(--canvas)] text-[var(--ink)]">
       <Sidebar />
       <Header />
       
       <main 
-        className={`pt-20 transition-all duration-300 min-h-screen`}
-        style={{ paddingLeft: isSidebarOpen ? '280px' : '80px' }}
+        className="pt-14 transition-all duration-200 min-h-screen"
+        style={{ paddingLeft: isSidebarOpen ? '240px' : '72px' }}
       >
-        <div className="p-8 max-w-[1600px] mx-auto">
+        <div className="px-8 py-7 pb-14 max-w-[1340px] mx-auto min-w-0 w-full">
           {children}
         </div>
       </main>
 
-      {/* Global Components */}
+      {/* Global Toast Container */}
       <ToastContainer />
     </div>
   )

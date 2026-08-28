@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useClinicSchedules, useUpdateSchedules } from '@/lib/api/hooks/use-clinic'
 import { useUIStore } from '@/lib/stores/ui.store'
-import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
-import { Calendar, Save, Clock, AlertCircle } from 'lucide-react'
+import { Save, AlertCircle } from 'lucide-react'
 import { IClinicSchedule } from '@/lib/types'
 
 const DAYS_MAP: Record<number, string> = {
@@ -35,7 +34,6 @@ export const ScheduleEditor: React.FC<ScheduleEditorProps> = ({ readOnly }) => {
   // Populate local state on load
   useEffect(() => {
     if (remoteSchedules && !isInitialized) {
-      // Ensure we sort or map schedules cleanly
       const sorted = [...remoteSchedules].sort(
         (a, b) => DAYS_ORDER.indexOf(a.day_of_week) - DAYS_ORDER.indexOf(b.day_of_week)
       )
@@ -47,12 +45,9 @@ export const ScheduleEditor: React.FC<ScheduleEditorProps> = ({ readOnly }) => {
   const handleToggle = (dayOfWeek: number) => {
     setSchedules((prev) =>
       prev.map((item) =>
-        item.day_of_week === dayOfWeek
-          ? { ...item, is_open: !item.is_open }
-          : item
+        item.day_of_week === dayOfWeek ? { ...item, is_open: !item.is_open } : item
       )
     )
-    // Clear error for that day if toggled
     setErrors((prev) => {
       const next = { ...prev }
       delete next[dayOfWeek]
@@ -67,12 +62,9 @@ export const ScheduleEditor: React.FC<ScheduleEditorProps> = ({ readOnly }) => {
   ) => {
     setSchedules((prev) =>
       prev.map((item) =>
-        item.day_of_week === dayOfWeek
-          ? { ...item, [field]: value }
-          : item
+        item.day_of_week === dayOfWeek ? { ...item, [field]: value } : item
       )
     )
-    // Clear error for that day if edited
     setErrors((prev) => {
       const next = { ...prev }
       delete next[dayOfWeek]
@@ -131,122 +123,151 @@ export const ScheduleEditor: React.FC<ScheduleEditorProps> = ({ readOnly }) => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 bg-white rounded-3xl border border-slate-100 shadow-sm min-h-[400px]">
-        <Spinner size="lg" className="text-indigo-600 mb-4 animate-spin" />
-        <p className="text-sm font-semibold text-slate-500">Cargando horario semanal...</p>
+      <div data-card style={{ maxWidth: '760px' }}>
+        <div style={{ padding: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '260px', gap: '8px' }}>
+          <Spinner size="md" />
+          <span className="microlabel text-[10px]">Cargando horario semanal...</span>
+        </div>
       </div>
     )
   }
 
   if (isError) {
     return (
-      <div className="p-8 bg-rose-50 border border-rose-100 rounded-3xl text-center max-w-2xl mx-auto">
-        <p className="text-sm font-semibold text-rose-600">
-          No se pudo cargar el horario de la clínica. Por favor, intente de nuevo.
-        </p>
+      <div data-card style={{ maxWidth: '760px' }}>
+        <div style={{ padding: '24px', textAlign: 'center' }}>
+          <p style={{ fontSize: '13px', color: 'var(--neg)', margin: 0 }}>
+            No se pudo cargar el horario de la clínica. Por favor, intente de nuevo.
+          </p>
+        </div>
       </div>
     )
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      aria-label="schedule-form"
-      className="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm max-w-2xl mx-auto space-y-6 animate-in fade-in duration-200"
-    >
-      <div className="border-b border-slate-100 pb-4 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-bold text-slate-900 leading-tight">Horario de Atención</h2>
-          <p className="text-xs text-slate-400 font-medium tracking-wide uppercase mt-0.5">
-            Define los días y rangos horarios laborables
-          </p>
-        </div>
-        <Calendar size={20} className="text-indigo-500" />
+    <form onSubmit={handleSubmit} aria-label="schedule-form" data-card style={{ maxWidth: '760px' }}>
+      <div data-hd>
+        <h2>Horarios de atención</h2>
+        <span data-lbl>Zona horaria: America/Santiago</span>
       </div>
 
-      <div className="divide-y divide-slate-50">
-        {schedules.map((day) => {
-          const dayName = DAYS_MAP[day.day_of_week] || `Día ${day.day_of_week}`
-          const errorMsg = errors[day.day_of_week]
+      <div style={{ overflowX: 'auto' }}>
+        <table data-tbl>
+          <thead>
+            <tr>
+              <th>Día</th>
+              <th>Estado</th>
+              <th>Apertura</th>
+              <th>Cierre</th>
+            </tr>
+          </thead>
+          <tbody>
+            {schedules.map((day) => {
+              const dayName = DAYS_MAP[day.day_of_week] || `Día ${day.day_of_week}`
+              const errorMsg = errors[day.day_of_week]
 
-          return (
-            <div
-              key={day.id || day.day_of_week}
-              className="py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 first:pt-0 last:pb-0"
-              data-testid={`schedule-row-${day.day_of_week}`}
-            >
-              {/* Left: Day & Toggle */}
-              <div className="flex items-center gap-4 min-w-[150px]">
-                <button
-                  type="button"
-                  aria-label={`Toggle ${dayName}`}
-                  onClick={() => !readOnly && handleToggle(day.day_of_week)}
-                  disabled={readOnly}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out outline-none focus:ring-2 focus:ring-indigo-100 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed ${
-                    day.is_open ? 'bg-indigo-600' : 'bg-slate-200'
-                  }`}
-                >
-                  <span
-                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                      day.is_open ? 'translate-x-5' : 'translate-x-0'
-                    }`}
-                  />
-                </button>
-                <span className="text-sm font-semibold text-slate-800">{dayName}</span>
-              </div>
-
-              {/* Right: Time Range & Validation Info */}
-              <div className="flex flex-col gap-1.5 flex-1 max-w-sm sm:items-end">
-                <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <input
-                      type="time"
-                      aria-label={`${dayName} Hora Apertura`}
-                      value={day.open_time}
-                      disabled={!day.is_open || readOnly}
-                      onChange={(e) => handleTimeChange(day.day_of_week, 'open_time', e.target.value)}
-                      className={`px-3 py-1.5 bg-slate-50 border rounded-xl text-sm font-medium text-slate-700 transition-all focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-50 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed ${
-                        errorMsg ? 'border-rose-300 focus:border-rose-500' : 'border-slate-200'
-                      }`}
-                    />
-                  </div>
-                  <span className="text-xs font-semibold text-slate-400">a</span>
-                  <div className="relative">
-                    <input
-                      type="time"
-                      aria-label={`${dayName} Hora Cierre`}
-                      value={day.close_time}
-                      disabled={!day.is_open || readOnly}
-                      onChange={(e) => handleTimeChange(day.day_of_week, 'close_time', e.target.value)}
-                      className={`px-3 py-1.5 bg-slate-50 border rounded-xl text-sm font-medium text-slate-700 transition-all focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-50 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed ${
-                        errorMsg ? 'border-rose-300 focus:border-rose-500' : 'border-slate-200'
-                      }`}
-                    />
-                  </div>
-                </div>
-
-                {errorMsg && (
-                  <p className="text-xs font-medium text-rose-500 flex items-center gap-1 mt-1 sm:text-right">
-                    <AlertCircle size={12} />
-                    {errorMsg}
-                  </p>
-                )}
-              </div>
-            </div>
-          )
-        })}
+              return (
+                <React.Fragment key={day.id || day.day_of_week}>
+                  <tr data-testid={`schedule-row-${day.day_of_week}`}>
+                    <td style={{ color: 'var(--ink)', fontWeight: 500 }}>{dayName}</td>
+                    <td>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '9px' }}>
+                        <button
+                          type="button"
+                          aria-label={`Toggle ${dayName}`}
+                          onClick={() => !readOnly && handleToggle(day.day_of_week)}
+                          disabled={readOnly}
+                          style={{
+                            width: '38px',
+                            height: '22px',
+                            borderRadius: '999px',
+                            border: '1px solid var(--line)',
+                            background: day.is_open ? 'var(--blue)' : 'var(--surface-2)',
+                            position: 'relative',
+                            cursor: readOnly ? 'not-allowed' : 'pointer',
+                            padding: 0,
+                            opacity: readOnly ? 0.6 : 1,
+                            transition: 'background-color .15s',
+                            flexShrink: 0,
+                          }}
+                        >
+                          <span
+                            style={{
+                              position: 'absolute',
+                              top: '2px',
+                              left: day.is_open ? '18px' : '2px',
+                              width: '16px',
+                              height: '16px',
+                              borderRadius: '50%',
+                              background: '#FFFFFF',
+                              transition: 'left .15s',
+                              boxShadow: '0 1px 2px rgba(0,0,0,0.15)',
+                            }}
+                          />
+                        </button>
+                        <span data-badge>
+                          <span data-dot style={{ background: day.is_open ? 'var(--pos)' : undefined }} />
+                          {day.is_open ? 'Abierto' : 'Cerrado'}
+                        </span>
+                      </span>
+                    </td>
+                    <td>
+                      <input
+                        type="time"
+                        data-inp
+                        aria-label={`${dayName} Hora Apertura`}
+                        value={day.open_time}
+                        disabled={!day.is_open || readOnly}
+                        onChange={(e) => handleTimeChange(day.day_of_week, 'open_time', e.target.value)}
+                        className="tabular"
+                        style={{ height: '30px', width: '120px', borderColor: errorMsg ? 'var(--neg)' : undefined }}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="time"
+                        data-inp
+                        aria-label={`${dayName} Hora Cierre`}
+                        value={day.close_time}
+                        disabled={!day.is_open || readOnly}
+                        onChange={(e) => handleTimeChange(day.day_of_week, 'close_time', e.target.value)}
+                        className="tabular"
+                        style={{ height: '30px', width: '120px', borderColor: errorMsg ? 'var(--neg)' : undefined }}
+                      />
+                    </td>
+                  </tr>
+                  {errorMsg && (
+                    <tr>
+                      <td colSpan={4} style={{ paddingTop: 0, borderBottom: '1px solid var(--line-soft)' }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--neg)' }}>
+                          <AlertCircle size={12} />
+                          {errorMsg}
+                        </span>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              )
+            })}
+          </tbody>
+        </table>
       </div>
 
       {!readOnly && (
-        <div className="flex justify-end pt-4 border-t border-slate-50">
-          <Button
-            type="submit"
-            loading={isPending}
-            icon={<Save size={18} />}
-            className="min-w-[160px]"
-          >
-            Guardar Horarios
-          </Button>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '13px 20px', borderTop: '1px solid var(--line)', background: 'var(--surface)' }}>
+          <button data-btn="primary" type="submit" disabled={isPending}>
+            {isPending ? (
+              <>
+                <Spinner size="sm" />
+                <span>Procesando...</span>
+              </>
+            ) : (
+              <>
+                <Save size={14} strokeWidth={1.75} />
+                <span>Guardar cambios</span>
+              </>
+            )}
+          </button>
         </div>
       )}
     </form>

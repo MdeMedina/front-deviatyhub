@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, waitFor, fireEvent, act } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent, act, within } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import MetricsPage from '@/app/(dashboard)/metrics/page'
 import { useRouter } from 'next/navigation'
@@ -129,7 +129,8 @@ describe('Metrics Page — Analytics Screen', () => {
       expect(screen.getByText('30')).toBeInTheDocument()
 
       expect(screen.getByText(/Citas Canceladas/i)).toBeInTheDocument()
-      expect(screen.getByText('12')).toBeInTheDocument()
+      // "12" also appears as an hour-axis label in the heatmap, so scope to the KPI cell
+      expect(within(screen.getByTestId('metric-cancellations')).getByText('12')).toBeInTheDocument()
 
       expect(screen.getByText(/Derivación a Humano/i)).toBeInTheDocument()
       expect(screen.getByText('55')).toBeInTheDocument()

@@ -2,14 +2,13 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { AlertCircle, Puzzle, ArrowRight, RefreshCw } from 'lucide-react'
 import { useAuthStore } from '@/lib/stores/auth.store'
 import { useIntegrations, useTestIntegration } from '@/lib/api/hooks/use-integrations'
 import { IntegrationCard } from '@/components/features/integrations/IntegrationCard'
 import { IntegrationConfigModal } from '@/components/features/integrations/IntegrationConfigModal'
 import { Spinner } from '@/components/ui/Spinner'
-import { Button } from '@/components/ui/Button'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { useUIStore } from '@/lib/stores/ui.store'
 
 export default function IntegrationsPage() {
@@ -24,28 +23,21 @@ export default function IntegrationsPage() {
 
   if (!canView) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-slate-50/50 min-h-[calc(100vh-10rem)]">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-          className="bg-white border border-slate-100 rounded-3xl p-8 max-w-md w-full text-center shadow-xl shadow-slate-100/50"
+      <div className="flex flex-col items-center justify-center p-8 bg-[var(--card)] border border-[var(--line)] rounded-[10px] min-h-[380px] max-w-md mx-auto text-center shadow-[0_1px_2px_rgba(20,20,25,0.05)]">
+        <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
+          <AlertCircle size={22} />
+        </div>
+        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
+        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+          No tienes los permisos necesarios para ver o probar las integraciones. Por favor contacta al administrador del sistema.
+        </p>
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[13px] transition-opacity gap-2"
         >
-          <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 mx-auto mb-6">
-            <AlertCircle size={32} />
-          </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Acceso Denegado</h2>
-          <p className="text-slate-500 text-sm mb-6">
-            No tienes los permisos necesarios para ver o probar las integraciones. Por favor contacta al administrador del sistema.
-          </p>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center justify-center px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold rounded-xl text-xs uppercase tracking-wider transition-colors gap-2"
-          >
-            Ir al Dashboard
-            <ArrowRight size={14} />
-          </Link>
-        </motion.div>
+          Ir al Dashboard
+          <ArrowRight size={14} />
+        </Link>
       </div>
     )
   }
@@ -76,63 +68,57 @@ export default function IntegrationsPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto p-4 md:p-6 lg:p-8 animate-in fade-in duration-300">
-      {/* Premium Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-            <Puzzle size={22} />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-slate-900 leading-tight">Integraciones Externas</h1>
-            <p className="text-xs text-slate-400 font-medium tracking-wide uppercase mt-0.5">
-              Conecta Deviaty Hub con tus plataformas de chat, agenda y gestión clínica
-            </p>
-          </div>
+    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+      {/* Header Bar */}
+      <div className="flex items-end justify-between gap-5 flex-wrap pb-4 border-b border-[var(--line)]">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
+            Integraciones Externas
+          </h1>
+          <p className="text-[13.5px] text-[var(--muted)]">
+            Conecta Dentral con tus plataformas de chat, agenda y gestión clínica.
+          </p>
         </div>
 
         <div>
-          <Button
-            variant="outline"
-            size="sm"
+          <button
+            data-btn
             onClick={() => refetch()}
             disabled={isLoading}
-            className="flex items-center gap-1.5"
           >
-            <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
+            <RefreshCw size={14} strokeWidth={1.75} className={isLoading ? 'animate-spin' : ''} />
             Actualizar
-          </Button>
+          </button>
         </div>
       </div>
 
       {/* Main Content Area */}
       {isLoading ? (
-        <div className="flex items-center justify-center min-h-[400px]">
-          <Spinner size="lg" />
+        <div className="flex flex-col items-center justify-center min-h-[360px] bg-[var(--card)] border border-[var(--line)] rounded-[10px]">
+          <Spinner size="md" />
+          <span className="microlabel text-[10px] mt-2">Cargando integraciones</span>
         </div>
       ) : isError ? (
-        <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-500">
-            <AlertCircle size={26} />
+        <div className="flex flex-col items-center justify-center min-h-[360px] bg-[var(--card)] border border-[var(--line)] rounded-[10px] p-6 gap-3 text-center">
+          <div className="w-10 h-10 rounded-[6px] bg-[var(--head)] border border-[var(--line)] flex items-center justify-center text-[var(--neg)]">
+            <AlertCircle size={20} />
           </div>
-          <p className="text-sm font-semibold text-slate-700">Error al cargar integraciones</p>
-          <Button variant="outline" size="sm" onClick={() => refetch()}>
+          <p className="text-[13.5px] font-semibold text-[var(--ink)]">Error al cargar integraciones</p>
+          <button data-btn onClick={() => refetch()}>
             Reintentar
-          </Button>
+          </button>
         </div>
       ) : !integrations || integrations.length === 0 ? (
-        <div className="flex flex-col items-center justify-center min-h-[400px] gap-2">
-          <Puzzle size={36} className="text-slate-300" />
-          <p className="text-sm text-slate-400 font-medium">No se encontraron integraciones configuradas</p>
+        <div className="bg-[var(--card)] border border-[var(--line)] rounded-[10px] p-12 flex items-center justify-center min-h-[360px]">
+          <EmptyState 
+            title="No se encontraron integraciones configuradas"
+            description="No hay integraciones configuradas en este momento."
+            icon={<Puzzle size={22} />}
+          />
         </div>
       ) : (
         <>
-          <motion.div
-            initial={{ y: 15, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {integrations.map((integration) => (
               <IntegrationCard
                 key={integration.type}
@@ -142,7 +128,7 @@ export default function IntegrationsPage() {
                 onConfigure={() => setConfiguringType(integration.type)}
               />
             ))}
-          </motion.div>
+          </div>
 
           <IntegrationConfigModal
             isOpen={!!configuringType}

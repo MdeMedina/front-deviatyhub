@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { AlertCircle } from 'lucide-react'
 
 export default function Error({
   error,
@@ -15,21 +16,16 @@ export default function Error({
   }, [error])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-6">
-          <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
+    <div className="min-h-screen flex items-center justify-center bg-[var(--canvas)] p-4">
+      <div className="flex flex-col items-center text-center bg-[var(--card)] border border-[var(--line)] rounded-[10px] shadow-[0_1px_2px_rgba(20,20,25,0.05)] p-8 max-w-md w-full">
+        <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-4">
+          <AlertCircle size={22} />
         </div>
-        <h2 className="text-2xl font-bold mb-4">Something went wrong!</h2>
-        <p className="text-gray-600 mb-8 max-w-md mx-auto">
+        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Something went wrong!</h2>
+        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
           An unexpected error has occurred. Our team has been notified and is working to fix it.
         </p>
-        <button
-          onClick={() => reset()}
-          className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-        >
+        <button onClick={() => reset()} data-btn="primary">
           Try again
         </button>
       </div>

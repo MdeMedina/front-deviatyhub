@@ -54,7 +54,7 @@ describe('Layout Components — Navigation & Header', () => {
 
       render(<Sidebar />)
       const agendaLink = screen.getByText('Agenda').closest('a')
-      expect(agendaLink?.className).toContain('bg-indigo-50')
+      expect(agendaLink?.className).toContain('bg-[var(--blue-tint)]')
     })
   })
 

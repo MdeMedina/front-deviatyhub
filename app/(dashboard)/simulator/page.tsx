@@ -1,71 +1,64 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { AlertCircle, Bot, ArrowRight } from 'lucide-react'
+import { AlertCircle, ArrowRight, RotateCcw } from 'lucide-react'
 import { useAuthStore } from '@/lib/stores/auth.store'
 import { SimulatorChat } from '@/components/features/simulator/SimulatorChat'
 
 export default function SimulatorPage() {
   const { hasPermission } = useAuthStore()
+  const [resetNonce, setResetNonce] = useState(0)
 
-  // Permiso requerido para el simulador
+  // Simulator permission check
   const canView = hasPermission('simulator.view')
 
   if (!canView) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-slate-50/50 min-h-[calc(100vh-10rem)]">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-          className="bg-white border border-slate-100 rounded-3xl p-8 max-w-md w-full text-center shadow-xl shadow-slate-100/50"
+      <div className="flex flex-col items-center justify-center p-8 bg-[var(--card)] border border-[var(--line)] rounded-[10px] min-h-[380px] max-w-md mx-auto text-center shadow-[0_1px_2px_rgba(20,20,25,0.05)]">
+        <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
+          <AlertCircle size={22} />
+        </div>
+        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
+        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+          No tienes los permisos necesarios para acceder al simulador de agente. Por favor contacta al administrador del sistema.
+        </p>
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[13px] transition-opacity gap-2"
         >
-          <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 mx-auto mb-6">
-            <AlertCircle size={32} />
-          </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Acceso Denegado</h2>
-          <p className="text-slate-500 text-sm mb-6">
-            No tienes los permisos necesarios para acceder al simulador de agente. Por favor contacta al administrador del sistema.
-          </p>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center justify-center px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold rounded-xl text-xs uppercase tracking-wider transition-colors gap-2"
-          >
-            Ir al Dashboard
-            <ArrowRight size={14} />
-          </Link>
-        </motion.div>
+          Ir al Dashboard
+          <ArrowRight size={14} />
+        </Link>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto p-4 md:p-6 lg:p-8 animate-in fade-in duration-300">
-      {/* Premium Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-            <Bot size={22} />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-slate-900 leading-tight">Simulador del Agente</h1>
-            <p className="text-xs text-slate-400 font-medium tracking-wide uppercase mt-0.5">
-              Prueba la interacción y lógica del asistente de IA en tiempo real
-            </p>
-          </div>
+    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+      {/* Header Bar */}
+      <div className="flex items-end justify-between gap-5 flex-wrap pb-4 border-b border-[var(--line)]">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
+            Simulador del Agente
+          </h1>
+          <p className="text-[13.5px] text-[var(--muted)]">
+            Prueba conversaciones en un entorno aislado sin afectar a pacientes reales.
+          </p>
         </div>
+
+        <button
+          data-btn
+          data-testid="btn-reset-session"
+          onClick={() => setResetNonce((n) => n + 1)}
+        >
+          <RotateCcw size={14} strokeWidth={1.75} />
+          Reiniciar sesión
+        </button>
       </div>
 
-      {/* Main Content organism */}
-      <motion.div
-        initial={{ y: 15, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.3, delay: 0.1 }}
-      >
-        <SimulatorChat />
-      </motion.div>
+      {/* Simulator Chat Container */}
+      <SimulatorChat resetNonce={resetNonce} />
     </div>
   )
 }

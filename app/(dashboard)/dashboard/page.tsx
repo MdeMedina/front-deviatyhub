@@ -1,23 +1,24 @@
 'use client'
 
-import React, { Suspense } from 'react'
+import React, { Suspense, useState } from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { 
-  Sparkles, 
   MessageSquare, 
   Calendar, 
   BookOpen, 
   BarChart3, 
-  ArrowRight, 
+  ArrowUpRight,
+  MessageCircle,
   BrainCircuit,
-  MessageCircle
+  Clock,
+  SlidersHorizontal,
+  X
 } from 'lucide-react'
 import { useAuthStore } from '@/lib/stores/auth.store'
 import { useClinicConfig } from '@/lib/api/hooks/use-clinic'
 import { useMetrics } from '@/lib/api/hooks/use-metrics'
 
-// Spanish date formatting helper
+// Spanish date helper
 function getFormattedDate() {
   const options: Intl.DateTimeFormatOptions = { 
     weekday: 'long', 
@@ -33,49 +34,22 @@ function DashboardContent() {
   const { user } = useAuthStore()
   const { data: clinicConfig, isPending: isClinicPending } = useClinicConfig()
   const { data: metrics, isPending: isMetricsPending, isError: isMetricsError } = useMetrics('7d')
+  const [isAgentModalOpen, setIsAgentModalOpen] = useState(false)
+  const [agentMode, setAgentMode] = useState<'autonomous' | 'supervised' | 'paused'>('autonomous')
 
   const userEmail = user?.email || 'Colega'
   const userGreeting = userEmail.split('@')[0]
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 300, damping: 24 } }
-  }
-
-  // Loading skeleton
   if (isClinicPending || isMetricsPending) {
     return (
-      <div className="space-y-8 animate-pulse" data-testid="dashboard-loading">
-        {/* Banner Skeleton */}
-        <div className="h-48 rounded-3xl bg-slate-200/60" />
-        
-        {/* KPIs Skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="h-32 rounded-2xl bg-slate-200/60" />
-          <div className="h-32 rounded-2xl bg-slate-200/60" />
-          <div className="h-32 rounded-2xl bg-slate-200/60" />
+      <div className="flex flex-col gap-6 max-w-[1340px] mx-auto animate-dentral-shimmer" data-testid="dashboard-loading">
+        <div className="flex flex-col gap-2.5">
+          <div className="h-[22px] w-[220px] bg-[var(--surface-2)] rounded-[6px]" />
+          <div className="h-[14px] w-[340px] bg-[var(--surface-2)] rounded-[6px]" />
         </div>
-
-        {/* Shortcuts Skeleton */}
-        <div className="space-y-4">
-          <div className="h-6 w-48 bg-slate-200/60 rounded" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="h-44 rounded-2xl bg-slate-200/60" />
-            <div className="h-44 rounded-2xl bg-slate-200/60" />
-            <div className="h-44 rounded-2xl bg-slate-200/60" />
-            <div className="h-44 rounded-2xl bg-slate-200/60" />
-          </div>
-        </div>
+        <div className="h-[96px] bg-[var(--surface-2)] rounded-[10px]" />
+        <div className="h-[150px] bg-[var(--surface-2)] rounded-[10px]" />
+        <div className="h-[190px] bg-[var(--surface-2)] rounded-[10px]" />
       </div>
     )
   }
@@ -85,174 +59,316 @@ function DashboardContent() {
   const appointmentsScheduledValue = metrics?.appointments_scheduled ?? 0
 
   return (
-    <motion.div 
-      variants={containerVariants}
-      initial="hidden"
-      animate="show"
-      className="space-y-8"
-    >
-      {/* Premium Hero Banner */}
-      <motion.div 
-        variants={itemVariants}
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-tr from-indigo-600 via-indigo-600 to-purple-600 p-8 md:p-12 text-white shadow-xl shadow-indigo-100 dark:shadow-none"
-      >
-        {/* Background blobs */}
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-[80px] -mr-32 -mt-32" />
-        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-purple-500/10 rounded-full blur-[60px] -ml-20 -mb-20" />
+    <div className="flex flex-col gap-6 max-w-[1340px] mx-auto">
+      {/* 1. Header Section */}
+      <div className="flex items-end justify-between gap-6 flex-wrap pb-5 border-b border-[var(--line)]">
+        <div className="flex flex-col gap-1.5">
+          <h1 className="text-[29px] font-semibold tracking-[-0.03em] text-[var(--ink)] leading-tight">
+            Hola, <span className="capitalize" data-testid="user-greeting">{userGreeting}</span>
+          </h1>
+          <p className="text-[13.5px] text-[var(--muted)]">
+            {getFormattedDate()} · {clinicConfig?.name || 'Deviaty Dental Care'}
+          </p>
+        </div>
 
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-3">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white/90 text-xs font-bold backdrop-blur-md">
-              <Sparkles size={14} className="text-amber-300" />
-              <span>{clinicConfig?.name || 'Clínica Deviaty'}</span>
-            </div>
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-              ¡Hola, <span className="capitalize" data-testid="user-greeting">{userGreeting}</span>!
-            </h1>
-            <p className="text-indigo-100 font-medium max-w-xl text-sm md:text-base leading-relaxed">
-              Bienvenido de vuelta a tu centro de control. El agente autónomo de IA está activo y gestionando la agenda de pacientes de forma estable.
-            </p>
+        <div className="flex items-center gap-2.5">
+          <div data-badge style={{ height: '32px', padding: '0 11px', background: 'var(--card)' }}>
+            <span className="relative inline-flex w-1.5 h-1.5">
+              <span className="animate-dentral-ping absolute inset-0 rounded-full bg-[var(--pos)]" />
+              <span className="relative w-1.5 h-1.5 rounded-full bg-[var(--pos)]" />
+            </span>
+            <span data-lbl style={{ color: 'var(--ink-soft)' }}>Agente activo</span>
           </div>
-          
-          <div className="flex-shrink-0 bg-white/10 border border-white/20 p-6 rounded-2xl backdrop-blur-md flex flex-col items-center text-center justify-center min-w-[200px]">
-            <span className="text-[10px] font-bold text-indigo-200 uppercase tracking-widest mb-1">Estado de la IA</span>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="flex h-3 w-3 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+
+          <button 
+            data-btn="primary"
+            onClick={() => setIsAgentModalOpen(true)}
+          >
+            <SlidersHorizontal size={14} strokeWidth={1.75} />
+            Estado del agente
+          </button>
+        </div>
+      </div>
+
+      {/* 2. Resumen Section Header */}
+      <div data-sec>
+        <span>Resumen</span>
+        <span data-lbl style={{ border: '1px solid var(--line)', borderRadius: '5px', padding: '2px 7px', background: 'var(--card)' }}>
+          Últimos 7 días
+        </span>
+        <span data-rule />
+      </div>
+
+      {/* 3. 4-cell Matrix */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '1px', background: 'var(--line)', border: '1px solid var(--line)', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 1px 2px rgba(20,20,25,.05)' }}>
+        {/* Cell 1 */}
+        <div style={{ background: 'var(--card)', padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--ink-soft)' }}>
+            <MessageCircle size={14} strokeWidth={1.75} />
+            <span data-lbl style={{ color: 'var(--ink-soft)' }}>Conversaciones atendidas</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+            <span data-mono style={{ fontSize: '30px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }} data-testid="conversations-kpi">
+              {isMetricsError ? '--' : totalConversationsAttended.toLocaleString('es-CL')}
+            </span>
+            <span data-mono style={{ fontSize: '11px', color: 'var(--pos)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
+              +12,4%
+            </span>
+          </div>
+          <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>Últimos 7 días</span>
+        </div>
+
+        {/* Cell 2 */}
+        <div style={{ background: 'var(--card)', padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--ink-soft)' }}>
+            <BrainCircuit size={14} strokeWidth={1.75} />
+            <span data-lbl style={{ color: 'var(--ink-soft)' }}>Tasa de contención</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+            <span data-mono style={{ fontSize: '30px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }} data-testid="containment-kpi">
+              {isMetricsError ? '--' : containmentRateValue}
+            </span>
+            <span data-mono style={{ fontSize: '11px', color: 'var(--pos)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
+              +2,1%
+            </span>
+          </div>
+          <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>Autónomo por IA</span>
+        </div>
+
+        {/* Cell 3 */}
+        <div style={{ background: 'var(--card)', padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--ink-soft)' }}>
+            <Calendar size={14} strokeWidth={1.75} />
+            <span data-lbl style={{ color: 'var(--ink-soft)' }}>Citas agendadas</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+            <span data-mono style={{ fontSize: '30px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }} data-testid="appointments-kpi">
+              {isMetricsError ? '--' : appointmentsScheduledValue.toLocaleString('es-CL')}
+            </span>
+            <span data-mono style={{ fontSize: '11px', color: 'var(--pos)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
+              +15,0%
+            </span>
+          </div>
+          <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>Reservadas con éxito</span>
+        </div>
+
+        {/* Cell 4 */}
+        <div style={{ background: 'var(--card)', padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--ink-soft)' }}>
+            <Clock size={14} strokeWidth={1.75} />
+            <span data-lbl style={{ color: 'var(--ink-soft)' }}>Tiempo de respuesta</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+            <span data-mono style={{ fontSize: '30px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }}>
+              1,2s
+            </span>
+            <span data-mono style={{ fontSize: '11px', color: 'var(--pos)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
+              −14,2%
+            </span>
+          </div>
+          <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>Tiempo promedio</span>
+        </div>
+      </div>
+
+      {/* 4. Operación Section Header */}
+      <div data-sec style={{ marginTop: '8px' }}>
+        <span>Operación</span>
+        <span data-rule />
+      </div>
+
+      {/* 5. Operación Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px', alignItems: 'start' }}>
+        {/* Left Card: 4 Accesos Directos in 2x2 Grid */}
+        <div data-card>
+          <div data-hd>
+            <h2>Accesos directos del sistema</h2>
+            <span data-lbl>4 módulos</span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '1px', background: 'var(--line)' }}>
+            {/* Shortcut 1 */}
+            <Link 
+              href="/conversations"
+              style={{ background: 'var(--card)', padding: '18px', display: 'flex', flexDirection: 'column', gap: '7px', textDecoration: 'none', textAlign: 'left' }}
+              className="hover:bg-[var(--surface)] transition-colors"
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '9px', width: '100%' }}>
+                <span data-icon><MessageSquare size={15} strokeWidth={1.75} /></span>
+                <span style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>Bandeja de entrada</span>
+                <span data-icon style={{ marginLeft: 'auto', width: '24px', height: '24px', background: 'var(--surface)', color: 'var(--ink-soft)' }}>
+                  <ArrowUpRight size={13} strokeWidth={1.9} />
+                </span>
+              </div>
+              <p style={{ margin: 0, fontSize: '12.5px', lineHeight: 1.55, color: 'var(--muted)' }}>
+                Supervisa e interviene chats en tiempo real de WhatsApp e Instagram.
+              </p>
+            </Link>
+
+            {/* Shortcut 2 */}
+            <Link 
+              href="/agenda"
+              style={{ background: 'var(--card)', padding: '18px', display: 'flex', flexDirection: 'column', gap: '7px', textDecoration: 'none', textAlign: 'left' }}
+              className="hover:bg-[var(--surface)] transition-colors"
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '9px', width: '100%' }}>
+                <span data-icon><Calendar size={15} strokeWidth={1.75} /></span>
+                <span style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>Agenda médica</span>
+                <span data-icon style={{ marginLeft: 'auto', width: '24px', height: '24px', background: 'var(--surface)', color: 'var(--ink-soft)' }}>
+                  <ArrowUpRight size={13} strokeWidth={1.9} />
+                </span>
+              </div>
+              <p style={{ margin: 0, fontSize: '12.5px', lineHeight: 1.55, color: 'var(--muted)' }}>
+                Visualiza el calendario completo de citas y coordina horarios médicos.
+              </p>
+            </Link>
+
+            {/* Shortcut 3 */}
+            <Link 
+              href="/knowledge-base"
+              style={{ background: 'var(--card)', padding: '18px', display: 'flex', flexDirection: 'column', gap: '7px', textDecoration: 'none', textAlign: 'left' }}
+              className="hover:bg-[var(--surface)] transition-colors"
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '9px', width: '100%' }}>
+                <span data-icon><BookOpen size={15} strokeWidth={1.75} /></span>
+                <span style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>Base de conocimiento</span>
+                <span data-icon style={{ marginLeft: 'auto', width: '24px', height: '24px', background: 'var(--surface)', color: 'var(--ink-soft)' }}>
+                  <ArrowUpRight size={13} strokeWidth={1.9} />
+                </span>
+              </div>
+              <p style={{ margin: 0, fontSize: '12.5px', lineHeight: 1.55, color: 'var(--muted)' }}>
+                Administra las políticas de atención, especialidades y tratamientos de la clínica.
+              </p>
+            </Link>
+
+            {/* Shortcut 4 */}
+            <Link 
+              href="/metrics"
+              style={{ background: 'var(--card)', padding: '18px', display: 'flex', flexDirection: 'column', gap: '7px', textDecoration: 'none', textAlign: 'left' }}
+              className="hover:bg-[var(--surface)] transition-colors"
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '9px', width: '100%' }}>
+                <span data-icon><BarChart3 size={15} strokeWidth={1.75} /></span>
+                <span style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>Métricas y reportes</span>
+                <span data-icon style={{ marginLeft: 'auto', width: '24px', height: '24px', background: 'var(--surface)', color: 'var(--ink-soft)' }}>
+                  <ArrowUpRight size={13} strokeWidth={1.9} />
+                </span>
+              </div>
+              <p style={{ margin: 0, fontSize: '12.5px', lineHeight: 1.55, color: 'var(--muted)' }}>
+                Analiza el rendimiento del agente IA, tasas de éxito de citas y velocidad de respuesta.
+              </p>
+            </Link>
+          </div>
+        </div>
+
+        {/* Right Card: Estado de la IA */}
+        <div data-card>
+          <div data-hd>
+            <h2>Estado de la IA</h2>
+          </div>
+          <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+              <span style={{ position: 'relative', display: 'inline-flex', width: '7px', height: '7px' }}>
+                <span className="animate-dentral-ping" style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: 'var(--pos)' }} />
+                <span style={{ position: 'relative', width: '7px', height: '7px', borderRadius: '50%', background: 'var(--pos)' }} />
               </span>
-              <span className="text-sm font-bold text-white uppercase tracking-wider">Activo y Operando</span>
+              <span style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>Activo y operando</span>
             </div>
-            <span className="text-[11px] font-medium text-indigo-100/70">{getFormattedDate()}</span>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* KPI Cards Grid */}
-      <motion.div 
-        variants={itemVariants}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6"
-      >
-        {/* KPI 1: Total Conversations */}
-        <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex items-center gap-5 hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-            <MessageCircle size={24} />
-          </div>
-          <div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Conversaciones Atendidas</p>
-            <h3 className="text-2xl font-extrabold text-slate-900" data-testid="conversations-kpi">{isMetricsError ? '--' : totalConversationsAttended}</h3>
-            <span className="text-[10px] text-slate-500 font-medium">Últimos 7 días</span>
-          </div>
-        </div>
-
-        {/* KPI 2: Containment Rate */}
-        <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex items-center gap-5 hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-            <BrainCircuit size={24} />
-          </div>
-          <div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Tasa de Contención</p>
-            <h3 className="text-2xl font-extrabold text-slate-900" data-testid="containment-kpi">{isMetricsError ? '--' : containmentRateValue}</h3>
-            <span className="text-[10px] text-emerald-600 font-bold">Autónomo por IA</span>
-          </div>
-        </div>
-
-        {/* KPI 3: Scheduled Appointments */}
-        <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex items-center gap-5 hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
-            <Calendar size={24} />
-          </div>
-          <div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Citas Agendadas</p>
-            <h3 className="text-2xl font-extrabold text-slate-900" data-testid="appointments-kpi">{isMetricsError ? '--' : appointmentsScheduledValue}</h3>
-            <span className="text-[10px] text-slate-500 font-medium">Reservadas con éxito</span>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Main Shortcuts Section */}
-      <motion.div variants={itemVariants} className="space-y-4">
-        <h2 className="text-lg font-bold text-slate-900 tracking-tight">Accesos Directos del Sistema</h2>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Link 1: Conversations */}
-          <Link href="/conversations" className="group">
-            <div className="h-full bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:border-indigo-100 hover:shadow-md hover:shadow-indigo-50/40 transition-all duration-200 flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <MessageSquare size={20} />
-                </div>
-                <h4 className="text-base font-bold text-slate-800 mb-1">Bandeja de Entrada</h4>
-                <p className="text-xs text-slate-400 font-medium leading-relaxed">
-                  Supervisa e interviene chats en tiempo real de WhatsApp e Instagram.
-                </p>
+            <p style={{ margin: 0, fontSize: '12.5px', lineHeight: 1.6, color: 'var(--muted)' }}>
+              El agente autónomo está gestionando la agenda de pacientes de forma estable.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '9px', paddingTop: '14px', borderTop: '1px solid var(--line-soft)' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
+                <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Derivación a humano</span>
+                <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>18</span>
               </div>
-              <div className="flex items-center gap-1 text-xs font-bold text-indigo-600 mt-6 group-hover:translate-x-1 transition-transform">
-                <span>Ingresar</span>
-                <ArrowRight size={14} />
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
+                <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Fuera de horario</span>
+                <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>143</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
+                <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Citas canceladas</span>
+                <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>26</span>
               </div>
             </div>
-          </Link>
-
-          {/* Link 2: Agenda */}
-          <Link href="/agenda" className="group">
-            <div className="h-full bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:border-purple-100 hover:shadow-md hover:shadow-purple-50/40 transition-all duration-200 flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <Calendar size={20} />
-                </div>
-                <h4 className="text-base font-bold text-slate-800 mb-1">Agenda Médica</h4>
-                <p className="text-xs text-slate-400 font-medium leading-relaxed">
-                  Visualiza el calendario completo de citas y coordina horarios médicos.
-                </p>
-              </div>
-              <div className="flex items-center gap-1 text-xs font-bold text-purple-600 mt-6 group-hover:translate-x-1 transition-transform">
-                <span>Visualizar</span>
-                <ArrowRight size={14} />
-              </div>
-            </div>
-          </Link>
-
-          {/* Link 3: Knowledge Base */}
-          <Link href="/knowledge-base" className="group">
-            <div className="h-full bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:border-emerald-100 hover:shadow-md hover:shadow-emerald-50/40 transition-all duration-200 flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <BookOpen size={20} />
-                </div>
-                <h4 className="text-base font-bold text-slate-800 mb-1">Base de Conocimiento</h4>
-                <p className="text-xs text-slate-400 font-medium leading-relaxed">
-                  Administra las políticas de atención, especialidades y tratamientos de la clínica.
-                </p>
-              </div>
-              <div className="flex items-center gap-1 text-xs font-bold text-emerald-600 mt-6 group-hover:translate-x-1 transition-transform">
-                <span>Configurar</span>
-                <ArrowRight size={14} />
-              </div>
-            </div>
-          </Link>
-
-          {/* Link 4: Metrics */}
-          <Link href="/metrics" className="group">
-            <div className="h-full bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:border-rose-100 hover:shadow-md hover:shadow-rose-50/40 transition-all duration-200 flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <BarChart3 size={20} />
-                </div>
-                <h4 className="text-base font-bold text-slate-800 mb-1">Métricas y Reportes</h4>
-                <p className="text-xs text-slate-400 font-medium leading-relaxed">
-                  Analiza el rendimiento del agente IA, tasas de éxito de citas y velocidad de respuesta.
-                </p>
-              </div>
-              <div className="flex items-center gap-1 text-xs font-bold text-rose-600 mt-6 group-hover:translate-x-1 transition-transform">
-                <span>Ver Reporte</span>
-                <ArrowRight size={14} />
-              </div>
-            </div>
-          </Link>
+          </div>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+
+      {/* Agent Status Modal */}
+      {isAgentModalOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 60, display: 'grid', placeItems: 'center', padding: '24px' }}>
+          <div 
+            onClick={() => setIsAgentModalOpen(false)} 
+            style={{ position: 'absolute', inset: 0, background: 'rgba(33,33,33,.45)', backdropFilter: 'blur(2px)' }} 
+          />
+          <div 
+            role="dialog" 
+            aria-modal="true" 
+            data-card 
+            style={{ position: 'relative', width: '100%', maxWidth: '440px', boxShadow: '0 24px 60px rgba(0,0,0,.18)' }}
+          >
+            <div data-hd>
+              <h2>Estado del agente</h2>
+              <button 
+                data-btn 
+                onClick={() => setIsAgentModalOpen(false)} 
+                style={{ width: '28px', height: '28px', padding: 0, borderColor: 'transparent', background: 'none' }}
+              >
+                <X size={15} strokeWidth={1.75} />
+              </button>
+            </div>
+            <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.6, color: 'var(--muted)' }}>
+                Controla si el agente responde de forma autónoma o deja todas las conversaciones en manos del equipo.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: 'var(--line)', border: '1px solid var(--line)', borderRadius: '9px', overflow: 'hidden' }}>
+                <label 
+                  onClick={() => setAgentMode('autonomous')}
+                  style={{ display: 'flex', alignItems: 'flex-start', gap: '11px', padding: '13px 14px', background: agentMode === 'autonomous' ? 'var(--blue-tint)' : 'var(--card)', cursor: 'pointer' }}
+                >
+                  <span style={{ width: '15px', height: '15px', flex: 'none', marginTop: '1px', borderRadius: '50%', border: `1px solid ${agentMode === 'autonomous' ? 'var(--blue)' : 'var(--line)'}`, display: 'grid', placeItems: 'center' }}>
+                    {agentMode === 'autonomous' && <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--blue)' }} />}
+                  </span>
+                  <span style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                    <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--ink)' }}>Autónomo</span>
+                    <span style={{ fontSize: '12px', lineHeight: 1.5, color: 'var(--muted)' }}>Agenda, reprograma y cancela citas sin intervención.</span>
+                  </span>
+                </label>
+
+                <label 
+                  onClick={() => setAgentMode('supervised')}
+                  style={{ display: 'flex', alignItems: 'flex-start', gap: '11px', padding: '13px 14px', background: agentMode === 'supervised' ? 'var(--blue-tint)' : 'var(--card)', cursor: 'pointer' }}
+                >
+                  <span style={{ width: '15px', height: '15px', flex: 'none', marginTop: '1px', borderRadius: '50%', border: `1px solid ${agentMode === 'supervised' ? 'var(--blue)' : 'var(--line)'}`, display: 'grid', placeItems: 'center' }}>
+                    {agentMode === 'supervised' && <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--blue)' }} />}
+                  </span>
+                  <span style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                    <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--ink)' }}>Supervisado</span>
+                    <span style={{ fontSize: '12px', lineHeight: 1.5, color: 'var(--muted)' }}>Propone respuestas y espera aprobación del equipo.</span>
+                  </span>
+                </label>
+
+                <label 
+                  onClick={() => setAgentMode('paused')}
+                  style={{ display: 'flex', alignItems: 'flex-start', gap: '11px', padding: '13px 14px', background: agentMode === 'paused' ? 'var(--blue-tint)' : 'var(--card)', cursor: 'pointer' }}
+                >
+                  <span style={{ width: '15px', height: '15px', flex: 'none', marginTop: '1px', borderRadius: '50%', border: `1px solid ${agentMode === 'paused' ? 'var(--blue)' : 'var(--line)'}`, display: 'grid', placeItems: 'center' }}>
+                    {agentMode === 'paused' && <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--blue)' }} />}
+                  </span>
+                  <span style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                    <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--ink)' }}>Pausado</span>
+                    <span style={{ fontSize: '12px', lineHeight: 1.5, color: 'var(--muted)' }}>Todas las conversaciones pasan directo al equipo.</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '9px', padding: '13px 18px', borderTop: '1px solid var(--line)', background: 'var(--surface)' }}>
+              <button data-btn onClick={() => setIsAgentModalOpen(false)}>Cancelar</button>
+              <button data-btn="primary" onClick={() => setIsAgentModalOpen(false)}>Guardar cambios</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -260,9 +376,9 @@ export default function DashboardPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex flex-col items-center justify-center min-h-[400px]" data-testid="dashboard-suspense">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 mb-4" />
-          <span className="text-sm font-semibold text-slate-400">Preparando tu Dashboard...</span>
+        <div className="flex flex-col gap-6 max-w-[1340px] mx-auto animate-dentral-shimmer" data-testid="dashboard-suspense">
+          <div className="h-8 w-48 bg-[var(--surface-2)] rounded-[6px]" />
+          <div className="h-32 bg-[var(--card)] border border-[var(--line)] rounded-[10px]" />
         </div>
       }
     >

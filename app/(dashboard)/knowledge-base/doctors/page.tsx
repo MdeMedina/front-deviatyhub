@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, AlertCircle, Users } from 'lucide-react'
 import { useAuthStore } from '@/lib/stores/auth.store'
 import { DoctorsManager } from '@/components/clinic/DoctorsManager'
+import { Badge } from '@/components/ui/Badge'
 
 export default function StandaloneDoctorsPage() {
   const { hasPermission } = useAuthStore()
@@ -15,63 +16,57 @@ export default function StandaloneDoctorsPage() {
 
   if (!canView) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-slate-50/50 min-h-[calc(100vh-10rem)]">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-          className="bg-white border border-slate-100 rounded-3xl p-8 max-w-md w-full text-center shadow-xl shadow-slate-100/50"
+      <div className="flex flex-col items-center justify-center p-8 bg-[var(--card)] border border-[var(--line)] rounded-[10px] min-h-[380px] max-w-md mx-auto text-center shadow-[0_1px_2px_rgba(20,20,25,0.05)]">
+        <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
+          <AlertCircle size={22} />
+        </div>
+        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
+        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+          No tienes los permisos necesarios para ver o modificar el cuerpo médico de la clínica. Por favor contacta al administrador.
+        </p>
+        <Link
+          href="/knowledge-base"
+          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[13px] transition-opacity"
         >
-          <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 mx-auto mb-6">
-            <AlertCircle size={32} />
-          </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Acceso Denegado</h2>
-          <p className="text-slate-500 text-sm mb-6">
-            No tienes los permisos necesarios para ver o modificar el cuerpo médico de la clínica. Por favor contacta al administrador.
-          </p>
-          <Link
-            href="/knowledge-base"
-            className="inline-flex items-center justify-center px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold rounded-xl text-xs uppercase tracking-wider transition-colors"
-          >
-            Volver a Base de Conocimiento
-          </Link>
-        </motion.div>
+          Volver a Base de Conocimiento
+        </Link>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto p-4 md:p-6 lg:p-8 animate-in fade-in duration-300">
+    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
       {/* Back Button Navigation and Header */}
-      <div className="flex flex-col gap-4 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-[var(--line)]">
         <div className="flex items-center gap-3">
           <Link
             href="/knowledge-base?tab=doctors"
-            className="p-3 text-slate-400 hover:text-slate-800 bg-slate-50 hover:bg-slate-100 rounded-2xl transition-all group"
+            data-btn
+            style={{ width: '32px', height: '32px', padding: 0 }}
             title="Volver a Base de Conocimiento"
+            aria-label="Volver a Base de Conocimiento"
           >
-            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+            <ArrowLeft size={16} strokeWidth={1.75} />
           </Link>
-          <div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
-                <Users size={16} />
-              </div>
-              <h1 className="text-lg font-bold text-slate-900 leading-tight">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2.5">
+              <span className="w-7 h-7 grid place-items-center border border-[var(--line)] rounded-[7px] bg-[var(--head)] text-[var(--ink)] shrink-0">
+                <Users size={15} strokeWidth={1.75} />
+              </span>
+              <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
                 Gestión Standalone de Doctores
               </h1>
             </div>
-            <p className="text-xs text-slate-400 font-medium tracking-wide uppercase mt-0.5 ml-10">
-              Cuerpo Médico & Tratamientos Autorizados
+            <p className="text-[13.5px] text-[var(--muted)] ml-[38px]">
+              Cuerpo médico y tratamientos autorizados
             </p>
           </div>
         </div>
 
         {readOnly && (
-          <div className="self-start sm:self-center inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-100 rounded-full text-xs font-bold text-amber-700">
-            <AlertCircle size={14} />
+          <Badge variant="neutral" size="sm" dot>
             Modo Solo Lectura
-          </div>
+          </Badge>
         )}
       </div>
 

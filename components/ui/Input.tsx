@@ -14,6 +14,7 @@ interface InputProps {
   className?: string
   name?: string
   id?: string
+  inputSize?: 'md' | 'lg'
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -30,34 +31,37 @@ export const Input: React.FC<InputProps> = ({
   className = '',
   name,
   id,
+  inputSize = 'md',
 }) => {
   const reactId = React.useId()
   const inputId = id || `input-${name || reactId}`
   const errorId = `${inputId}-error`
 
-  const baseInputStyles = 'w-full px-4 py-2.5 bg-white border rounded-xl text-slate-700 transition-all duration-200 outline-none focus:ring-2 focus:ring-offset-1 disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed'
+  const heightClass = inputSize === 'lg' ? 'h-10 text-[14px]' : 'h-9 text-[13.5px]'
+
+  const baseInputStyles = `w-full px-3 bg-[var(--card)] border rounded-[7px] text-[var(--ink)] placeholder:text-[var(--dim)] transition-[border-color,box-shadow] duration-150 outline-none disabled:bg-[var(--surface)] disabled:text-[var(--dim)] disabled:cursor-not-allowed ${heightClass}`
   
   const stateStyles = error 
-    ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-100' 
-    : 'border-slate-200 focus:border-indigo-500 focus:ring-indigo-100 hover:border-slate-300'
+    ? 'border-[var(--neg)] focus:border-[var(--neg)] focus:ring-3 focus:ring-[var(--neg)]/20'
+    : 'border-[var(--line)] hover:border-[var(--dim)] focus:border-[var(--blue)] focus:ring-3 focus:ring-[var(--blue-tint)]'
 
-  const iconPadding = `${leftIcon ? 'pl-11' : ''} ${rightIcon ? 'pr-11' : ''}`
+  const iconPadding = `${leftIcon ? 'pl-9' : ''} ${rightIcon ? 'pr-9' : ''}`
 
   return (
     <div className={`flex flex-col gap-1.5 ${className}`}>
       {label && (
         <label 
           htmlFor={inputId} 
-          className="text-sm font-semibold text-slate-700 ml-1 flex items-center gap-1"
+          className="microlabel flex items-center gap-1"
         >
           {label}
-          {required && <span className="text-rose-500">*</span>}
+          {required && <span className="text-[var(--muted)]">*</span>}
         </label>
       )}
       
-      <div className="relative group">
+      <div className="relative group flex items-center">
         {leftIcon && (
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">
+          <div className="absolute left-3 text-[var(--dim)] group-focus-within:text-[var(--blue)] transition-colors pointer-events-none flex items-center [&>svg]:w-4 [&>svg]:h-4">
             {leftIcon}
           </div>
         )}
@@ -77,7 +81,7 @@ export const Input: React.FC<InputProps> = ({
         />
 
         {rightIcon && (
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">
+          <div className="absolute right-3 text-[var(--dim)] group-focus-within:text-[var(--blue)] transition-colors flex items-center [&>svg]:w-4 [&>svg]:h-4">
             {rightIcon}
           </div>
         )}
@@ -86,7 +90,7 @@ export const Input: React.FC<InputProps> = ({
       {error && (
         <p 
           id={errorId} 
-          className="text-xs font-medium text-rose-500 ml-1 animate-in fade-in slide-in-from-top-1 duration-200"
+          className="text-xs font-medium text-[var(--neg)] mt-0.5"
         >
           {error}
         </p>

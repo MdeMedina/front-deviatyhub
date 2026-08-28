@@ -12,6 +12,10 @@
 
 # testing
 /coverage
+# local test-run dumps (also excluded from Tailwind source scanning)
+/test_results.json
+/test_output*.txt
+/test_*_fail.txt
 
 # next.js
 /.next/

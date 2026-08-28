@@ -1,24 +1,12 @@
 'use client'
 
 import React from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  AlertCircle, 
-  Check, 
-  AlertTriangle, 
-  Calendar, 
-  MessageSquare, 
-  Clock, 
-  Sparkles, 
-  HelpCircle,
-  ShieldAlert,
-  Bot
-} from 'lucide-react'
+import { Check, AlertTriangle } from 'lucide-react'
 import { useAgentConfig, useUpdateAgentConfig } from '@/lib/api/hooks/use-agent'
 import { useIntegrations } from '@/lib/api/hooks/use-integrations'
 import { useUIStore } from '@/lib/stores/ui.store'
 import { Spinner } from '@/components/ui/Spinner'
-import { Channel, IntegrationType, IAgentConfig, IAgentActionConfig } from '@/lib/types'
+import { Channel, IntegrationType } from '@/lib/types'
 
 export interface AgentActionToggleProps {
   readOnly?: boolean
@@ -101,8 +89,8 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
         },
         onError: (err: any) => {
           addToast({
-            title: 'Error de actualización',
-            message: err.message || 'No se pudo guardar los canales de la acción.',
+            title: 'Falla al actualizar',
+            message: err.message || 'No se pudieron actualizar los canales.',
             type: 'error',
           })
         },
@@ -110,15 +98,14 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
     )
   }
 
-  const handleToggleIntegration = (
-    actionKey: 'schedule' | 'reschedule' | 'cancel', 
-    integration: IntegrationType
-  ) => {
+  const handleToggleIntegration = (actionKey: 'schedule' | 'reschedule' | 'cancel', integration: IntegrationType) => {
     if (readOnly || !config) return
 
-    // Pre-check if integration is connected
     const isConnected = integrationsMap.get(integration) ?? false
-    if (!isConnected) {
+    const currentAction = config.actions[actionKey]
+    const alreadyHas = currentAction.integrations.includes(integration)
+
+    if (!alreadyHas && !isConnected) {
       addToast({
         title: 'Integración requerida',
         message: `No se puede habilitar porque la integración con ${integration} no está conectada o activa.`,
@@ -127,8 +114,6 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
       return
     }
 
-    const currentAction = config.actions[actionKey]
-    const alreadyHas = currentAction.integrations.includes(integration)
     const updatedIntegrations = alreadyHas
       ? currentAction.integrations.filter((i) => i !== integration)
       : [...currentAction.integrations, integration]
@@ -147,14 +132,14 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
         onSuccess: () => {
           addToast({
             title: 'Integraciones actualizadas',
-            message: 'La asignación de integraciones se guardó correctamente.',
+            message: 'Las integraciones asociadas fueron modificadas.',
             type: 'success',
           })
         },
         onError: (err: any) => {
           addToast({
-            title: 'Error de actualización',
-            message: err.message || 'No se pudo guardar la integración de la acción.',
+            title: 'Falla al actualizar',
+            message: err.message || 'Error al modificar integraciones.',
             type: 'error',
           })
         },
@@ -164,163 +149,113 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
 
   if (loadingConfig || loadingIntegrations) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 bg-white rounded-3xl border border-slate-100 shadow-sm min-h-[400px]">
-        <Spinner size="lg" className="text-indigo-600 mb-4" />
-        <p className="text-sm font-semibold text-slate-500">Cargando configuración de acciones del bot...</p>
+      <div className="flex flex-col items-center justify-center p-12 bg-[var(--card)] border border-[var(--line)] rounded-[10px] min-h-[300px]">
+        <Spinner size="md" />
+        <span className="microlabel text-[10px] mt-2">Cargando acciones</span>
       </div>
     )
   }
 
-  if (errorConfig) {
+  if (errorConfig || !config) {
     return (
-      <div className="p-8 bg-rose-50 border border-rose-100 rounded-3xl text-center max-w-2xl mx-auto flex flex-col items-center gap-3">
-        <AlertCircle className="text-rose-500 w-8 h-8" />
-        <p className="text-sm font-semibold text-rose-600">
-          No se pudo cargar la configuración de acciones del agente.
-        </p>
+      <div className="p-8 bg-[var(--card)] border border-[var(--line)] rounded-[10px] text-center">
+        <p className="text-[13px] text-[var(--neg)]">Error al cargar la configuración de acciones del agente.</p>
       </div>
     )
   }
 
-  if (!config) return null
-
-  const actionsList: Array<{
-    key: 'schedule' | 'reschedule' | 'cancel'
-    title: string
-    description: string
-    icon: React.ReactNode
-    accentColor: string
-  }> = [
+  const actionsMeta = [
     {
-      key: 'schedule',
+      key: 'schedule' as const,
       title: 'Agendar Citas',
-      description: 'Permite al agente programar y crear nuevas citas médicas según disponibilidad.',
-      icon: <Calendar size={20} />,
-      accentColor: 'indigo'
+      description: 'Permite al asistente agendar nuevas citas médicas verificando la disponibilidad y reglas clínicas en tiempo real.',
+      count: '248',
     },
     {
-      key: 'reschedule',
+      key: 'reschedule' as const,
       title: 'Reprogramar Citas',
-      description: 'Habilita al bot a cambiar el horario de una cita existente a petición del paciente.',
-      icon: <Clock size={20} />,
-      accentColor: 'sky'
+      description: 'Habilita al paciente cambiar fecha y horario de citas ya existentes manteniendo la trazabilidad histórica.',
+      count: '53',
     },
     {
-      key: 'cancel',
+      key: 'cancel' as const,
       title: 'Cancelar Citas',
-      description: 'Facilita la liberación y anulación de citas confirmadas por pacientes.',
-      icon: <Clock size={20} className="rotate-180" />, // simple variation
-      accentColor: 'rose'
-    }
+      description: 'Gestiona la cancelación de turnos y libera el horario en el calendario de forma automática.',
+      count: '26',
+    },
   ]
 
   const channelsList = [Channel.WHATSAPP, Channel.INSTAGRAM]
   const integrationsList = [
-    IntegrationType.WHATSAPP,
-    IntegrationType.INSTAGRAM,
     IntegrationType.GOOGLE_CALENDAR,
     IntegrationType.DENTALINK,
     IntegrationType.DENTIDESK,
-    IntegrationType.GMAIL
+    IntegrationType.GMAIL,
   ]
 
   return (
-    <div className="space-y-6">
-      {/* Intro info panel */}
-      <div className="bg-gradient-to-r from-slate-900 to-indigo-950 p-6 rounded-3xl text-white shadow-xl relative overflow-hidden">
-        <div className="absolute right-0 bottom-0 top-0 opacity-10 flex items-center justify-center pointer-events-none">
-          <Bot size={220} className="-rotate-12 translate-y-4 translate-x-4" />
-        </div>
-        <div className="relative z-10 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-          <div className="space-y-1.5 max-w-xl">
-            <div className="inline-flex items-center gap-1 bg-indigo-500/25 border border-indigo-400/30 px-3 py-1 rounded-full text-[10px] font-black tracking-wider uppercase">
-              <Sparkles size={11} className="text-indigo-300 animate-pulse" />
-              IA Operativa Activa
-            </div>
-            <h3 className="text-lg font-black tracking-tight">Acciones y Autonomía del Agente</h3>
-            <p className="text-slate-300 text-xs leading-relaxed font-medium">
-              Define los límites del bot. Selecciona qué tareas operativas puede ejecutar de forma autónoma, a través de qué canales de mensajería atenderá y con qué agendas o sistemas se sincronizará.
-            </p>
-          </div>
-          {readOnly && (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 border border-amber-400/20 rounded-full text-xs font-bold text-amber-300">
-              <ShieldAlert size={14} />
-              Modo de Solo Lectura
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Panels for actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {actionsList.map((actionInfo) => {
-          const actionConfig: IAgentActionConfig = config.actions[actionInfo.key]
+    <div className="flex flex-col gap-5">
+      {/* 3 Action Cards Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+        {actionsMeta.map((actionInfo) => {
+          const actionConfig = config.actions[actionInfo.key]
           const isActived = actionConfig.active
 
-          let accentBgClass = 'border-slate-100 hover:border-slate-200'
-          if (isActived) {
-            if (actionInfo.accentColor === 'indigo') accentBgClass = 'border-indigo-100 shadow-indigo-50/40 ring-1 ring-indigo-50/50'
-            if (actionInfo.accentColor === 'sky') accentBgClass = 'border-sky-100 shadow-sky-50/40 ring-1 ring-sky-50/50'
-            if (actionInfo.accentColor === 'rose') accentBgClass = 'border-rose-100 shadow-rose-50/40 ring-1 ring-rose-50/50'
-          }
-
           return (
-            <div 
+            <div
               key={actionInfo.key}
-              className={`bg-white rounded-3xl border p-6 shadow-sm transition-all duration-300 flex flex-col justify-between ${accentBgClass}`}
+              data-card
               data-testid={`action-panel-${actionInfo.key}`}
+              style={{ display: 'flex', flexDirection: 'column' }}
             >
-              <div>
-                {/* Header of Action Panel */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${
-                      isActived 
-                        ? actionInfo.accentColor === 'indigo' ? 'bg-indigo-50 text-indigo-600'
-                          : actionInfo.accentColor === 'sky' ? 'bg-sky-50 text-sky-600'
-                          : 'bg-rose-50 text-rose-600'
-                        : 'bg-slate-50 text-slate-400'
-                    }`}>
-                      {actionInfo.icon}
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-slate-800">{actionInfo.title}</h4>
-                      <span className={`text-[9px] font-black tracking-wider uppercase ${isActived ? 'text-indigo-600' : 'text-slate-400'}`}>
-                        {isActived ? 'Autónomo' : 'Apagado'}
-                      </span>
-                    </div>
-                  </div>
+              {/* Header with Switch */}
+              <div data-hd>
+                <h2>{actionInfo.title}</h2>
+                <button
+                  type="button"
+                  data-testid={`action-toggle-${actionInfo.key}`}
+                  disabled={readOnly}
+                  onClick={() => handleToggleAction(actionInfo.key)}
+                  style={{
+                    width: '38px',
+                    height: '22px',
+                    borderRadius: '999px',
+                    border: '1px solid var(--line)',
+                    background: isActived ? 'var(--blue)' : 'var(--surface-2)',
+                    position: 'relative',
+                    cursor: readOnly ? 'not-allowed' : 'pointer',
+                    padding: 0,
+                    opacity: readOnly ? 0.6 : 1,
+                    transition: 'background-color .15s',
+                  }}
+                  aria-label={`Toggle ${actionInfo.title}`}
+                >
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: '2px',
+                      left: isActived ? '18px' : '2px',
+                      width: '16px',
+                      height: '16px',
+                      borderRadius: '50%',
+                      background: '#FFFFFF',
+                      transition: 'left .15s',
+                      boxShadow: '0 1px 2px rgba(0,0,0,0.15)',
+                    }}
+                  />
+                </button>
+              </div>
 
-                  {/* Switch Component */}
-                  <button
-                    type="button"
-                    aria-label={`Toggle ${actionInfo.title}`}
-                    disabled={readOnly}
-                    onClick={() => handleToggleAction(actionInfo.key)}
-                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out outline-none ${
-                      readOnly ? 'opacity-50 cursor-not-allowed' : 'focus:ring-2 focus:ring-indigo-100 focus:ring-offset-1'
-                    } ${isActived ? 'bg-indigo-600' : 'bg-slate-200'}`}
-                  >
-                    <motion.span
-                      layout
-                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 ${
-                        isActived ? 'translate-x-5' : 'translate-x-0'
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                <p className="text-slate-400 text-xs leading-relaxed mb-6 font-medium">
+              {/* Body */}
+              <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '16px', flex: 1 }}>
+                <p style={{ margin: 0, fontSize: '12.5px', lineHeight: 1.6, color: 'var(--muted)' }}>
                   {actionInfo.description}
                 </p>
 
-                {/* Channels selection */}
-                <div className={`space-y-2.5 mb-6 transition-all duration-300 ${isActived ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
-                  <label className="text-[10px] font-black tracking-wider uppercase text-slate-400 block ml-0.5">
-                    Canales de Operación
-                  </label>
-                  <div className="flex flex-wrap gap-2">
+                {/* Channels */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <span data-lbl>Canales habilitados</span>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                     {channelsList.map((channel) => {
                       const isSelected = actionConfig.channels.includes(channel)
                       return (
@@ -330,13 +265,22 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
                           data-testid={`channel-${channel}`}
                           disabled={!isActived || readOnly}
                           onClick={() => handleToggleChannel(actionInfo.key, channel)}
-                          className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-                            isSelected 
-                              ? 'bg-slate-900 text-white shadow-md shadow-slate-900/10'
-                              : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-100'
-                          }`}
+                          className="cursor-pointer transition-all disabled:cursor-not-allowed"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            padding: '3px 9px',
+                            borderRadius: '999px',
+                            fontSize: '11.5px',
+                            fontWeight: 500,
+                            border: `1px solid ${isSelected && isActived ? 'var(--blue-line)' : 'var(--line)'}`,
+                            background: isSelected && isActived ? 'var(--blue-tint)' : 'var(--surface)',
+                            color: isSelected && isActived ? 'var(--blue)' : 'var(--dim)',
+                            opacity: !isActived ? 0.5 : 1,
+                          }}
                         >
-                          {isSelected && <Check size={12} className="stroke-[3]" />}
+                          {isSelected && <Check size={11} strokeWidth={2.5} />}
                           {channel}
                         </button>
                       )
@@ -344,57 +288,78 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
                   </div>
                 </div>
 
-                {/* Integraciones selection */}
-                <div className={`space-y-2.5 transition-all duration-300 ${isActived ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
-                  <label className="text-[10px] font-black tracking-wider uppercase text-slate-400 block ml-0.5">
-                    Integraciones Sincronizadas
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
+                {/* Integrations */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <span data-lbl>Integraciones asociadas</span>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                     {integrationsList.map((integration) => {
                       const isSelected = actionConfig.integrations.includes(integration)
                       const isConnected = integrationsMap.get(integration) ?? false
 
                       return (
-                        <div 
+                        <button
                           key={integration}
-                          className="relative group"
+                          type="button"
+                          data-testid={`integration-${integration}`}
+                          disabled={!isActived || readOnly}
+                          onClick={() => handleToggleIntegration(actionInfo.key, integration)}
+                          className="cursor-pointer transition-all disabled:cursor-not-allowed"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            padding: '3px 9px',
+                            borderRadius: '999px',
+                            fontSize: '11.5px',
+                            fontWeight: 500,
+                            border: `1px solid ${isSelected && isActived ? 'var(--blue-line)' : 'var(--line)'}`,
+                            background: isSelected && isActived ? 'var(--blue-tint)' : 'var(--surface)',
+                            color: isSelected && isActived ? 'var(--blue)' : 'var(--dim)',
+                            opacity: !isActived || !isConnected ? 0.5 : 1,
+                          }}
                         >
-                          <button
-                            key={integration}
-                            type="button"
-                            disabled={!isActived || readOnly}
-                            onClick={() => handleToggleIntegration(actionInfo.key, integration)}
-                            className={`w-full px-3 py-2.5 rounded-xl text-[10px] font-bold text-left transition-all border flex items-center justify-between group/btn ${
-                              isSelected 
-                                ? 'bg-indigo-50 border-indigo-200 text-indigo-700' 
-                                : 'bg-slate-50/50 hover:bg-slate-50 border-slate-100 text-slate-600'
-                            } ${!isConnected ? 'cursor-not-allowed border-dashed border-slate-200' : ''}`}
-                            data-testid={`integration-${integration}`}
-                          >
-                            <span className="truncate pr-1">{integration}</span>
-                            {isConnected ? (
-                              isSelected ? (
-                                <Check size={12} className="text-indigo-600 shrink-0" />
-                              ) : null
-                            ) : (
-                              <div className="text-amber-500 hover:text-amber-600 cursor-help shrink-0 relative flex items-center justify-center">
-                                <AlertTriangle size={12} />
-                                {/* Simple css tooltip inside table cell */}
-                                <div className="absolute bottom-full right-0 mb-1.5 hidden group-hover/btn:block w-36 p-2 bg-slate-900 text-white text-[9px] rounded-lg shadow-lg leading-normal z-50 pointer-events-none">
-                                  Configura la integración con {integration} primero.
-                                </div>
-                              </div>
-                            )}
-                          </button>
-                        </div>
+                          {!isConnected ? (
+                            <AlertTriangle size={11} className="shrink-0" />
+                          ) : isSelected && isActived ? (
+                            <Check size={11} strokeWidth={2.5} className="shrink-0" />
+                          ) : null}
+                          {integration}
+                        </button>
                       )
                     })}
                   </div>
+                </div>
+
+                {/* Executions footer */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', paddingTop: '14px', borderTop: '1px solid var(--line-soft)', marginTop: 'auto' }}>
+                  <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Ejecuciones (7 días)</span>
+                  <span data-mono style={{ fontSize: '13px', color: 'var(--ink)' }}>{actionInfo.count}</span>
                 </div>
               </div>
             </div>
           )
         })}
+      </div>
+
+      {/* Safety Rules Card */}
+      <div data-card>
+        <div data-hd>
+          <h2>Reglas de seguridad del agente</h2>
+        </div>
+        <div style={{ padding: '18px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <span data-lbl>Ventana mínima de agendamiento</span>
+            <span data-mono style={{ fontSize: '15px', color: 'var(--ink)' }}>2 h</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <span data-lbl>Máx. reprogramaciones por paciente</span>
+            <span data-mono style={{ fontSize: '15px', color: 'var(--ink)' }}>3</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <span data-lbl>Derivación automática a humano</span>
+            <span style={{ fontSize: '15px', color: 'var(--ink)' }}>Tras 2 intentos fallidos</span>
+          </div>
+        </div>
       </div>
     </div>
   )

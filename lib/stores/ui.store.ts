@@ -8,11 +8,18 @@ export interface IToast {
   duration?: number
 }
 
+export type Theme = 'light' | 'dark'
+
 interface UIState {
   isSidebarOpen: boolean
   activeModal: string | null
   toasts: IToast[]
+  theme: Theme
   
+  // Theme actions
+  setTheme: (theme: Theme) => void
+  toggleTheme: () => void
+
   // Sidebar actions
   toggleSidebar: () => void
   setSidebarOpen: (isOpen: boolean) => void
@@ -26,10 +33,32 @@ interface UIState {
   removeToast: (id: string) => void
 }
 
+const applyTheme = (theme: Theme) => {
+  if (typeof document !== 'undefined') {
+    if (theme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark')
+    } else {
+      document.documentElement.removeAttribute('data-theme')
+    }
+  }
+}
+
 export const useUIStore = create<UIState>((set) => ({
   isSidebarOpen: true,
   activeModal: null,
   toasts: [],
+  theme: 'light',
+
+  setTheme: (theme: Theme) => {
+    applyTheme(theme)
+    set({ theme })
+  },
+
+  toggleTheme: () => set((state) => {
+    const nextTheme = state.theme === 'light' ? 'dark' : 'light'
+    applyTheme(nextTheme)
+    return { theme: nextTheme }
+  }),
 
   toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
   

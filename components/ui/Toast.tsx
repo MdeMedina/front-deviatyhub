@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { X, CheckCircle2, AlertCircle, Info, AlertTriangle } from 'lucide-react'
+import { X } from 'lucide-react'
 import { IToast } from '@/lib/stores/ui.store'
 
 interface ToastProps {
@@ -20,35 +20,30 @@ export const Toast: React.FC<ToastProps> = ({ toast, onRemove }) => {
     }
   }, [toast.id, toast.duration, onRemove])
 
-  const typeStyles = {
-    success: 'bg-white border-emerald-100 text-emerald-800 shadow-emerald-100/50',
-    error: 'bg-white border-rose-100 text-rose-800 shadow-rose-100/50',
-    warning: 'bg-white border-amber-100 text-amber-800 shadow-amber-100/50',
-    info: 'bg-white border-sky-100 text-sky-800 shadow-sky-100/50',
-  }
-
-  const iconStyles = {
-    success: <CheckCircle2 className="text-emerald-500" size={20} />,
-    error: <AlertCircle className="text-rose-500" size={20} />,
-    warning: <AlertTriangle className="text-amber-500" size={20} />,
-    info: <Info className="text-sky-500" size={20} />,
+  const dots = {
+    success: 'bg-[var(--pos)]',
+    error: 'bg-[var(--neg)]',
+    warning: 'bg-[var(--muted)]',
+    info: 'bg-[var(--blue)]',
   }
 
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, x: 50, scale: 0.9 }}
-      animate={{ opacity: 1, x: 0, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-      className={`flex items-start gap-3 p-4 rounded-2xl border shadow-xl min-w-[320px] max-w-md ${typeStyles[toast.type]}`}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 10, transition: { duration: 0.15 } }}
+      className="flex items-start gap-3 p-3.5 rounded-[10px] border border-[var(--line)] bg-[var(--card)] shadow-[0_1px_2px_rgba(20,20,25,0.05)] min-w-[300px] max-w-sm"
       role="alert"
     >
-      <div className="shrink-0 mt-0.5">{iconStyles[toast.type]}</div>
+      <div className="shrink-0 mt-1">
+        <span className={`block w-2 h-2 rounded-full ${dots[toast.type] || 'bg-[var(--blue)]'}`} />
+      </div>
       
-      <div className="flex-1 space-y-1">
-        <h4 className="text-sm font-bold leading-tight">{toast.title}</h4>
+      <div className="flex-1 space-y-0.5">
+        <h4 className="text-[13px] font-semibold text-[var(--ink)] leading-snug">{toast.title}</h4>
         {toast.message && (
-          <p className="text-xs font-medium opacity-80 leading-relaxed">
+          <p className="text-[12px] text-[var(--muted)] leading-relaxed">
             {toast.message}
           </p>
         )}
@@ -56,10 +51,10 @@ export const Toast: React.FC<ToastProps> = ({ toast, onRemove }) => {
 
       <button
         onClick={() => onRemove(toast.id)}
-        className="shrink-0 p-1 rounded-lg hover:bg-slate-50 transition-colors opacity-40 hover:opacity-100"
+        className="shrink-0 p-1 text-[var(--muted)] hover:text-[var(--ink)] rounded-[4px] transition-colors cursor-pointer"
         aria-label="Cerrar notificación"
       >
-        <X size={16} />
+        <X size={14} />
       </button>
     </motion.div>
   )

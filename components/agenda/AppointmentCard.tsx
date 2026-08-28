@@ -2,9 +2,8 @@
 
 import React from 'react'
 import { Clock, User, Stethoscope } from 'lucide-react'
-import { AppointmentStatus, IAppointment } from '@/lib/types'
+import { AppointmentStatus, AppointmentSource, IAppointment } from '@/lib/types'
 import { Badge } from '@/components/ui/Badge'
-import { motion } from 'framer-motion'
 
 interface AppointmentCardProps {
   appointment: IAppointment
@@ -21,10 +20,12 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
       case AppointmentStatus.PENDING: return 'warning'
       case AppointmentStatus.CANCELLED: return 'error'
       case AppointmentStatus.RESCHEDULED: return 'info'
-      case AppointmentStatus.COMPLETED: return 'purple'
+      case AppointmentStatus.COMPLETED: return 'neutral'
       default: return 'neutral'
     }
   }
+
+  const isAI = appointment.source === AppointmentSource.AGENT || (appointment.source as any) === 'AI'
 
   const time = new Date(appointment.scheduled_at).toLocaleTimeString([], { 
     hour: '2-digit', 
@@ -32,36 +33,38 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
   })
 
   return (
-    <motion.button
-      whileHover={{ y: -2, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}
-      whileTap={{ scale: 0.98 }}
+    <button
       onClick={onClick}
-      className="w-full text-left bg-white p-4 rounded-2xl border border-slate-100 shadow-sm transition-all hover:border-indigo-100 group"
+      className={`w-full text-left p-3 rounded-[8px] border transition-colors cursor-pointer ${
+        isAI 
+          ? 'bg-[var(--blue-tint)] border-[var(--blue-line)] hover:border-[var(--blue)]' 
+          : 'bg-[var(--card)] border-[var(--line)] hover:border-[var(--dim)]'
+      }`}
     >
-      <div className="flex justify-between items-start mb-3">
-        <div className="flex items-center gap-2 text-indigo-600">
-          <Clock size={14} className="group-hover:animate-pulse" />
-          <span className="text-xs font-bold tracking-tight">{time}</span>
+      <div className="flex justify-between items-start mb-2">
+        <div className="flex items-center gap-1.5 text-[var(--muted)]">
+          <Clock size={12} className="text-[var(--dim)]" />
+          <span className="microlabel text-[10px] tabular">{time}</span>
         </div>
         <Badge variant={getStatusVariant(appointment.status)} size="sm">
           {appointment.status}
         </Badge>
       </div>
 
-      <h3 className="text-sm font-bold text-slate-900 mb-1 group-hover:text-indigo-600 transition-colors">
+      <h3 className="text-[13.5px] font-semibold text-[var(--ink)] mb-1.5 truncate">
         {appointment.contact_name}
       </h3>
 
-      <div className="space-y-1.5">
-        <div className="flex items-center gap-2 text-slate-500">
-          <Stethoscope size={12} />
-          <span className="text-xs font-medium">{appointment.treatment.name}</span>
+      <div className="space-y-1">
+        <div className="flex items-center gap-1.5 text-[var(--muted)]">
+          <Stethoscope size={11} className="text-[var(--dim)]" />
+          <span className="text-[11.5px] truncate">{appointment.treatment?.name}</span>
         </div>
-        <div className="flex items-center gap-2 text-slate-400">
-          <User size={12} />
-          <span className="text-[10px] font-bold uppercase tracking-wider">{appointment.doctor.name}</span>
+        <div className="flex items-center gap-1.5 text-[var(--muted)]">
+          <User size={11} className="text-[var(--dim)]" />
+          <span className="microlabel text-[9.5px] truncate">{appointment.doctor?.name}</span>
         </div>
       </div>
-    </motion.button>
+    </button>
   )
 }

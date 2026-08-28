@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { 
   subDays, 
   subWeeks, 
@@ -9,13 +10,11 @@ import {
   addWeeks, 
   addMonths 
 } from 'date-fns'
-import { ChevronLeft, ChevronRight, Calendar, AlertCircle } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { ChevronLeft, ChevronRight, AlertCircle, ArrowRight } from 'lucide-react'
 import { useAuthStore } from '@/lib/stores/auth.store'
 import { useAppointments } from '@/lib/api/hooks/use-appointments'
 import { CalendarGrid } from '@/components/agenda/CalendarGrid'
 import { AppointmentModal } from '@/components/agenda/AppointmentModal'
-import { Button } from '@/components/ui/Button'
 import { getDateRange, getRangeLabel } from '@/lib/utils/dates'
 
 export default function AgendaPage() {
@@ -26,13 +25,13 @@ export default function AgendaPage() {
 
   const { hasPermission } = useAuthStore()
 
-  // 1. Guardia de seguridad y permisos
+  // Permissions check
   const canView = hasPermission('agenda.view')
 
-  // 2. Obtener fechas de rango
+  // Date range
   const { from, to } = getDateRange(view, currentDate)
 
-  // 3. Sincronizar datos de la API (startDate y endDate son los params esperados por el hook)
+  // Fetch appointments
   const { data, isLoading } = useAppointments({ 
     startDate: from, 
     endDate: to 
@@ -40,25 +39,25 @@ export default function AgendaPage() {
 
   if (!canView) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-slate-50/50 min-h-[calc(100vh-10rem)]">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-white border border-slate-100 rounded-3xl p-8 max-w-md w-full text-center shadow-xl shadow-slate-100/50"
+      <div className="flex flex-col items-center justify-center p-8 bg-[var(--card)] border border-[var(--line)] rounded-[10px] min-h-[380px] max-w-md mx-auto text-center shadow-[0_1px_2px_rgba(20,20,25,0.05)]">
+        <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
+          <AlertCircle size={22} />
+        </div>
+        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
+        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+          No tienes los permisos necesarios para visualizar la agenda médica y gestionar las citas. Por favor contacta al administrador.
+        </p>
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[13px] transition-opacity gap-2"
         >
-          <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 mx-auto mb-6">
-            <AlertCircle size={32} />
-          </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Acceso Denegado</h2>
-          <p className="text-slate-500 text-sm mb-6">
-            No tienes los permisos necesarios para visualizar la agenda médica y gestionar las citas. Por favor contacta al administrador.
-          </p>
-        </motion.div>
+          Ir al Dashboard
+          <ArrowRight size={14} />
+        </Link>
       </div>
     )
   }
 
-  // 4. Lógica de navegación temporal
   const handlePrevious = () => {
     if (view === 'day') {
       setCurrentDate(prev => subDays(prev, 1))
@@ -90,80 +89,88 @@ export default function AgendaPage() {
 
   const handleCloseModal = () => {
     setIsModalOpen(false)
-    // Clear select details optionally or keep it for smooth closing fade out
   }
 
   const appointments = data?.data || []
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
-      {/* Cabecera Premium */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-            <Calendar size={22} className="animate-pulse" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-slate-900 leading-tight">Agenda & Citas</h1>
-            <p className="text-xs text-slate-400 font-medium tracking-wide uppercase mt-0.5">Control de Consultas Médicas</p>
-          </div>
+    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+      {/* Header Bar */}
+      <div className="flex items-end justify-between gap-5 flex-wrap pb-4 border-b border-[var(--line)]">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
+            Agenda & Citas
+          </h1>
+          <p className="text-[13.5px] text-[var(--muted)]">
+            Control de Consultas Médicas
+          </p>
         </div>
 
-        {/* Rango Temporal & Navegación */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-1 bg-slate-50 border border-slate-100 rounded-xl p-1 shadow-inner">
-            <Button 
-              variant="ghost" 
-              size="sm" 
+        {/* Date Navigation & Range & View Tabs */}
+        <div className="flex items-center gap-2.5 flex-wrap">
+          {/* Arrow / Today Controls */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '2px', padding: '3px', border: '1px solid var(--line)', borderRadius: '9px', background: 'var(--card)' }}>
+            <button 
+              data-btn 
               onClick={handlePrevious}
-              icon={<ChevronLeft size={16} />}
-              className="p-1.5 h-8 w-8 hover:bg-white rounded-lg text-slate-500"
+              aria-label="Período anterior"
+              style={{ width: '28px', height: '26px', padding: 0, borderColor: 'transparent', background: 'none' }}
             >
-              {""}
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+              <ChevronLeft size={15} strokeWidth={1.9} />
+            </button>
+            <button 
+              data-btn 
               onClick={handleToday}
-              className="h-8 text-xs font-bold text-slate-700 px-3 hover:bg-white rounded-lg"
+              style={{ height: '26px', borderColor: 'transparent', background: 'none', fontSize: '12.5px' }}
             >
               Hoy
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            </button>
+            <button 
+              data-btn 
               onClick={handleNext}
-              icon={<ChevronRight size={16} />}
-              className="p-1.5 h-8 w-8 hover:bg-white rounded-lg text-slate-500"
+              aria-label="Período siguiente"
+              style={{ width: '28px', height: '26px', padding: 0, borderColor: 'transparent', background: 'none' }}
             >
-              {""}
-            </Button>
+              <ChevronRight size={15} strokeWidth={1.9} />
+            </button>
           </div>
 
-          <span className="text-sm font-extrabold text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-4 py-2 min-w-[150px] text-center shadow-inner">
+          {/* Range text in Mono */}
+          <span 
+            data-mono 
+            style={{ fontSize: '12.5px', color: 'var(--ink-soft)', border: '1px solid var(--line)', borderRadius: '7px', padding: '6px 12px', background: 'var(--card)' }}
+          >
             {getRangeLabel(view, currentDate)}
           </span>
-        </div>
 
-        {/* Selectores de Vista */}
-        <div className="flex bg-slate-50 border border-slate-100 rounded-2xl p-1 shadow-inner self-start md:self-auto">
-          {(['day', 'week', 'month'] as const).map(v => (
+          {/* View Selector Tabs */}
+          <div data-tabs>
             <button
-              key={v}
-              onClick={() => setView(v)}
-              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all duration-200 uppercase tracking-wider ${
-                view === v 
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-100' 
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
+              data-tab
+              data-active={view === 'day'}
+              onClick={() => setView('day')}
             >
-              {v === 'day' ? 'Día' : v === 'week' ? 'Semana' : 'Mes'}
+              Día
             </button>
-          ))}
+            <button
+              data-tab
+              data-active={view === 'week'}
+              onClick={() => setView('week')}
+            >
+              Semana
+            </button>
+            <button
+              data-tab
+              data-active={view === 'month'}
+              onClick={() => setView('month')}
+            >
+              Mes
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Grilla de Calendario */}
+      {/* Main Calendar Matrix */}
       <CalendarGrid
         view={view}
         currentDate={currentDate}
@@ -172,9 +179,10 @@ export default function AgendaPage() {
         onSelectAppointment={handleSelectAppointment}
       />
 
-      {/* Modal de Detalle */}
+      {/* Appointment Detail / Reschedule Modal */}
       <AppointmentModal
-        id={selectedAppointmentId}
+        id={selectedAppointmentId || ''}
+        appointmentId={selectedAppointmentId || ''}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
       />
