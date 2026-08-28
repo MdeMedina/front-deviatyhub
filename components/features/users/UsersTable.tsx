@@ -85,7 +85,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                   {/* Email & Initials Avatar */}
                   <td>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span style={{ width: '28px', height: '28px', borderRadius: '7px', background: 'var(--ink)', color: 'var(--bg)', display: 'grid', placeItems: 'center', fontSize: '10.5px', fontWeight: 600, flexShrink: 0 }}>
+                      <span style={{ width: '28px', height: '28px', borderRadius: '7px', background: 'var(--blue-solid)', color: 'var(--on-blue)', display: 'grid', placeItems: 'center', fontSize: '10.5px', fontWeight: 600, flexShrink: 0 }}>
                         {getInitials(u.email)}
                       </span>
                       <span style={{ color: 'var(--ink)', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

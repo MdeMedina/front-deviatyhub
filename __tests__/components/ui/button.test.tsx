@@ -25,9 +25,9 @@ describe('UI Atoms — Button', () => {
   it('successfully applies the correct variant classes (primary check)', () => {
     render(<Button variant="primary">Primary</Button>)
     const button = screen.getByRole('button')
-    // Check for Dentral primary button tokens
-    expect(button.className).toContain('bg-[var(--ink)]')
-    expect(button.className).toContain('text-[var(--bg)]')
+    // Check for Dentral primary button tokens (brand blue, per prototype [data-btn="primary"])
+    expect(button.className).toContain('bg-[var(--blue-solid)]')
+    expect(button.className).toContain('text-[var(--on-blue)]')
   })
 
   it('does not trigger onClick when disabled is true', () => {

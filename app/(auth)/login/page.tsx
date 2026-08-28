@@ -113,7 +113,7 @@ export default function LoginPage() {
               type="submit"
               data-btn="primary"
               disabled={isPending}
-              style={{ height: '40px', marginTop: '2px', fontSize: '13.5px', fontWeight: 500 }}
+              style={{ height: '40px', marginTop: '2px', fontWeight: 500 }}
             >
               {isPending ? 'Iniciando sesión...' : 'Iniciar sesión'}
             </button>
@@ -121,7 +121,7 @@ export default function LoginPage() {
 
           <p style={{ margin: 0, fontSize: '13px', color: 'var(--muted)' }}>
             ¿No tienes cuenta?{' '}
-            <a href="#" style={{ fontWeight: 500, color: 'var(--ink)', textDecoration: 'none' }}>
+            <a href="#" style={{ fontWeight: 500, textDecoration: 'none' }}>
               Contacta con soporte
             </a>
           </p>
@@ -155,7 +155,7 @@ export default function LoginPage() {
       <div 
         style={{
           position: 'relative',
-          background: 'var(--panel)',
+          background: 'var(--blue-deep)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-end',
@@ -188,15 +188,15 @@ export default function LoginPage() {
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '1px', background: 'rgba(255,255,255,.12)', border: '1px solid rgba(255,255,255,.12)', borderRadius: '10px', overflow: 'hidden', marginTop: '14px' }}>
-            <div style={{ background: 'var(--panel)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+            <div style={{ background: 'var(--blue-deep)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
               <span data-mono style={{ fontSize: '20px', color: '#FFFFFF' }}>24/7</span>
               <span style={{ fontSize: '11px', color: 'rgba(255,255,255,.45)', lineHeight: 1.4 }}>Atención continua</span>
             </div>
-            <div style={{ background: 'var(--panel)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+            <div style={{ background: 'var(--blue-deep)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
               <span data-mono style={{ fontSize: '20px', color: '#FFFFFF' }}>86%</span>
               <span style={{ fontSize: '11px', color: 'rgba(255,255,255,.45)', lineHeight: 1.4 }}>Tasa de contención</span>
             </div>
-            <div style={{ background: 'var(--panel)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+            <div style={{ background: 'var(--blue-deep)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
               <span data-mono style={{ fontSize: '20px', color: '#FFFFFF' }}>1.2s</span>
               <span style={{ fontSize: '11px', color: 'rgba(255,255,255,.45)', lineHeight: 1.4 }}>Respuesta media</span>
             </div>

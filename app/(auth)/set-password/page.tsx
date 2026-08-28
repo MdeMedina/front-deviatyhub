@@ -7,6 +7,7 @@ import { AlertCircle, CheckCircle2 } from 'lucide-react'
 import { useSetPassword } from '@/lib/api/hooks/use-auth'
 import { useUIStore } from '@/lib/stores/ui.store'
 import { ApiError } from '@/lib/api/client'
+import { Logo } from '@/components/brand/Logo'
 
 function SetPasswordForm() {
   const router = useRouter()
@@ -214,7 +215,7 @@ function SetPasswordForm() {
           type="submit"
           data-btn="primary"
           disabled={isPending || !isValid}
-          style={{ height: '40px', fontSize: '13.5px', fontWeight: 500 }}
+          style={{ height: '40px', fontWeight: 500 }}
         >
           {isPending ? 'Guardando...' : 'Guardar Contraseña'}
         </button>
@@ -236,18 +237,7 @@ export default function SetPasswordPage() {
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(430px, 1fr))', minHeight: '100vh', background: 'var(--bg)' }}>
       {/* Left Column */}
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '40px 48px', minHeight: '100vh' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ width: '26px', height: '26px', border: '1px solid var(--line)', borderRadius: '6px', display: 'grid', placeItems: 'center', background: 'var(--surface)' }}>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-              <circle cx="7" cy="7" r="2" fill="var(--blue)" />
-              <circle cx="2" cy="2" r="1" fill="var(--dim)" />
-              <circle cx="12" cy="2" r="1" fill="var(--dim)" />
-              <circle cx="2" cy="12" r="1" fill="var(--dim)" />
-              <circle cx="12" cy="12" r="1" fill="var(--dim)" />
-            </svg>
-          </div>
-          <span style={{ fontSize: '15px', fontWeight: 600, letterSpacing: '-0.01em', color: 'var(--ink)' }}>Dentral</span>
-        </div>
+        <Logo variant="lockup" size={14} />
 
         <Suspense fallback={<div style={{ textAlign: 'center', color: 'var(--muted)', padding: '32px 0', fontSize: '13px' }}>Cargando verificación...</div>}>
           <SetPasswordForm />
@@ -260,7 +250,7 @@ export default function SetPasswordPage() {
       <div 
         style={{
           position: 'relative',
-          background: 'var(--panel)',
+          background: 'var(--blue-deep)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-end',

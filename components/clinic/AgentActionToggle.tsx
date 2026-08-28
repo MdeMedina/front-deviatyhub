@@ -291,7 +291,7 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
                 {/* Integrations */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <span data-lbl>Integraciones asociadas</span>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '6px' }}>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                     {integrationsList.map((integration) => {
                       const isSelected = actionConfig.integrations.includes(integration)
                       const isConnected = integrationsMap.get(integration) ?? false
@@ -303,27 +303,27 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
                           data-testid={`integration-${integration}`}
                           disabled={!isActived || readOnly}
                           onClick={() => handleToggleIntegration(actionInfo.key, integration)}
-                          className="cursor-pointer transition-all disabled:cursor-not-allowed text-left truncate"
+                          className="cursor-pointer transition-all disabled:cursor-not-allowed"
                           style={{
-                            padding: '6px 8px',
-                            borderRadius: '6px',
-                            fontSize: '11px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            padding: '3px 9px',
+                            borderRadius: '999px',
+                            fontSize: '11.5px',
                             fontWeight: 500,
                             border: `1px solid ${isSelected && isActived ? 'var(--blue-line)' : 'var(--line)'}`,
-                            background: isSelected && isActived ? 'var(--blue-tint)' : 'var(--card)',
-                            color: isSelected && isActived ? 'var(--blue)' : 'var(--muted)',
+                            background: isSelected && isActived ? 'var(--blue-tint)' : 'var(--surface)',
+                            color: isSelected && isActived ? 'var(--blue)' : 'var(--dim)',
                             opacity: !isActived || !isConnected ? 0.5 : 1,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
                           }}
                         >
-                          <span className="truncate">{integration}</span>
                           {!isConnected ? (
-                            <AlertTriangle size={11} className="text-[var(--muted)] shrink-0 ml-1" />
+                            <AlertTriangle size={11} className="shrink-0" />
                           ) : isSelected && isActived ? (
-                            <Check size={11} strokeWidth={2.5} className="shrink-0 ml-1" />
+                            <Check size={11} strokeWidth={2.5} className="shrink-0" />
                           ) : null}
+                          {integration}
                         </button>
                       )
                     })}

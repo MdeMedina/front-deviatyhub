@@ -92,7 +92,7 @@ export const Sidebar: React.FC = () => {
               <span className="text-[14px] font-semibold tracking-[-0.01em] text-[var(--ink)]">
                 Dentral
               </span>
-              <span className="microlabel px-1.5 py-0.5 rounded border border-[var(--line)] bg-[var(--surface)] text-[9.5px]">
+              <span className="microlabel px-1.5 py-0.5 rounded border border-[var(--line)] bg-[var(--surface)]">
                 PRO
               </span>
             </div>
@@ -120,7 +120,7 @@ export const Sidebar: React.FC = () => {
           return (
             <div key={group.name} className="space-y-1">
               {isSidebarOpen && (
-                <div className="px-2 py-1 microlabel text-[9.5px] text-[var(--dim)]">
+                <div className="px-2 py-1 microlabel text-[var(--dim)]">
                   {group.name}
                 </div>
               )}
@@ -134,7 +134,7 @@ export const Sidebar: React.FC = () => {
                     key={item.href}
                     href={item.href}
                     title={!isSidebarOpen ? item.label : undefined}
-                    className={`flex items-center gap-2.5 px-2 py-1.5 rounded-[6px] transition-[background-color,color] duration-150 relative text-[13.5px] group ${
+                    className={`flex items-center gap-2.5 px-2 py-[7px] rounded-[6px] transition-[background-color,color] duration-150 relative text-[13.5px] group ${
                       isActive 
                         ? 'bg-[var(--blue-tint)] text-[var(--blue)] font-medium before:content-[""] before:absolute before:left-[-10px] before:top-[7px] before:bottom-[7px] before:w-[2px] before:bg-[var(--blue)] before:rounded-r-[2px]' 
                         : 'text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] font-normal'
@@ -159,7 +159,7 @@ export const Sidebar: React.FC = () => {
       <div className="p-3 border-t border-[var(--line)] bg-[var(--card)] flex items-center justify-between">
         {isSidebarOpen ? (
           <div className="overflow-hidden">
-            <p className="microlabel text-[9.5px]">Plan Actual</p>
+            <p className="microlabel">Plan Actual</p>
             <p className="text-[12.5px] font-medium text-[var(--ink)] truncate">Enterprise Pro</p>
           </div>
         ) : <div />}

@@ -38,7 +38,7 @@ function ConversationsContent() {
         data-card
         data-conv
         className="w-full overflow-hidden"
-        style={{ height: 'calc(100vh - 220px)', minHeight: '540px' }}
+        style={{ height: 'calc(100vh - 220px)', minHeight: '520px' }}
       >
         {/* Columna 1: Lista (se oculta bajo 820px) */}
         <div data-conv-list="true" className="border-r border-[var(--line)] h-full flex flex-col min-w-0">

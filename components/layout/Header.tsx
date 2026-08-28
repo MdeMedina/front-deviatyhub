@@ -76,7 +76,7 @@ export const Header: React.FC = () => {
             <input 
               type="text" 
               placeholder="Buscar..."
-              className="w-full h-8 pl-8 pr-3 bg-[var(--surface)] border border-transparent rounded-[6px] focus:bg-[var(--card)] focus:border-[var(--blue)] focus:ring-2 focus:ring-[var(--blue-tint)] transition-[border-color,background-color] text-[12.5px] text-[var(--ink)] placeholder:text-[var(--dim)] outline-none"
+              className="w-full h-8 pl-8 pr-3 bg-[var(--surface)] border border-transparent rounded-[6px] focus:bg-[var(--card)] focus:border-[var(--blue)] focus:ring-3 focus:ring-[var(--blue-tint)] transition-[border-color,background-color] text-[12.5px] text-[var(--ink)] placeholder:text-[var(--dim)] outline-none"
             />
           </div>
         </div>
@@ -102,7 +102,7 @@ export const Header: React.FC = () => {
 
           {/* User Profile */}
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-[6px] bg-[var(--ink)] text-[var(--bg)] flex items-center justify-center text-[11px] font-medium tracking-wider shrink-0 select-none">
+            <div className="w-7 h-7 rounded-[7px] bg-[var(--blue-solid)] text-[var(--on-blue)] flex items-center justify-center text-[11.5px] font-semibold tracking-wider shrink-0 select-none">
               {initials}
             </div>
 

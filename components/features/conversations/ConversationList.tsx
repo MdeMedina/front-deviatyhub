@@ -32,7 +32,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
   const conversations = response?.data || []
 
   return (
-    <div className="flex flex-col h-full bg-[var(--card)] border-r border-[var(--line)]">
+    <div className="flex flex-col h-full bg-[var(--card)]">
       {/* Header & Filter Tabs */}
       <div className="p-3.5 border-b border-[var(--line)] bg-[var(--head)] space-y-3">
         <div className="flex items-center justify-between">
@@ -51,24 +51,24 @@ export const ConversationList: React.FC<ConversationListProps> = ({
         />
 
         {/* Segmented Filter Tabs */}
-        <div className="inline-flex gap-1 p-1 bg-[var(--surface-2)] border border-[var(--line)] rounded-[8px] w-full">
-          <FilterTab 
-            active={statusFilter === 'all'} 
+        <div data-tabs style={{ width: '100%' }}>
+          <FilterTab
+            active={statusFilter === 'all'}
             onClick={() => setStatusFilter('all')}
             label="Todos"
           />
-          <FilterTab 
-            active={statusFilter === ConversationStatus.OPEN} 
+          <FilterTab
+            active={statusFilter === ConversationStatus.OPEN}
             onClick={() => setStatusFilter(ConversationStatus.OPEN)}
             label="Abiertos"
           />
-          <FilterTab 
-            active={statusFilter === ConversationStatus.HUMAN_TAKEOVER} 
+          <FilterTab
+            active={statusFilter === ConversationStatus.HUMAN_TAKEOVER}
             onClick={() => setStatusFilter(ConversationStatus.HUMAN_TAKEOVER)}
             label="En curso"
           />
-          <FilterTab 
-            active={statusFilter === ConversationStatus.CLOSED} 
+          <FilterTab
+            active={statusFilter === ConversationStatus.CLOSED}
             onClick={() => setStatusFilter(ConversationStatus.CLOSED)}
             label="Cerrados"
           />
@@ -120,12 +120,10 @@ export const ConversationList: React.FC<ConversationListProps> = ({
 function FilterTab({ active, onClick, label }: { active: boolean, onClick: () => void, label: string }) {
   return (
     <button
+      data-tab
+      data-active={active}
       onClick={onClick}
-      className={`flex-1 py-1 text-center rounded-[6px] text-[11.5px] font-medium transition-colors cursor-pointer ${
-        active
-          ? 'bg-[var(--card)] text-[var(--ink)] border border-[var(--line)]'
-          : 'text-[var(--muted)] hover:text-[var(--ink)] border border-transparent'
-      }`}
+      style={{ flex: 1 }}
     >
       {label}
     </button>

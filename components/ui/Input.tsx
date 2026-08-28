@@ -42,7 +42,7 @@ export const Input: React.FC<InputProps> = ({
   const baseInputStyles = `w-full px-3 bg-[var(--card)] border rounded-[7px] text-[var(--ink)] placeholder:text-[var(--dim)] transition-[border-color,box-shadow] duration-150 outline-none disabled:bg-[var(--surface)] disabled:text-[var(--dim)] disabled:cursor-not-allowed ${heightClass}`
   
   const stateStyles = error 
-    ? 'border-[var(--neg)] focus:border-[var(--neg)] focus:ring-3 focus:ring-red-100 dark:focus:ring-red-950/40' 
+    ? 'border-[var(--neg)] focus:border-[var(--neg)] focus:ring-3 focus:ring-[var(--neg)]/20'
     : 'border-[var(--line)] hover:border-[var(--dim)] focus:border-[var(--blue)] focus:ring-3 focus:ring-[var(--blue-tint)]'
 
   const iconPadding = `${leftIcon ? 'pl-9' : ''} ${rightIcon ? 'pr-9' : ''}`

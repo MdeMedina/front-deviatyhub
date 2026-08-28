@@ -53,7 +53,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
         className="pt-14 transition-all duration-200 min-h-screen"
         style={{ paddingLeft: isSidebarOpen ? '240px' : '72px' }}
       >
-        <div className="px-7 py-7 pb-14 max-w-[1340px] mx-auto min-w-0 w-full">
+        <div className="px-8 py-7 pb-14 max-w-[1340px] mx-auto min-w-0 w-full">
           {children}
         </div>
       </main>

@@ -87,7 +87,7 @@ const AuditLogRow: React.FC<{ log: IAuditLog }> = ({ log }) => {
       {/* Expanded Diff Details */}
       {expanded && (
         <tr>
-          <td colSpan={4} style={{ background: 'var(--surface)', padding: '14px 18px', borderBottom: '1px solid var(--line)' }}>
+          <td colSpan={4} style={{ background: 'var(--card)', padding: '14px 18px', borderBottom: '1px solid var(--line)' }}>
             <div data-testid={`audit-detail-${log.id}`} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span data-lbl>Detalle de Modificación</span>
@@ -101,14 +101,14 @@ const AuditLogRow: React.FC<{ log: IAuditLog }> = ({ log }) => {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   <span data-lbl style={{ color: 'var(--neg)' }}>Estado Anterior</span>
-                  <pre data-testid={`log-before-${log.id}`} data-mono style={{ margin: 0, padding: '10px 12px', borderRadius: '6px', background: 'var(--card)', border: '1px solid var(--line)', fontSize: '11px', color: 'var(--ink-soft)', maxHeight: '180px', overflowY: 'auto' }}>
+                  <pre data-testid={`log-before-${log.id}`} data-mono style={{ margin: 0, padding: '10px 12px', borderRadius: '6px', background: 'var(--surface)', border: '1px solid var(--line)', fontSize: '11px', color: 'var(--ink-soft)', maxHeight: '180px', overflowY: 'auto' }}>
                     {prettyJson(log.changes?.before || null)}
                   </pre>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   <span data-lbl style={{ color: 'var(--pos)' }}>Estado Posterior</span>
-                  <pre data-testid={`log-after-${log.id}`} data-mono style={{ margin: 0, padding: '10px 12px', borderRadius: '6px', background: 'var(--card)', border: '1px solid var(--line)', fontSize: '11px', color: 'var(--ink-soft)', maxHeight: '180px', overflowY: 'auto' }}>
+                  <pre data-testid={`log-after-${log.id}`} data-mono style={{ margin: 0, padding: '10px 12px', borderRadius: '6px', background: 'var(--surface)', border: '1px solid var(--line)', fontSize: '11px', color: 'var(--ink-soft)', maxHeight: '180px', overflowY: 'auto' }}>
                     {prettyJson(log.changes?.after || null)}
                   </pre>
                 </div>

@@ -83,7 +83,7 @@ export const IntegrationCard: React.FC<IntegrationCardProps> = ({
 
   return (
     <div className="flex flex-col justify-between bg-[var(--card)] border border-[var(--line)] rounded-[10px] shadow-[0_1px_2px_rgba(20,20,25,0.05)] transition-colors hover:border-[var(--dim)] h-full overflow-hidden">
-      <div className="p-5 space-y-3.5">
+      <div className="p-[18px] space-y-3.5">
         {/* Card Header (34px icon box & Status badge) */}
         <div className="flex items-start justify-between gap-3">
           <div className="w-[34px] h-[34px] rounded-[6px] bg-[var(--head)] border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shrink-0">
@@ -126,7 +126,7 @@ export const IntegrationCard: React.FC<IntegrationCardProps> = ({
 
       {/* Status footer bar on --surface */}
       {integration.last_tested_at && (
-        <div className="flex items-center justify-between gap-2 px-5 py-2.5 bg-[var(--surface)] border-t border-[var(--line)] text-[11.5px]">
+        <div className="flex items-center justify-between gap-2 px-[18px] py-[11px] bg-[var(--surface)] border-t border-[var(--line)] text-[11.5px]">
           <div className="flex items-center gap-1.5">
             {integration.last_test_ok ? (
               <CheckCircle2 size={12} className="text-[var(--pos)] shrink-0" />

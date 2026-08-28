@@ -22,7 +22,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   return (
     <div className={`flex flex-col items-center justify-center p-8 text-center ${className}`}>
       {icon && (
-        <div className="mb-4 w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--ink)] [&>svg]:w-5 [&>svg]:h-5">
+        <div className="mb-4 w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--ink)] [&>svg]:w-7 [&>svg]:h-7">
           {icon}
         </div>
       )}

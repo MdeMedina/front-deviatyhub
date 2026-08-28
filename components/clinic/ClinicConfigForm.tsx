@@ -121,7 +121,7 @@ export const ClinicConfigForm: React.FC<ClinicConfigFormProps> = ({ readOnly }) 
       onSubmit={handleSubmit}
       aria-label="config-form"
       data-card
-      style={{ display: 'flex', flexDirection: 'column' }}
+      style={{ display: 'flex', flexDirection: 'column', maxWidth: '760px' }}
     >
       <div data-hd>
         <h2>Datos de la clínica</h2>

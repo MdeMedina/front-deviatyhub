@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Send, User, Phone, Mail, Share2, Shield, ShieldOff, AlertCircle, Info } from 'lucide-react'
+import { Send, Shield, ShieldOff, AlertCircle, Info } from 'lucide-react'
 import { useConversationDetail, useTakeover } from '@/lib/api/hooks/use-conversations'
 import { ConversationStatus, MessageRole } from '@/lib/types'
 import { Button } from '@/components/ui/Button'
@@ -80,18 +80,16 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
       {/* Thread column (header + messages + footer) */}
       <div className="flex flex-col h-full min-w-0 overflow-hidden bg-[var(--card)]">
         {/* Thread header */}
-        <header className="px-5 py-3 border-b border-[var(--line)] bg-[var(--head)] flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-[6px] bg-[var(--blue-solid)] text-[var(--on-blue)] flex items-center justify-center font-medium text-[12px] shrink-0">
+        <header className="px-[18px] py-3 border-b border-[var(--line)] bg-[var(--head)] flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="w-[30px] h-[30px] rounded-[8px] bg-[var(--blue-solid)] text-[var(--on-blue)] grid place-items-center font-semibold text-[12px] shrink-0">
               {initial}
             </div>
-            <div>
-              <h3 className="text-[14px] font-semibold text-[var(--ink)] leading-tight">{conversation.contact?.name}</h3>
-              <div className="flex items-center gap-2 mt-0.5">
-                <span className="microlabel text-[9.5px]">
-                  {isHumanControl ? 'Control humano' : 'IA atendiendo'}
-                </span>
-              </div>
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[13.5px] font-semibold text-[var(--ink)] leading-tight">{conversation.contact?.name}</span>
+              <span className="microlabel">
+                {isHumanControl ? 'Control humano' : 'IA atendiendo'}
+              </span>
             </div>
           </div>
 
@@ -131,7 +129,7 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
         </div>
 
         {/* Footer Input Area */}
-        <footer className="p-3.5 bg-[var(--card)] border-t border-[var(--line)] shrink-0">
+        <footer className="py-3.5 px-[18px] bg-[var(--card)] border-t border-[var(--line)] shrink-0">
           {!isHumanControl ? (
             <div className="p-3 rounded-[7px] bg-[var(--blue-tint)] border border-[var(--blue-line)] flex items-center gap-2 text-[12.5px] text-[var(--blue)]">
               <Info size={15} className="shrink-0" />
@@ -172,19 +170,19 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
       </div>
 
       {/* Right Info Sidebar (grid column 3; hidden below 1240px via data-conv-aside) */}
-      <aside data-conv-aside="true" className="border-l border-[var(--line)] bg-[var(--card)] p-4 overflow-y-auto space-y-5 h-full">
-        <div>
-          <h4 className="microlabel text-[9.5px] mb-3">Información del Contacto</h4>
-          <div className="space-y-3">
-            <ContactInfoItem icon={<User size={13} />} label="Nombre" value={conversation.contact?.name} />
-            <ContactInfoItem icon={<Phone size={13} />} label="Teléfono" value={conversation.contact?.phone} />
-            <ContactInfoItem icon={<Mail size={13} />} label="Email" value={conversation.contact?.email || 'No registrado'} />
-            <ContactInfoItem icon={<Share2 size={13} />} label="Instagram" value={conversation.contact?.instagram_user || 'No vinculado'} />
+      <aside data-conv-aside="true" className="border-l border-[var(--line)] bg-[var(--card)] p-[18px] overflow-y-auto flex flex-col gap-[18px] h-full">
+        <div className="flex flex-col gap-[14px]">
+          <span className="microlabel">Información del Contacto</span>
+          <div className="flex flex-col gap-[14px]">
+            <ContactInfoItem label="Nombre" value={conversation.contact?.name} />
+            <ContactInfoItem label="Teléfono" value={conversation.contact?.phone} mono />
+            <ContactInfoItem label="Email" value={conversation.contact?.email || 'No registrado'} breakAll />
+            <ContactInfoItem label="Instagram" value={conversation.contact?.instagram_user || 'No vinculado'} muted />
           </div>
         </div>
 
-        <div className="pt-4 border-t border-[var(--line-soft)]">
-          <h4 className="microlabel text-[9.5px] mb-3">Contexto Actual</h4>
+        <div className="pt-4 border-t border-[var(--line-soft)] flex flex-col gap-3">
+          <span className="microlabel">Contexto Actual</span>
           <div className="space-y-2.5">
             <div className="flex justify-between items-center text-[12px]">
               <span className="text-[var(--muted)]">Estado bot</span>
@@ -216,15 +214,15 @@ function MessageBubble({ message }: { message: any }) {
     <div className={`flex ${isUser ? 'justify-start' : 'justify-end'}`}>
       <div className={`max-w-[75%] space-y-1 ${isUser ? 'order-1' : 'order-2'}`}>
         <div className={`px-3.5 py-2 rounded-[10px] text-[13px] leading-relaxed ${
-          isUser 
-            ? 'bg-[var(--card)] text-[var(--ink)] border border-[var(--line)]' 
+          isUser
+            ? 'bg-[var(--card)] text-[var(--ink)] border border-[var(--line)]'
             : isAssistant
-              ? 'bg-[var(--ink)] text-[var(--bg)]'
-              : 'bg-[var(--blue-tint)] text-[var(--ink)] border border-[var(--blue-line)]'
+              ? 'bg-[var(--blue-solid)] text-[var(--on-blue)] border border-[var(--blue-solid)]'
+              : 'bg-[var(--ink)] text-[var(--bg)] border border-[var(--ink)]'
         }`}>
           {message.content}
         </div>
-        <p className={`microlabel text-[9.5px] px-0.5 tabular ${isUser ? 'text-left' : 'text-right'}`}>
+        <p className={`microlabel px-0.5 tabular ${isUser ? 'text-left' : 'text-right'}`}>
           {isAssistant ? 'IA' : isHuman ? 'Agente' : 'Paciente'} · {new Date(message.sent_at || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </p>
       </div>
@@ -232,14 +230,28 @@ function MessageBubble({ message }: { message: any }) {
   )
 }
 
-function ContactInfoItem({ icon, label, value }: { icon: React.ReactNode, label: string, value?: string }) {
+function ContactInfoItem({
+  label,
+  value,
+  mono = false,
+  breakAll = false,
+  muted = false,
+}: {
+  label: string
+  value?: string
+  mono?: boolean
+  breakAll?: boolean
+  muted?: boolean
+}) {
   return (
-    <div className="flex items-start gap-2.5">
-      <div className="text-[var(--dim)] mt-0.5 shrink-0">{icon}</div>
-      <div className="min-w-0">
-        <p className="microlabel text-[9px]">{label}</p>
-        <p className="text-[12.5px] font-medium text-[var(--ink-soft)] truncate">{value || '-'}</p>
-      </div>
+    <div className="flex flex-col gap-[3px]">
+      <span className="microlabel">{label}</span>
+      <span
+        {...(mono ? { 'data-mono': true } : {})}
+        className={`text-[13px] ${muted ? 'text-[var(--muted)]' : 'text-[var(--ink)]'} ${breakAll ? 'break-all' : ''}`}
+      >
+        {value || '-'}
+      </span>
     </div>
   )
 }

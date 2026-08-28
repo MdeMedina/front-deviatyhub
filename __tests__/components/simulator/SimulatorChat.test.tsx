@@ -74,9 +74,9 @@ describe('SimulatorChat Component Organism — Chat UI & Experience', () => {
     expect(userMsg).toHaveTextContent('Hola bot')
     expect(agentMsg).toHaveTextContent('Hola, soy el asistente virtual.')
 
-    // Alignment via inline flex alignment
-    expect(userMsg).toHaveStyle({ alignItems: 'flex-end' })
-    expect(agentMsg).toHaveStyle({ alignItems: 'flex-start' })
+    // Alignment via inline flex alignment (Dentral: patient left, IA right)
+    expect(userMsg).toHaveStyle({ alignItems: 'flex-start' })
+    expect(agentMsg).toHaveStyle({ alignItems: 'flex-end' })
   })
 
   // ==========================================

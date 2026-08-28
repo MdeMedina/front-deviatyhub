@@ -43,26 +43,25 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   return (
     <div
       data-testid={actualTestId}
-      className="p-4 bg-[var(--card)] flex flex-col justify-between min-h-[120px]"
+      style={{ background: 'var(--card)', padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '8px' }}
     >
-      <div className="space-y-1">
-        <div className="flex items-center justify-between gap-2">
-          <h3 className="microlabel text-[9.5px]">
-            {title}
-          </h3>
-          {icon && <span className="text-[var(--dim)]">{icon}</span>}
-        </div>
-        <p className="metric-number text-2xl" data-testid={actualTestId ? `${actualTestId}-value` : undefined}>
-          {displayedValue}
-        </p>
+      <div className="flex items-center justify-between gap-2">
+        <span data-lbl style={{ color: 'var(--ink-soft)' }}>{title}</span>
+        {icon && <span className="text-[var(--dim)]">{icon}</span>}
       </div>
 
-      <div className="flex items-center justify-between pt-2 border-t border-[var(--line-soft)] text-[11px] text-[var(--muted)]">
-        <span>{sub}</span>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: '9px' }}>
+        <span
+          data-mono
+          data-testid={actualTestId ? `${actualTestId}-value` : undefined}
+          style={{ fontSize: '25px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }}
+        >
+          {displayedValue}
+        </span>
         {trend && (
           <span
             data-testid="trend-badge"
-            className={`inline-flex items-center gap-0.5 font-mono text-[10px] font-medium px-1.5 py-0.5 rounded-[4px] border border-[var(--line)] bg-[var(--surface)] ${
+            className={`inline-flex items-center gap-0.5 font-mono text-[11px] font-medium px-1.5 py-0.5 rounded-[5px] border border-[var(--line)] bg-[var(--surface)] ${
               isTrendPositive ? 'text-[var(--pos)]' : 'text-[var(--neg)]'
             }`}
           >
@@ -75,6 +74,8 @@ export const MetricCard: React.FC<MetricCardProps> = ({
           </span>
         )}
       </div>
+
+      {sub && <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>{sub}</span>}
     </div>
   )
 }

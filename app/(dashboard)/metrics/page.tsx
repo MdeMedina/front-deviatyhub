@@ -1,9 +1,8 @@
 'use client'
 
 import React, { useState, Suspense } from 'react'
-import { AlertCircle, MessageCircle, CalendarCheck, BrainCircuit, Zap, Users, UserMinus, Clock } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 import { useMetrics, MetricsPeriod } from '@/lib/api/hooks/use-metrics'
-import { MetricCard } from '@/components/metrics/MetricCard'
 import { IntentionsChart } from '@/components/metrics/IntentionsChart'
 import { InteractionsHeatmap } from '@/components/metrics/InteractionsHeatmap'
 
@@ -68,21 +67,36 @@ function MetricsContent() {
 
   const currentPeriodLabel = periodLabels[period]
 
-  const humanTakeoversVal = (metrics as any)?.human_takeovers ?? (metrics as any)?.human_takeovers_count ?? 18
-  const rescheduledVal = (metrics as any)?.appointments_rescheduled ?? (metrics as any)?.rescheduled_count ?? 30
+  const conversationsVal = metrics?.conversations_attended ?? 1284
+  const containmentVal = formatPercent(metrics?.containment_rate)
+  const responseVal = formatResponseTime(metrics?.avg_response_time_ms)
+  const scheduledVal = metrics?.appointments_scheduled ?? 327
+  const rescheduledVal = (metrics as any)?.appointments_rescheduled ?? (metrics as any)?.rescheduled_count ?? 84
   const cancelledVal = (metrics as any)?.appointments_cancelled ?? (metrics as any)?.cancellations_count ?? 26
+  const humanTakeoversVal = (metrics as any)?.human_takeovers ?? (metrics as any)?.human_takeovers_count ?? 18
   const outOfHoursVal = (metrics as any)?.out_of_hours_conversations ?? (metrics as any)?.after_hours_count ?? 143
 
+  const metricCards: { title: string; value: React.ReactNode; trend: string; positive: boolean; subtitle: string; testId: string }[] = [
+    { title: 'Conversaciones atendidas', value: conversationsVal, trend: '+12,4%', positive: true, subtitle: 'Total del periodo', testId: 'metric-conversations' },
+    { title: 'Tasa de contención', value: containmentVal, trend: '+2,1%', positive: true, subtitle: 'Autónomo por IA', testId: 'metric-containment' },
+    { title: 'Tiempo de respuesta', value: responseVal, trend: '−14,2%', positive: true, subtitle: 'Tiempo promedio', testId: 'metric-response-time' },
+    { title: 'Citas agendadas', value: scheduledVal, trend: '+15,0%', positive: true, subtitle: 'Agendadas autónomamente', testId: 'metric-scheduled' },
+    { title: 'Citas reprogramadas', value: rescheduledVal, trend: '−4,8%', positive: true, subtitle: 'Cambios gestionados', testId: 'metric-rescheduled' },
+    { title: 'Citas canceladas', value: cancelledVal, trend: '−8,3%', positive: true, subtitle: 'Cancelaciones registradas', testId: 'metric-cancellations' },
+    { title: 'Derivación a humano', value: humanTakeoversVal, trend: '−6,5%', positive: true, subtitle: 'Traspasos al equipo', testId: 'metric-human-takeovers' },
+    { title: 'Fuera de horario', value: outOfHoursVal, trend: '+10,2%', positive: false, subtitle: 'Chats nocturnos y festivos', testId: 'metric-after-hours' },
+  ]
+
   return (
-    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+    <div className="flex flex-col gap-6 max-w-[1340px] mx-auto">
       {/* Header and Period Selector */}
-      <div className="flex items-end justify-between gap-5 flex-wrap pb-4 border-b border-[var(--line)]">
-        <div className="flex flex-col gap-1">
+      <div className="flex items-end justify-between gap-5 flex-wrap pb-[18px] border-b border-[var(--line)]">
+        <div className="flex flex-col gap-[5px]">
           <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight" data-testid="metrics-page-title">
             Métricas de Rendimiento
           </h1>
           <p className="text-[13.5px] text-[var(--muted)]">
-            Estadísticas de atención, efectividad del bot y demanda por horario.
+            Monitorea el tráfico conversacional y evalúa la efectividad del agente autónomo.
           </p>
         </div>
 
@@ -115,111 +129,41 @@ function MetricsContent() {
         </div>
       </div>
 
-      {/* 4-Cell Top Matrix */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1px', background: 'var(--line)', border: '1px solid var(--line)', borderRadius: '10px', overflow: 'hidden' }}>
-        {/* Cell 1: Conversaciones Atendidas */}
-        <div style={{ background: 'var(--card)', padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--ink-soft)' }}>
-            <MessageCircle size={14} strokeWidth={1.75} />
-            <span data-lbl style={{ color: 'var(--ink-soft)' }}>Conversaciones Atendidas</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-            <span data-mono style={{ fontSize: '30px', fontWeight: 500, color: 'var(--ink)' }}>
-              {metrics?.conversations_attended ?? 1284}
-            </span>
-            <span data-mono style={{ fontSize: '11px', color: 'var(--pos)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
-              +12%
-            </span>
-          </div>
-          <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>183 por día prom.</span>
-        </div>
-
-        {/* Cell 2: Citas Agendadas */}
-        <div style={{ background: 'var(--card)', padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--ink-soft)' }}>
-            <CalendarCheck size={14} strokeWidth={1.75} />
-            <span data-lbl style={{ color: 'var(--ink-soft)' }}>Citas Agendadas</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-            <span data-mono style={{ fontSize: '30px', fontWeight: 500, color: 'var(--ink)' }}>
-              {metrics?.appointments_scheduled ?? 327}
-            </span>
-            <span data-mono style={{ fontSize: '11px', color: 'var(--pos)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
-              +8%
-            </span>
-          </div>
-          <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>25,4% conversión</span>
-        </div>
-
-        {/* Cell 3: Tasa de Contención */}
-        <div style={{ background: 'var(--card)', padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--ink-soft)' }}>
-            <BrainCircuit size={14} strokeWidth={1.75} />
-            <span data-lbl style={{ color: 'var(--ink-soft)' }}>Tasa de Contención</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-            <span data-mono style={{ fontSize: '30px', fontWeight: 500, color: 'var(--ink)' }}>
-              {formatPercent(metrics?.containment_rate)}
-            </span>
-            <span data-mono style={{ fontSize: '11px', color: 'var(--pos)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
-              +2%
-            </span>
-          </div>
-          <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>1.104 sin humano</span>
-        </div>
-
-        {/* Cell 4: Tiempo de Respuesta */}
-        <div style={{ background: 'var(--card)', padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--ink-soft)' }}>
-            <Zap size={14} strokeWidth={1.75} />
-            <span data-lbl style={{ color: 'var(--ink-soft)' }}>Tiempo de Respuesta</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-            <span data-mono style={{ fontSize: '30px', fontWeight: 500, color: 'var(--ink)' }}>
-              {formatResponseTime(metrics?.avg_response_time_ms)}
-            </span>
-            <span data-mono style={{ fontSize: '11px', color: 'var(--pos)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
-              −0,3s
-            </span>
-          </div>
-          <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>p95 en 2,1s</span>
-        </div>
+      {/* Section: Indicadores */}
+      <div data-sec>
+        <span>Indicadores</span>
+        <span data-lbl style={{ border: '1px solid var(--line)', borderRadius: '5px', padding: '2px 7px', background: 'var(--card)' }}>
+          {currentPeriodLabel}
+        </span>
+        <span data-rule />
       </div>
 
-      {/* Secondary Row: 4 smaller metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-[var(--line)] border border-[var(--line)] rounded-[10px] overflow-hidden">
-        <MetricCard
-          title="Derivación a Humano"
-          value={humanTakeoversVal}
-          icon={<Users size={14} />}
-          description={currentPeriodLabel}
-          testId="metric-human-takeovers"
-        />
-        <MetricCard
-          title="Citas Reprogramadas"
-          value={rescheduledVal}
-          icon={<CalendarCheck size={14} />}
-          description="Reprogramadas con éxito"
-          testId="metric-rescheduled"
-        />
-        <MetricCard
-          title="Citas Canceladas"
-          value={cancelledVal}
-          icon={<UserMinus size={14} />}
-          description="Canceladas por pacientes"
-          testId="metric-cancellations"
-        />
-        <MetricCard
-          title="Fuera de Horario"
-          value={outOfHoursVal}
-          icon={<Clock size={14} />}
-          description="Consultas nocturnas"
-          testId="metric-after-hours"
-        />
+      {/* Unified 4×2 KPI Matrix */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '1px', background: 'var(--line)', border: '1px solid var(--line)', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 1px 2px rgba(20,20,25,.05)' }}>
+        {metricCards.map((m) => (
+          <div key={m.testId} data-testid={m.testId} style={{ background: 'var(--card)', padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <span data-lbl style={{ color: 'var(--ink-soft)' }}>{m.title}</span>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '9px' }}>
+              <span data-mono style={{ fontSize: '25px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }}>
+                {m.value}
+              </span>
+              <span data-mono style={{ fontSize: '11px', color: m.positive ? 'var(--pos)' : 'var(--muted)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
+                {m.trend}
+              </span>
+            </div>
+            <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>{m.subtitle}</span>
+          </div>
+        ))}
       </div>
 
-      {/* Charts 2-Column Section */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 0.8fr)', gap: '20px', alignItems: 'start' }}>
+      {/* Section: Análisis */}
+      <div data-sec style={{ marginTop: '8px' }}>
+        <span>Análisis</span>
+        <span data-rule />
+      </div>
+
+      {/* Charts Section */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px', alignItems: 'start' }}>
         <IntentionsChart intentions={metrics?.intentions_distribution || (metrics as any)?.top_intentions} periodLabel={currentPeriodLabel} />
         <InteractionsHeatmap data={metrics?.interactions_by_hour} />
       </div>

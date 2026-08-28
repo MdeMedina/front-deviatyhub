@@ -111,7 +111,7 @@ export const SimulatorChat: React.FC<SimulatorChatProps> = ({ resetNonce = 0 }) 
   const started = messages.length > 0
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 320px', gap: '20px', alignItems: 'start' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px', alignItems: 'start' }}>
       {/* Left Card: Test session */}
       <div data-card style={{ height: '520px', display: 'flex', flexDirection: 'column' }}>
         {/* Header: title + session id */}
@@ -158,7 +158,7 @@ export const SimulatorChat: React.FC<SimulatorChatProps> = ({ resetNonce = 0 }) 
                 <div
                   key={msg.id}
                   data-testid={isUser ? 'message-user' : 'message-agent'}
-                  style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: isUser ? 'flex-end' : 'flex-start' }}
+                  style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: isUser ? 'flex-start' : 'flex-end' }}
                 >
                   <div
                     style={{
@@ -167,9 +167,9 @@ export const SimulatorChat: React.FC<SimulatorChatProps> = ({ resetNonce = 0 }) 
                       borderRadius: '10px',
                       fontSize: '13px',
                       lineHeight: '1.55',
-                      border: `1px solid ${isUser ? 'var(--blue-line)' : 'var(--line)'}`,
-                      background: isUser ? 'var(--blue-tint)' : 'var(--card)',
-                      color: 'var(--ink)',
+                      border: `1px solid ${isUser ? 'var(--line)' : 'var(--blue-solid)'}`,
+                      background: isUser ? 'var(--card)' : 'var(--blue-solid)',
+                      color: isUser ? 'var(--ink)' : 'var(--on-blue)',
                       whiteSpace: 'pre-wrap',
                     }}
                   >
