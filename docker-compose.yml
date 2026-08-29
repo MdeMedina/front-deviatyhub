@@ -1,0 +1,22 @@
+# Frontend Next.js (Dentral) — build + run en Docker.
+#
+# Las NEXT_PUBLIC_* se hornean en tiempo de BUILD, así que van como build args.
+# Sobrescríbelas creando un archivo .env junto a este compose, p.ej.:
+#   NEXT_PUBLIC_API_URL=http://158.69.202.175:3000/api
+#   NEXT_PUBLIC_SOCKET_URL=http://158.69.202.175:3002
+#
+# Levantar:   docker compose up -d --build
+# El frontend queda en  http://<host>:3100
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://158.69.202.175:3000/api}
+        NEXT_PUBLIC_SOCKET_URL: ${NEXT_PUBLIC_SOCKET_URL:-http://158.69.202.175:3002}
+    image: dentral-frontend:latest
+    restart: unless-stopped
+    ports:
+      - "3100:3000"
