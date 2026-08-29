@@ -1,0 +1,47 @@
+name: Deploy frontend (producción)
+
+# Despliega el frontend Next.js al VPS por SSH en push a main (o manualmente).
+# Requiere estos GitHub Secrets en el repo del frontend:
+#   DEPLOY_HOST     -> IP/host del servidor (p.ej. 158.69.202.175)
+#   DEPLOY_USER     -> usuario SSH (p.ej. ubuntu)
+#   DEPLOY_SSH_KEY  -> clave privada del deploy key (la misma del backend sirve)
+#
+# El servidor debe tener Docker + docker compose y el repo clonado en
+# ~/frontend-deviatyhub. Las NEXT_PUBLIC_* se hornean en build vía los build args
+# del docker-compose.yml (por defecto apuntan al backend en :3000/:3002); para
+# cambiarlas, crea un .env junto al compose en el servidor.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-frontend-prod
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Desplegar por SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          command_timeout: 30m
+          script: |
+            set -euo pipefail
+            cd ~/frontend-deviatyhub
+
+            echo "==> Actualizando código (main)"
+            git fetch --all --prune
+            git checkout main
+            git reset --hard origin/main
+
+            echo "==> Build + up (Next standalone)"
+            docker compose up -d --build
+
+            echo "==> Estado"
+            docker compose ps
