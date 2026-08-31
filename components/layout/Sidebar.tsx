@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { useAuthStore } from '@/lib/stores/auth.store'
 import { useUIStore } from '@/lib/stores/ui.store'
+import { Logo } from '@/components/brand/Logo'
 
 interface NavGroup {
   name: string
@@ -75,27 +76,18 @@ export const Sidebar: React.FC = () => {
     >
       {/* Header 56px */}
       <div className="h-14 flex items-center px-4 justify-between border-b border-[var(--line)] bg-[var(--card)]">
-        <div className="flex items-center gap-2.5 overflow-hidden">
-          {/* Dentral Isotype Box */}
-          <div className="w-[26px] h-[26px] border border-[var(--line)] rounded-[6px] grid place-items-center bg-[var(--surface)] shrink-0">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-              <circle cx="7" cy="7" r="2.2" fill="var(--blue)" />
-              <circle cx="2.5" cy="2.5" r="1.1" fill="var(--dim)" />
-              <circle cx="11.5" cy="2.5" r="1.1" fill="var(--dim)" />
-              <circle cx="2.5" cy="11.5" r="1.1" fill="var(--dim)" />
-              <circle cx="11.5" cy="11.5" r="1.1" fill="var(--dim)" />
-            </svg>
-          </div>
-          
-          {isSidebarOpen && (
-            <div className="flex items-center gap-1.5">
-              <span className="text-[14px] font-semibold tracking-[-0.01em] text-[var(--ink)]">
-                Dentral
-              </span>
+        <div className="flex items-center gap-2 overflow-hidden">
+          {isSidebarOpen ? (
+            <>
+              <Logo variant="lockup" size={15} />
               <span className="microlabel px-1.5 py-0.5 rounded border border-[var(--line)] bg-[var(--surface)]">
                 PRO
               </span>
-            </div>
+            </>
+          ) : (
+            <span className="w-[30px] h-[30px] grid place-items-center rounded-full bg-[var(--surface)] border border-[var(--line)] text-[var(--ink)] shrink-0">
+              <Logo variant="mark" size={17} />
+            </span>
           )}
         </div>
 
