@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Send, Wrench } from 'lucide-react'
 import { useSimulator } from '@/lib/api/hooks/use-simulator'
 import { Spinner } from '@/components/ui/Spinner'
+import { WhatsAppText } from '@/components/ui/WhatsAppText'
 
 interface ChatMessage {
   id: string
@@ -173,7 +174,7 @@ export const SimulatorChat: React.FC<SimulatorChatProps> = ({ resetNonce = 0 }) 
                       whiteSpace: 'pre-wrap',
                     }}
                   >
-                    {msg.content}
+                    <WhatsAppText>{msg.content}</WhatsAppText>
                   </div>
                   {!isUser && msg.toolsUsed && msg.toolsUsed.length > 0 && (
                     <span data-testid="tools-badges" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>

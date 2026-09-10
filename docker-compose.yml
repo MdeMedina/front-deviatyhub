@@ -1,12 +1,13 @@
 # Frontend Next.js (Dentral) — build + run en Docker.
 #
 # Las NEXT_PUBLIC_* se hornean en tiempo de BUILD, así que van como build args.
+# Producción va tras HTTPS en app.dentral.cl (Caddy enruta /api y /socket.io).
 # Sobrescríbelas creando un archivo .env junto a este compose, p.ej.:
-#   NEXT_PUBLIC_API_URL=http://158.69.202.175:3000/api
-#   NEXT_PUBLIC_SOCKET_URL=http://158.69.202.175:3002
+#   NEXT_PUBLIC_API_URL=https://app.dentral.cl/api
+#   NEXT_PUBLIC_SOCKET_URL=https://app.dentral.cl
 #
 # Levantar:   docker compose up -d --build
-# El frontend queda en  http://<host>:3100
+# El frontend queda en  http://<host>:3100  (Caddy lo publica en https://app.dentral.cl)
 
 services:
   frontend:
@@ -14,8 +15,8 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://158.69.202.175:3000/api}
-        NEXT_PUBLIC_SOCKET_URL: ${NEXT_PUBLIC_SOCKET_URL:-http://158.69.202.175:3002}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://app.dentral.cl/api}
+        NEXT_PUBLIC_SOCKET_URL: ${NEXT_PUBLIC_SOCKET_URL:-https://app.dentral.cl}
     image: dentral-frontend:latest
     restart: unless-stopped
     ports:
