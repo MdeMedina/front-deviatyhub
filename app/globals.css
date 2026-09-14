@@ -459,6 +459,18 @@ table[data-tbl] {
 [data-conv] {
   display: grid;
   grid-template-columns: 320px minmax(0, 1fr) 268px;
+  /* La fila debe ceñirse a la altura del contenedor. Sin esto se dimensiona al
+     contenido: las columnas crecen más que el panel, el overflow:hidden recorta
+     lo que sobra y el scroll interno de cada columna nunca llega a activarse. */
+  grid-template-rows: minmax(0, 1fr);
+}
+
+/* Los items de grid traen min-height/min-width: auto, así que no se encogen por
+   debajo de su contenido. Hay que permitirlo para que los scrollers internos
+   (la lista de chats y el hilo de mensajes) reciban una altura acotada. */
+[data-conv] > * {
+  min-height: 0;
+  min-width: 0;
 }
 
 @media (max-width: 1240px) {
