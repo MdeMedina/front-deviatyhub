@@ -30,7 +30,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
   // Socket listener hook
   useConversationSocketListeners()
 
-  const conversations = response?.data || []
+  const conversations = response ?? []
 
   return (
     <div className="flex flex-col h-full bg-[var(--card)] border-r border-[var(--line)]">
@@ -103,7 +103,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
           </div>
         ) : (
           <div className="divide-y divide-[var(--line-soft)]">
-            {conversations.map((conv) => (
+            {conversations.map((conv: any) => (
               <ConversationItem 
                 key={conv.id}
                 conversation={conv}

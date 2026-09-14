@@ -30,7 +30,7 @@ describe('ConversationList Component (Fase 4.5)', () => {
   // ✅ TEST 1: Renderiza Empty State
   it('renders EmptyState when no conversations are found', () => {
     useConversations.mockReturnValue({
-      data: { data: [] },
+      data: [],
       isLoading: false,
       isError: false,
     })
@@ -43,7 +43,7 @@ describe('ConversationList Component (Fase 4.5)', () => {
   // ✅ TEST 2: Aplicación de Filtros
   it('updates status filter and triggers a new fetch', () => {
     useConversations.mockReturnValue({
-      data: { data: [] },
+      data: [],
       isLoading: false,
       isError: false,
     })
@@ -64,7 +64,7 @@ describe('ConversationList Component (Fase 4.5)', () => {
     ]
 
     useConversations.mockReturnValue({
-      data: { data: mockConvs },
+      data: mockConvs,
       isLoading: false,
       isError: false,
     })

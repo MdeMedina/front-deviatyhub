@@ -29,7 +29,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
 
   useConversationSocketListeners()
 
-  const conversations = response?.data || []
+  const conversations = response ?? []
 
   return (
     <div className="flex flex-col h-full bg-[var(--card)]">

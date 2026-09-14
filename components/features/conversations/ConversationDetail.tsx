@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Spinner } from '@/components/ui/Spinner'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { WhatsAppText } from '@/components/ui/WhatsAppText'
 import { useAuthStore } from '@/lib/stores/auth.store'
 
 interface ConversationDetailProps {
@@ -220,7 +221,7 @@ function MessageBubble({ message }: { message: any }) {
               ? 'bg-[var(--blue-solid)] text-[var(--on-blue)] border border-[var(--blue-solid)]'
               : 'bg-[var(--ink)] text-[var(--bg)] border border-[var(--ink)]'
         }`}>
-          {message.content}
+          <WhatsAppText>{message.content}</WhatsAppText>
         </div>
         <p className={`microlabel px-0.5 tabular ${isUser ? 'text-left' : 'text-right'}`}>
           {isAssistant ? 'IA' : isHuman ? 'Agente' : 'Paciente'} · {new Date(message.sent_at || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

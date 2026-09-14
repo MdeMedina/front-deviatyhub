@@ -38,7 +38,7 @@ describe('Conversations Module — ConversationList', () => {
       status: 200,
       data: {
         success: true,
-        data: { data: [], meta: { page: 1, limit: 10, total: 0, total_pages: 0 } }
+        data: []
       }
     }))
 
@@ -54,7 +54,7 @@ describe('Conversations Module — ConversationList', () => {
       status: 200,
       data: {
         success: true,
-        data: { data: mockConversations, meta: { page: 1, limit: 10, total: 1, total_pages: 1 } }
+        data: mockConversations
       }
     }))
 
@@ -78,7 +78,7 @@ describe('Conversations Module — ConversationList', () => {
         status: 200,
         data: {
           success: true,
-          data: { data: [], meta: { page: 1, limit: 10, total: 0, total_pages: 0 } }
+          data: []
         }
       }
     })
