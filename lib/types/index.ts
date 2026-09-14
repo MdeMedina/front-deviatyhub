@@ -411,6 +411,14 @@ export interface IAgentActionConfig {
   integrations: IntegrationType[]
 }
 
+/**
+ * Cómo opera el agente con los pacientes.
+ * AUTONOMOUS: responde y gestiona la agenda.
+ * SUPERVISED: responde dudas, pero no agenda, reprograma ni cancela.
+ * PAUSED: no responde; las conversaciones quedan para el equipo.
+ */
+export type AgentMode = 'AUTONOMOUS' | 'SUPERVISED' | 'PAUSED'
+
 export interface IAgentConfig {
   id: string
   clinic_id: string
@@ -419,6 +427,7 @@ export interface IAgentConfig {
     reschedule: IAgentActionConfig
     cancel: IAgentActionConfig
   }
+  mode: AgentMode
   updated_at: string
 }
 

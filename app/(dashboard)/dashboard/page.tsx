@@ -18,6 +18,8 @@ import { useAuthStore } from '@/lib/stores/auth.store'
 import { useClinicConfig } from '@/lib/api/hooks/use-clinic'
 import { useMetrics } from '@/lib/api/hooks/use-metrics'
 import { formatCount, formatRate, formatResponseTime, formatTrend } from '@/lib/utils/metrics-format'
+import { useAgentConfig, useUpdateAgentConfig } from '@/lib/api/hooks/use-agent'
+import type { AgentMode } from '@/lib/types'
 
 // Spanish date helper
 function getFormattedDate() {
@@ -35,8 +37,52 @@ function DashboardContent() {
   const { user } = useAuthStore()
   const { data: clinicConfig, isPending: isClinicPending } = useClinicConfig()
   const { data: metrics, isPending: isMetricsPending, isError: isMetricsError } = useMetrics('7d')
+  const { data: agentConfig } = useAgentConfig()
+  const updateAgentConfig = useUpdateAgentConfig()
   const [isAgentModalOpen, setIsAgentModalOpen] = useState(false)
-  const [agentMode, setAgentMode] = useState<'autonomous' | 'supervised' | 'paused'>('autonomous')
+  // Selección en curso dentro del modal. El estado real es el del backend:
+  // mientras no se guarde, no se cambia nada.
+  const [draftMode, setDraftMode] = useState<AgentMode | null>(null)
+
+  const agentMode: AgentMode = agentConfig?.mode ?? 'AUTONOMOUS'
+  const selectedMode: AgentMode = draftMode ?? agentMode
+
+  const openAgentModal = () => {
+    setDraftMode(agentMode)
+    setIsAgentModalOpen(true)
+  }
+  const closeAgentModal = () => {
+    setDraftMode(null)
+    setIsAgentModalOpen(false)
+  }
+  const saveAgentMode = () => {
+    if (draftMode && draftMode !== agentMode) {
+      updateAgentConfig.mutate({ mode: draftMode })
+    }
+    closeAgentModal()
+  }
+
+  const AGENT_STATUS: Record<AgentMode, { label: string; description: string; color: string; pulse: boolean }> = {
+    AUTONOMOUS: {
+      label: 'Activo y operando',
+      description: 'El agente responde a los pacientes y gestiona la agenda de forma autónoma.',
+      color: 'var(--pos)',
+      pulse: true,
+    },
+    SUPERVISED: {
+      label: 'Supervisado',
+      description: 'El agente responde dudas, pero no agenda, reprograma ni cancela horas: eso lo gestiona el equipo.',
+      color: 'var(--warn, var(--blue))',
+      pulse: true,
+    },
+    PAUSED: {
+      label: 'En pausa',
+      description: 'El agente no está respondiendo. Las conversaciones entrantes quedan en la bandeja para que las atienda el equipo.',
+      color: 'var(--neg)',
+      pulse: false,
+    },
+  }
+  const agentStatus = AGENT_STATUS[agentMode]
 
   const userEmail = user?.email || 'Colega'
   const userGreeting = userEmail.split('@')[0]
@@ -98,7 +144,7 @@ function DashboardContent() {
 
           <button 
             data-btn="primary"
-            onClick={() => setIsAgentModalOpen(true)}
+            onClick={openAgentModal}
           >
             <SlidersHorizontal size={14} strokeWidth={1.75} />
             Estado del agente
@@ -275,26 +321,28 @@ function DashboardContent() {
           <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
               <span style={{ position: 'relative', display: 'inline-flex', width: '7px', height: '7px' }}>
-                <span className="animate-dentral-ping" style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: 'var(--pos)' }} />
-                <span style={{ position: 'relative', width: '7px', height: '7px', borderRadius: '50%', background: 'var(--pos)' }} />
+                {agentStatus.pulse && (
+                  <span className="animate-dentral-ping" style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: agentStatus.color }} />
+                )}
+                <span style={{ position: 'relative', width: '7px', height: '7px', borderRadius: '50%', background: agentStatus.color }} />
               </span>
-              <span style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>Activo y operando</span>
+              <span data-testid="agent-status-label" style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>{agentStatus.label}</span>
             </div>
             <p style={{ margin: 0, fontSize: '12.5px', lineHeight: 1.6, color: 'var(--muted)' }}>
-              El agente autónomo está gestionando la agenda de pacientes de forma estable.
+              {agentStatus.description}
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '9px', paddingTop: '14px', borderTop: '1px solid var(--line-soft)' }}>
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
                 <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Derivación a humano</span>
-                <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>18</span>
+                <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>{formatCount(metrics?.human_takeovers)}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
                 <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Fuera de horario</span>
-                <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>143</span>
+                <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>{formatCount(metrics?.out_of_hours_conversations)}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
                 <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Citas canceladas</span>
-                <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>26</span>
+                <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>{formatCount(metrics?.appointments_cancelled)}</span>
               </div>
             </div>
           </div>
@@ -305,7 +353,7 @@ function DashboardContent() {
       {isAgentModalOpen && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 60, display: 'grid', placeItems: 'center', padding: '24px' }}>
           <div 
-            onClick={() => setIsAgentModalOpen(false)} 
+            onClick={closeAgentModal} 
             style={{ position: 'absolute', inset: 0, background: 'rgba(33,33,33,.45)', backdropFilter: 'blur(2px)' }} 
           />
           <div 
@@ -318,7 +366,7 @@ function DashboardContent() {
               <h2>Estado del agente</h2>
               <button 
                 data-btn 
-                onClick={() => setIsAgentModalOpen(false)} 
+                onClick={closeAgentModal} 
                 style={{ width: '28px', height: '28px', padding: 0, borderColor: 'transparent', background: 'none' }}
               >
                 <X size={15} strokeWidth={1.75} />
@@ -330,11 +378,11 @@ function DashboardContent() {
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: 'var(--line)', border: '1px solid var(--line)', borderRadius: '9px', overflow: 'hidden' }}>
                 <label 
-                  onClick={() => setAgentMode('autonomous')}
-                  style={{ display: 'flex', alignItems: 'flex-start', gap: '11px', padding: '13px 14px', background: agentMode === 'autonomous' ? 'var(--blue-tint)' : 'var(--card)', cursor: 'pointer' }}
+                  onClick={() => setDraftMode('AUTONOMOUS')}
+                  style={{ display: 'flex', alignItems: 'flex-start', gap: '11px', padding: '13px 14px', background: selectedMode === 'AUTONOMOUS' ? 'var(--blue-tint)' : 'var(--card)', cursor: 'pointer' }}
                 >
-                  <span style={{ width: '15px', height: '15px', flex: 'none', marginTop: '1px', borderRadius: '50%', border: `1px solid ${agentMode === 'autonomous' ? 'var(--blue)' : 'var(--line)'}`, display: 'grid', placeItems: 'center' }}>
-                    {agentMode === 'autonomous' && <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--blue)' }} />}
+                  <span style={{ width: '15px', height: '15px', flex: 'none', marginTop: '1px', borderRadius: '50%', border: `1px solid ${selectedMode === 'AUTONOMOUS' ? 'var(--blue)' : 'var(--line)'}`, display: 'grid', placeItems: 'center' }}>
+                    {selectedMode === 'AUTONOMOUS' && <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--blue)' }} />}
                   </span>
                   <span style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                     <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--ink)' }}>Autónomo</span>
@@ -343,11 +391,11 @@ function DashboardContent() {
                 </label>
 
                 <label 
-                  onClick={() => setAgentMode('supervised')}
-                  style={{ display: 'flex', alignItems: 'flex-start', gap: '11px', padding: '13px 14px', background: agentMode === 'supervised' ? 'var(--blue-tint)' : 'var(--card)', cursor: 'pointer' }}
+                  onClick={() => setDraftMode('SUPERVISED')}
+                  style={{ display: 'flex', alignItems: 'flex-start', gap: '11px', padding: '13px 14px', background: selectedMode === 'SUPERVISED' ? 'var(--blue-tint)' : 'var(--card)', cursor: 'pointer' }}
                 >
-                  <span style={{ width: '15px', height: '15px', flex: 'none', marginTop: '1px', borderRadius: '50%', border: `1px solid ${agentMode === 'supervised' ? 'var(--blue)' : 'var(--line)'}`, display: 'grid', placeItems: 'center' }}>
-                    {agentMode === 'supervised' && <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--blue)' }} />}
+                  <span style={{ width: '15px', height: '15px', flex: 'none', marginTop: '1px', borderRadius: '50%', border: `1px solid ${selectedMode === 'SUPERVISED' ? 'var(--blue)' : 'var(--line)'}`, display: 'grid', placeItems: 'center' }}>
+                    {selectedMode === 'SUPERVISED' && <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--blue)' }} />}
                   </span>
                   <span style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                     <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--ink)' }}>Supervisado</span>
@@ -356,11 +404,11 @@ function DashboardContent() {
                 </label>
 
                 <label 
-                  onClick={() => setAgentMode('paused')}
-                  style={{ display: 'flex', alignItems: 'flex-start', gap: '11px', padding: '13px 14px', background: agentMode === 'paused' ? 'var(--blue-tint)' : 'var(--card)', cursor: 'pointer' }}
+                  onClick={() => setDraftMode('PAUSED')}
+                  style={{ display: 'flex', alignItems: 'flex-start', gap: '11px', padding: '13px 14px', background: selectedMode === 'PAUSED' ? 'var(--blue-tint)' : 'var(--card)', cursor: 'pointer' }}
                 >
-                  <span style={{ width: '15px', height: '15px', flex: 'none', marginTop: '1px', borderRadius: '50%', border: `1px solid ${agentMode === 'paused' ? 'var(--blue)' : 'var(--line)'}`, display: 'grid', placeItems: 'center' }}>
-                    {agentMode === 'paused' && <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--blue)' }} />}
+                  <span style={{ width: '15px', height: '15px', flex: 'none', marginTop: '1px', borderRadius: '50%', border: `1px solid ${selectedMode === 'PAUSED' ? 'var(--blue)' : 'var(--line)'}`, display: 'grid', placeItems: 'center' }}>
+                    {selectedMode === 'PAUSED' && <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--blue)' }} />}
                   </span>
                   <span style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                     <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--ink)' }}>Pausado</span>
@@ -370,8 +418,10 @@ function DashboardContent() {
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '9px', padding: '13px 18px', borderTop: '1px solid var(--line)', background: 'var(--surface)' }}>
-              <button data-btn onClick={() => setIsAgentModalOpen(false)}>Cancelar</button>
-              <button data-btn="primary" onClick={() => setIsAgentModalOpen(false)}>Guardar cambios</button>
+              <button data-btn onClick={closeAgentModal}>Cancelar</button>
+              <button data-btn="primary" onClick={saveAgentMode} disabled={updateAgentConfig.isPending}>
+                {updateAgentConfig.isPending ? 'Guardando...' : 'Guardar cambios'}
+              </button>
             </div>
           </div>
         </div>

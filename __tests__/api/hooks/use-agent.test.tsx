@@ -44,6 +44,7 @@ describe('Agent Config Module — Hooks', () => {
         integrations: [IntegrationType.WHATSAPP]
       }
     },
+    mode: 'AUTONOMOUS' as const,
     updated_at: '2026-05-22T14:43:51Z'
   }
 
