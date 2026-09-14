@@ -28,6 +28,18 @@ describe('ConversationDetail Component (Fase 4.6)', () => {
     })
   })
 
+  it('renders the EmptyState when no conversationId is provided', () => {
+    useConversationDetail.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: false,
+    })
+
+    render(<ConversationDetail conversationId={null} />)
+
+    expect(screen.getByText('Selecciona un chat')).toBeInTheDocument()
+  })
+
   // ✅ TEST 1: Control de Toma de Mando
   it('shows Takeover button when OPEN and executes mutation on click', () => {
     const mockConv = makeConversation({ status: 'OPEN' })

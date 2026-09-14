@@ -77,6 +77,24 @@ describe('ConversationList Component (Fase 4.5)', () => {
     expect(screen.getByText('Humano')).toBeInTheDocument()
   })
 
+  it('calls onSelect with the conversation id when an item is clicked', () => {
+    const mockConvs = [
+      makeConversation({ id: 'conv-42', contact: { name: 'Miguel Medina' }, status: 'OPEN' }),
+    ]
+
+    useConversations.mockReturnValue({
+      data: mockConvs,
+      isLoading: false,
+      isError: false,
+    })
+
+    render(<ConversationList onSelect={mockOnSelect} />)
+
+    fireEvent.click(screen.getByText('Miguel Medina'))
+
+    expect(mockOnSelect).toHaveBeenCalledWith('conv-42')
+  })
+
   // ❌ TEST 4: Estado de Carga Initial
   it('displays loading spinner', () => {
     useConversations.mockReturnValue({
