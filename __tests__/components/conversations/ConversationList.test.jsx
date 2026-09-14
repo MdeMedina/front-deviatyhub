@@ -77,6 +77,27 @@ describe('ConversationList Component (Fase 4.5)', () => {
     expect(screen.getByText('Humano')).toBeInTheDocument()
   })
 
+  it('shows the last message as the preview instead of the placeholder', () => {
+    const mockConvs = [
+      makeConversation({
+        id: 'conv-7',
+        contact: { name: 'Miguel Medina' },
+        messages: [{ id: 'm1', role: 'ASSISTANT', content: 'La hora de 12:00 esta disponible', sentAt: new Date().toISOString() }],
+      }),
+    ]
+
+    useConversations.mockReturnValue({
+      data: mockConvs,
+      isLoading: false,
+      isError: false,
+    })
+
+    render(<ConversationList onSelect={mockOnSelect} />)
+
+    expect(screen.getByText('La hora de 12:00 esta disponible')).toBeInTheDocument()
+    expect(screen.queryByText('Iniciando conversación...')).not.toBeInTheDocument()
+  })
+
   it('calls onSelect with the conversation id when an item is clicked', () => {
     const mockConvs = [
       makeConversation({ id: 'conv-42', contact: { name: 'Miguel Medina' }, status: 'OPEN' }),

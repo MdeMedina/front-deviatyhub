@@ -83,7 +83,7 @@ export const makeMessage = (overrides?: Partial<IMessage>): IMessage => ({
   id: mockUuid(),
   role: MessageRole.USER,
   content: 'Hello mock message',
-  sent_at: new Date().toISOString(),
+  sentAt: new Date().toISOString(),
   ...overrides
 })
 
@@ -91,10 +91,10 @@ export const makeConversation = (overrides?: Partial<IConversationListItem>): IC
   id: mockUuid(),
   channel: Channel.WHATSAPP,
   status: ConversationStatus.OPEN,
-  current_step: ConversationStep.INICIO,
+  currentStep: ConversationStep.INICIO,
   contact: makeContactSummary(),
-  last_message: makeMessageSummary(),
-  appointment_id: null,
-  started_at: new Date().toISOString(),
+  // El backend incluye solo el último mensaje para la vista previa.
+  messages: [makeMessage()],
+  startedAt: new Date().toISOString(),
   ...overrides
 })

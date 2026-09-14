@@ -64,10 +64,8 @@ describe('Data Integrity — TypeScript Schema Definitions', () => {
       id: 'conv-1',
       channel: Channel.INSTAGRAM,
       status: ConversationStatus.OPEN,
-      current_step: ConversationStep.INICIO,
-      last_message: { id: 'm-1', content: 'Hello', sent_at: new Date().toISOString() },
-      appointment_id: null,
-      started_at: new Date().toISOString(),
+      currentStep: ConversationStep.INICIO,
+      startedAt: new Date().toISOString(),
       contact: {
         id: 'c-1',
         name: 'Jane Doe',
@@ -77,10 +75,10 @@ describe('Data Integrity — TypeScript Schema Definitions', () => {
         channel: Channel.INSTAGRAM,
         last_interaction_at: new Date().toISOString()
       },
-      appointment: null,
-      assigned_user_id: null,
+      appointments: [],
+      assignedUserId: null,
       messages: [
-        { id: 'm-1', role: MessageRole.USER, content: 'Hello', sent_at: new Date().toISOString() }
+        { id: 'm-1', role: MessageRole.USER, content: 'Hello', sentAt: new Date().toISOString() }
       ]
     }
     expect(conversation.messages).toHaveLength(1)

@@ -240,24 +240,29 @@ export interface IMessage {
   id: string
   role: MessageRole
   content: string
-  sent_at: string
+  sentAt: string
 }
 
+// Refleja la respuesta real del core-service (objetos Prisma en camelCase).
+// El endpoint de listado incluye solo el último mensaje (take: 1) para la
+// vista previa, no un campo "last_message".
 export interface IConversationListItem {
   id: string
   channel: Channel
   status: ConversationStatus
-  current_step: ConversationStep
+  currentStep: ConversationStep
   contact: IContactSummary
-  last_message: IMessageSummary
-  appointment_id: string | null
-  started_at: string
+  messages: IMessage[]
+  startedAt: string
+  closedAt?: string | null
+  assignedUserId?: string | null
+  /** El listado no lo devuelve hoy; el detalle expone "appointments". */
+  appointment_id?: string | null
 }
 
 export interface IConversationDetail extends IConversationListItem {
   contact: IContact
-  appointment: IAppointmentSummary | null
-  assigned_user_id: string | null
+  appointments?: IAppointmentSummary[]
   messages: IMessage[]
 }
 
