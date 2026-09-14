@@ -292,13 +292,31 @@ export interface IHourlyInteraction {
   count: number
 }
 
+/**
+ * Variación respecto al periodo anterior del mismo tamaño, en porcentaje.
+ * null cuando no hay base de comparación (sin datos previos): en ese caso no
+ * debe mostrarse ninguna tendencia en vez de inventar un número.
+ */
+export interface IMetricsTrends {
+  conversations_attended: number | null
+  containment_rate: number | null
+  avg_response_time_ms: number | null
+  appointments_scheduled: number | null
+  appointments_rescheduled: number | null
+  appointments_cancelled: number | null
+  human_takeovers: number | null
+  out_of_hours_conversations: number | null
+}
+
 export interface IMetricsSummary {
   period: string
   from: string
   to: string
   conversations_attended: number
-  avg_response_time_ms: number
-  containment_rate: number
+  /** null si todavía no hay ningún par pregunta/respuesta en el periodo. */
+  avg_response_time_ms: number | null
+  /** null si no hubo conversaciones en el periodo. */
+  containment_rate: number | null
   human_takeovers: number
   appointments_scheduled: number
   appointments_rescheduled: number
@@ -306,6 +324,7 @@ export interface IMetricsSummary {
   out_of_hours_conversations: number
   intentions_distribution: IIntentionDistribution[]
   interactions_by_hour: IHourlyInteraction[]
+  trends: IMetricsTrends
 }
 
 // Integraciones

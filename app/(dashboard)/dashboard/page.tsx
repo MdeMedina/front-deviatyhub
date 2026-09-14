@@ -17,6 +17,7 @@ import {
 import { useAuthStore } from '@/lib/stores/auth.store'
 import { useClinicConfig } from '@/lib/api/hooks/use-clinic'
 import { useMetrics } from '@/lib/api/hooks/use-metrics'
+import { formatCount, formatRate, formatResponseTime, formatTrend } from '@/lib/utils/metrics-format'
 
 // Spanish date helper
 function getFormattedDate() {
@@ -54,9 +55,24 @@ function DashboardContent() {
     )
   }
 
-  const totalConversationsAttended = metrics?.conversations_attended ?? 0
-  const containmentRateValue = metrics?.containment_rate !== undefined ? `${Math.round(metrics.containment_rate * 100)}%` : '0%'
-  const appointmentsScheduledValue = metrics?.appointments_scheduled ?? 0
+  const totalConversationsAttended = formatCount(metrics?.conversations_attended)
+  const containmentRateValue = formatRate(metrics?.containment_rate)
+  const appointmentsScheduledValue = formatCount(metrics?.appointments_scheduled)
+  const responseTimeValue = formatResponseTime(metrics?.avg_response_time_ms)
+
+  // Las tendencias vienen del backend comparando con el periodo anterior; si no
+  // hay base de comparación no se pinta ninguna, en vez de inventar un número.
+  const conversationsTrend = formatTrend(metrics?.trends?.conversations_attended)
+  const containmentTrend = formatTrend(metrics?.trends?.containment_rate)
+  const appointmentsTrend = formatTrend(metrics?.trends?.appointments_scheduled)
+  const responseTrend = formatTrend(metrics?.trends?.avg_response_time_ms, { lowerIsBetter: true })
+
+  const trendBadge = (trend: ReturnType<typeof formatTrend>) =>
+    trend ? (
+      <span data-mono style={{ fontSize: '11px', color: trend.positive ? 'var(--pos)' : 'var(--neg)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
+        {trend.label}
+      </span>
+    ) : null
 
   return (
     <div className="flex flex-col gap-6 max-w-[1340px] mx-auto">
@@ -109,11 +125,9 @@ function DashboardContent() {
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
             <span data-mono style={{ fontSize: '30px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }} data-testid="conversations-kpi">
-              {isMetricsError ? '--' : totalConversationsAttended.toLocaleString('es-CL')}
+              {isMetricsError ? '--' : totalConversationsAttended}
             </span>
-            <span data-mono style={{ fontSize: '11px', color: 'var(--pos)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
-              +12,4%
-            </span>
+            {!isMetricsError && trendBadge(conversationsTrend)}
           </div>
           <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>Últimos 7 días</span>
         </div>
@@ -128,9 +142,7 @@ function DashboardContent() {
             <span data-mono style={{ fontSize: '30px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }} data-testid="containment-kpi">
               {isMetricsError ? '--' : containmentRateValue}
             </span>
-            <span data-mono style={{ fontSize: '11px', color: 'var(--pos)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
-              +2,1%
-            </span>
+            {!isMetricsError && trendBadge(containmentTrend)}
           </div>
           <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>Autónomo por IA</span>
         </div>
@@ -143,11 +155,9 @@ function DashboardContent() {
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
             <span data-mono style={{ fontSize: '30px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }} data-testid="appointments-kpi">
-              {isMetricsError ? '--' : appointmentsScheduledValue.toLocaleString('es-CL')}
+              {isMetricsError ? '--' : appointmentsScheduledValue}
             </span>
-            <span data-mono style={{ fontSize: '11px', color: 'var(--pos)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
-              +15,0%
-            </span>
+            {!isMetricsError && trendBadge(appointmentsTrend)}
           </div>
           <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>Reservadas con éxito</span>
         </div>
@@ -160,11 +170,9 @@ function DashboardContent() {
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
             <span data-mono style={{ fontSize: '30px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }}>
-              1,2s
+              {isMetricsError ? '--' : responseTimeValue}
             </span>
-            <span data-mono style={{ fontSize: '11px', color: 'var(--pos)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
-              −14,2%
-            </span>
+            {!isMetricsError && trendBadge(responseTrend)}
           </div>
           <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>Tiempo promedio</span>
         </div>

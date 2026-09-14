@@ -5,6 +5,13 @@ import { AlertCircle } from 'lucide-react'
 import { useMetrics, MetricsPeriod } from '@/lib/api/hooks/use-metrics'
 import { IntentionsChart } from '@/components/metrics/IntentionsChart'
 import { InteractionsHeatmap } from '@/components/metrics/InteractionsHeatmap'
+import {
+  formatCount,
+  formatRate,
+  formatResponseTime,
+  formatTrend,
+  type TrendDisplay,
+} from '@/lib/utils/metrics-format'
 
 function MetricsContent() {
   const [period, setPeriod] = useState<MetricsPeriod>('7d')
@@ -54,37 +61,74 @@ function MetricsContent() {
     )
   }
 
-  const formatResponseTime = (ms: number | undefined) => {
-    if (ms === undefined) return '1.2s'
-    if (ms < 1000) return `${ms}ms`
-    return `${(ms / 1000).toFixed(1)}s`
-  }
-
-  const formatPercent = (rate: number | undefined) => {
-    if (rate === undefined) return '86%'
-    return `${Math.round(rate * 100)}%`
-  }
-
   const currentPeriodLabel = periodLabels[period]
+  const trends = metrics?.trends
 
-  const conversationsVal = metrics?.conversations_attended ?? 1284
-  const containmentVal = formatPercent(metrics?.containment_rate)
-  const responseVal = formatResponseTime(metrics?.avg_response_time_ms)
-  const scheduledVal = metrics?.appointments_scheduled ?? 327
-  const rescheduledVal = (metrics as any)?.appointments_rescheduled ?? (metrics as any)?.rescheduled_count ?? 84
-  const cancelledVal = (metrics as any)?.appointments_cancelled ?? (metrics as any)?.cancellations_count ?? 26
-  const humanTakeoversVal = (metrics as any)?.human_takeovers ?? (metrics as any)?.human_takeovers_count ?? 18
-  const outOfHoursVal = (metrics as any)?.out_of_hours_conversations ?? (metrics as any)?.after_hours_count ?? 143
-
-  const metricCards: { title: string; value: React.ReactNode; trend: string; positive: boolean; subtitle: string; testId: string }[] = [
-    { title: 'Conversaciones atendidas', value: conversationsVal, trend: '+12,4%', positive: true, subtitle: 'Total del periodo', testId: 'metric-conversations' },
-    { title: 'Tasa de contención', value: containmentVal, trend: '+2,1%', positive: true, subtitle: 'Autónomo por IA', testId: 'metric-containment' },
-    { title: 'Tiempo de respuesta', value: responseVal, trend: '−14,2%', positive: true, subtitle: 'Tiempo promedio', testId: 'metric-response-time' },
-    { title: 'Citas agendadas', value: scheduledVal, trend: '+15,0%', positive: true, subtitle: 'Agendadas autónomamente', testId: 'metric-scheduled' },
-    { title: 'Citas reprogramadas', value: rescheduledVal, trend: '−4,8%', positive: true, subtitle: 'Cambios gestionados', testId: 'metric-rescheduled' },
-    { title: 'Citas canceladas', value: cancelledVal, trend: '−8,3%', positive: true, subtitle: 'Cancelaciones registradas', testId: 'metric-cancellations' },
-    { title: 'Derivación a humano', value: humanTakeoversVal, trend: '−6,5%', positive: true, subtitle: 'Traspasos al equipo', testId: 'metric-human-takeovers' },
-    { title: 'Fuera de horario', value: outOfHoursVal, trend: '+10,2%', positive: false, subtitle: 'Chats nocturnos y festivos', testId: 'metric-after-hours' },
+  // Sin dato se muestra un guion, nunca un número de relleno: un valor
+  // inventado que parece real es peor que un hueco, porque nadie lo cuestiona.
+  const metricCards: {
+    title: string
+    value: React.ReactNode
+    trend: TrendDisplay | null
+    subtitle: string
+    testId: string
+  }[] = [
+    {
+      title: 'Conversaciones atendidas',
+      value: formatCount(metrics?.conversations_attended),
+      trend: formatTrend(trends?.conversations_attended),
+      subtitle: 'Total del periodo',
+      testId: 'metric-conversations',
+    },
+    {
+      title: 'Tasa de contención',
+      value: formatRate(metrics?.containment_rate),
+      trend: formatTrend(trends?.containment_rate),
+      subtitle: 'Autónomo por IA',
+      testId: 'metric-containment',
+    },
+    {
+      title: 'Tiempo de respuesta',
+      value: formatResponseTime(metrics?.avg_response_time_ms),
+      trend: formatTrend(trends?.avg_response_time_ms, { lowerIsBetter: true }),
+      subtitle: 'Tiempo promedio',
+      testId: 'metric-response-time',
+    },
+    {
+      title: 'Citas agendadas',
+      value: formatCount(metrics?.appointments_scheduled),
+      trend: formatTrend(trends?.appointments_scheduled),
+      subtitle: 'Agendadas autónomamente',
+      testId: 'metric-scheduled',
+    },
+    {
+      title: 'Citas reprogramadas',
+      value: formatCount(metrics?.appointments_rescheduled),
+      trend: formatTrend(trends?.appointments_rescheduled),
+      subtitle: 'Cambios gestionados',
+      testId: 'metric-rescheduled',
+    },
+    {
+      title: 'Citas canceladas',
+      value: formatCount(metrics?.appointments_cancelled),
+      trend: formatTrend(trends?.appointments_cancelled, { lowerIsBetter: true }),
+      subtitle: 'Cancelaciones registradas',
+      testId: 'metric-cancellations',
+    },
+    {
+      title: 'Derivación a humano',
+      value: formatCount(metrics?.human_takeovers),
+      trend: formatTrend(trends?.human_takeovers, { lowerIsBetter: true }),
+      subtitle: 'Traspasos al equipo',
+      testId: 'metric-human-takeovers',
+    },
+    {
+      title: 'Fuera de horario',
+      value: formatCount(metrics?.out_of_hours_conversations),
+      trend: formatTrend(trends?.out_of_hours_conversations),
+      subtitle: 'Chats nocturnos y festivos',
+      testId: 'metric-after-hours',
+    },
   ]
 
   return (
@@ -147,9 +191,12 @@ function MetricsContent() {
               <span data-mono style={{ fontSize: '25px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }}>
                 {m.value}
               </span>
-              <span data-mono style={{ fontSize: '11px', color: m.positive ? 'var(--pos)' : 'var(--muted)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
-                {m.trend}
-              </span>
+              {/* Sin periodo anterior con el que comparar no se pinta nada. */}
+              {m.trend && (
+                <span data-mono style={{ fontSize: '11px', color: m.trend.positive ? 'var(--pos)' : 'var(--neg)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
+                  {m.trend.label}
+                </span>
+              )}
             </div>
             <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>{m.subtitle}</span>
           </div>
