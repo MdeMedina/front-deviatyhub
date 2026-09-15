@@ -4,11 +4,13 @@ import React, { Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ConversationList } from '@/components/features/conversations/ConversationList'
 import { ConversationDetail } from '@/components/features/conversations/ConversationDetail'
+import { useSocketStatus } from '@/lib/socket/hooks/use-socket-status'
 
 function ConversationsContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const selectedId = searchParams.get('id')
+  const socketConnected = useSocketStatus()
 
   const handleSelect = (id: string) => {
     router.push(`/conversations?id=${id}`)
@@ -30,9 +32,10 @@ function ConversationsContent() {
           </p>
         </div>
 
-        <div data-badge style={{ height: '32px' }}>
-          <span data-dot style={{ background: 'var(--pos)' }} />
-          Socket conectado
+        {/* Refleja la conexión real: en verde solo si de verdad está viva. */}
+        <div data-badge style={{ height: '32px' }} data-testid="socket-status">
+          <span data-dot style={{ background: socketConnected ? 'var(--pos)' : 'var(--neg)' }} />
+          {socketConnected ? 'Socket conectado' : 'Sin conexión en tiempo real'}
         </div>
       </div>
 
