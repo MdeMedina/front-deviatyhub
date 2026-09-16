@@ -7,30 +7,28 @@ describe('Agenda Module — CalendarGrid', () => {
   const mockAppointments = [
     {
       id: 'apt-1',
-      contact_name: 'Jane Doe',
-      contact_id: 'c1',
+      contactName: 'Jane Doe',
+      contactId: 'c1',
       treatment: { id: 't1', name: 'Consulta Médica' },
       doctor: { id: 'd1', name: 'Dr. House' },
-      scheduled_at: '2026-05-18T10:00:00Z', // A Monday
-      duration_min: 60,
+      scheduledAt: '2026-05-18T10:00:00Z', // A Monday
+      durationMin: 60,
       status: AppointmentStatus.CONFIRMED,
       source: AppointmentSource.AGENT,
-      channel: Channel.WHATSAPP,
-      conversation_id: 'conv-1',
+      conversationId: 'conv-1',
       notes: ''
     },
     {
       id: 'apt-2',
-      contact_name: 'John Smith',
-      contact_id: 'c2',
+      contactName: 'John Smith',
+      contactId: 'c2',
       treatment: { id: 't2', name: 'Limpieza Dental' },
       doctor: { id: 'd2', name: 'Dra. Quinn' },
-      scheduled_at: '2026-05-19T14:30:00Z', // A Tuesday
-      duration_min: 30,
+      scheduledAt: '2026-05-19T14:30:00Z', // A Tuesday
+      durationMin: 30,
       status: AppointmentStatus.PENDING,
       source: AppointmentSource.HUMAN,
-      channel: Channel.INSTAGRAM,
-      conversation_id: 'conv-2',
+      conversationId: 'conv-2',
       notes: ''
     }
   ]

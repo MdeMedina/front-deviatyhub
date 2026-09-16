@@ -39,16 +39,15 @@ describe('Agenda Page Integration', () => {
   const mockAppointments = [
     {
       id: 'apt-1',
-      contact_name: 'John Doe',
-      contact_id: 'c1',
+      contactName: 'John Doe',
+      contactId: 'c1',
       treatment: { id: 't1', name: 'Limpieza' },
       doctor: { id: 'd1', name: 'Dr. Smith' },
-      scheduled_at: new Date().toISOString(),
-      duration_min: 30,
+      scheduledAt: new Date().toISOString(),
+      durationMin: 30,
       status: AppointmentStatus.CONFIRMED,
       source: AppointmentSource.HUMAN,
-      channel: Channel.WHATSAPP,
-      conversation_id: 'conv-1',
+      conversationId: 'conv-1',
       notes: ''
     }
   ]
@@ -56,7 +55,8 @@ describe('Agenda Page Integration', () => {
   it('renders the agenda week grid with the appointment in a time cell', async () => {
     simpleServer.use(ENDPOINTS.agenda.appointments, async () => ({
       status: 200,
-      data: { success: true, data: { data: mockAppointments, meta: { total: 1, page: 1, limit: 10, total_pages: 1 } } }
+      // El endpoint responde el array plano dentro de "data".
+      data: { success: true, data: mockAppointments }
     }))
 
     render(<AgendaPage />, { wrapper: createWrapper() })
@@ -74,7 +74,7 @@ describe('Agenda Page Integration', () => {
   it('renders the week grid without appointments when none are returned', async () => {
     simpleServer.use(ENDPOINTS.agenda.appointments, async () => ({
       status: 200,
-      data: { success: true, data: { data: [], meta: { total: 0, page: 1, limit: 10, total_pages: 0 } } }
+      data: { success: true, data: [] }
     }))
 
     render(<AgendaPage />, { wrapper: createWrapper() })
@@ -87,7 +87,8 @@ describe('Agenda Page Integration', () => {
   it('opens detail modal when clicking an appointment card', async () => {
     simpleServer.use(ENDPOINTS.agenda.appointments, async () => ({
       status: 200,
-      data: { success: true, data: { data: mockAppointments, meta: { total: 1, page: 1, limit: 10, total_pages: 1 } } }
+      // El endpoint responde el array plano dentro de "data".
+      data: { success: true, data: mockAppointments }
     }))
 
     // Mock detail endpoint for the modal

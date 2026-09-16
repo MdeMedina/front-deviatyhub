@@ -91,7 +91,7 @@ export default function AgendaPage() {
     setIsModalOpen(false)
   }
 
-  const appointments = data?.data || []
+  const appointments = data ?? []
 
   return (
     <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">

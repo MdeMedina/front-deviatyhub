@@ -44,16 +44,15 @@ describe('Data Integrity — TypeScript Schema Definitions', () => {
   it('successfully validates the IAppointment schema with all required relational metadata', () => {
     const appointment: IAppointment = {
       id: 'app-1',
-      contact_name: 'John Doe',
-      contact_id: 'contact-1',
+      contactName: 'John Doe',
+      contactId: 'contact-1',
       treatment: { id: 't-1', name: 'Limpieza' },
       doctor: { id: 'd-1', name: 'Dr. Smith' },
-      scheduled_at: new Date().toISOString(),
-      duration_min: 30,
+      scheduledAt: new Date().toISOString(),
+      durationMin: 30,
       status: AppointmentStatus.PENDING,
       source: AppointmentSource.AGENT,
-      channel: Channel.WHATSAPP,
-      conversation_id: 'conv-1',
+      conversationId: 'conv-1',
       notes: 'Test note'
     }
     expect(appointment.status).toBe(AppointmentStatus.PENDING)

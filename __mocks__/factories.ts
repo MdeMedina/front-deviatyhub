@@ -65,16 +65,15 @@ export const makeMessageSummary = (overrides?: Partial<IMessageSummary>): IMessa
 
 export const makeAppointment = (overrides?: Partial<IAppointment>): IAppointment => ({
   id: mockUuid(),
-  contact_name: mockName(),
-  contact_id: mockUuid(),
+  contactName: mockName(),
+  contactId: mockUuid(),
   treatment: { id: mockUuid(), name: 'Treatment' },
   doctor: { id: mockUuid(), name: 'Doctor' },
-  scheduled_at: new Date().toISOString(),
-  duration_min: 30,
+  scheduledAt: new Date().toISOString(),
+  durationMin: 30,
   status: AppointmentStatus.PENDING,
   source: AppointmentSource.AGENT,
-  channel: Channel.WHATSAPP,
-  conversation_id: mockUuid(),
+  conversationId: mockUuid(),
   notes: 'Mock notes',
   ...overrides
 })

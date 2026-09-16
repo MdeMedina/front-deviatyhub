@@ -198,19 +198,20 @@ export interface IEncyclopediaEntry {
 }
 
 // Agenda
+// Refleja la respuesta real del core-service (objetos Prisma en camelCase).
 export interface IAppointment {
   id: string
-  contact_name: string
-  contact_id: string
-  treatment: ITreatmentSummary
-  doctor: IDoctorSummary
-  scheduled_at: string
-  duration_min: number
+  contactName: string | null
+  contactId: string | null
+  contact?: IContactSummary | null
+  treatment: ITreatmentSummary | null
+  doctor: IDoctorSummary | null
+  scheduledAt: string
+  durationMin: number
   status: AppointmentStatus
   source: AppointmentSource
-  channel: Channel
-  conversation_id: string
-  notes: string
+  conversationId: string | null
+  notes: string | null
 }
 
 export interface IAppointmentHistory {

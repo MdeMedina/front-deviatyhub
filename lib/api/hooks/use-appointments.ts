@@ -39,7 +39,9 @@ export const useAppointments = (params: UseAppointmentsParams = {}) => {
       const queryString = query.toString()
       const url = `${ENDPOINTS.agenda.appointments}${queryString ? `?${queryString}` : ''}`
       
-      return apiClient.get<IPaginatedResponse<IAppointment>>(url)
+      // apiClient ya devuelve el contenido de "data" del sobre, y este endpoint
+      // responde un array plano (no viene paginado).
+      return apiClient.get<IAppointment[]>(url)
     }
   })
 }

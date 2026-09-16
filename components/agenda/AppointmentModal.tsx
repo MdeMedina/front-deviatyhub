@@ -112,9 +112,9 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
           {/* Header Info */}
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="text-[16px] font-semibold text-[var(--ink)] mb-0.5">{appointment.contact_name}</h3>
+              <h3 className="text-[16px] font-semibold text-[var(--ink)] mb-0.5">{appointment.contactName}</h3>
               <p className="text-[12px] text-[var(--muted)] flex items-center gap-1.5">
-                ID de Conversación: <span className="microlabel text-[10px] bg-[var(--surface)] px-1.5 py-0.5 rounded border border-[var(--line)]">{appointment.conversation_id}</span>
+                ID de Conversación: <span className="microlabel text-[10px] bg-[var(--surface)] px-1.5 py-0.5 rounded border border-[var(--line)]">{appointment.conversationId}</span>
               </p>
             </div>
             <Badge variant={getStatusVariant(appointment.status)} size="md">
@@ -141,7 +141,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 <Calendar size={10} /> Fecha
               </span>
               <p className="text-[13px] font-medium text-[var(--ink)] tabular">
-                {new Date(appointment.scheduled_at).toLocaleDateString('es-ES', { dateStyle: 'medium' })}
+                {new Date(appointment.scheduledAt).toLocaleDateString('es-ES', { dateStyle: 'medium' })}
               </p>
             </div>
             <div className="space-y-0.5">
@@ -149,7 +149,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 <Clock size={10} /> Horario
               </span>
               <p className="text-[13px] font-medium text-[var(--ink)] tabular">
-                {new Date(appointment.scheduled_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ({appointment.duration_min} min)
+                {new Date(appointment.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ({appointment.durationMin} min)
               </p>
             </div>
           </div>

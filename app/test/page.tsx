@@ -36,16 +36,16 @@ export default function DesignSystemPage() {
 
   const mockAppointment = {
     id: 'apt-1',
-    contact_name: 'John Doe',
-    contact_id: 'c1',
+    contactName: 'John Doe',
+    contactId: 'c1',
     treatment: { id: 't1', name: 'Limpieza Dental + Fluor' },
     doctor: { id: 'd1', name: 'Dra. Valentina Paz' },
-    scheduled_at: new Date().toISOString(),
-    duration_min: 45,
+    scheduledAt: new Date().toISOString(),
+    durationMin: 45,
     status: AppointmentStatus.PENDING,
     source: AppointmentSource.AGENT,
     channel: Channel.WHATSAPP,
-    conversation_id: 'conv-test-123',
+    conversationId: 'conv-test-123',
     notes: ''
   }
 
@@ -228,7 +228,7 @@ export default function DesignSystemPage() {
                   ...mockAppointment,
                   id: 'apt-2',
                   status: AppointmentStatus.CONFIRMED,
-                  contact_name: 'María García'
+                  contactName: 'María García'
                 }} 
                 onClick={() => setIsAptModalOpen(true)}
               />
