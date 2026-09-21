@@ -22,8 +22,12 @@ export const ENDPOINTS = {
     policyById:       (id: string) => `${API_BASE}/core/clinic/policies/${id}`,
   },
   doctors: {
-    list:   `${API_BASE}/core/doctors`,
-    byId:   (id: string) => `${API_BASE}/core/doctors/${id}`,
+    list:      `${API_BASE}/core/doctors`,
+    byId:      (id: string) => `${API_BASE}/core/doctors/${id}`,
+    me:        `${API_BASE}/core/doctors/me`,
+    schedule:  (id: string) => `${API_BASE}/core/doctors/${id}/schedule`,
+    absences:  (id: string) => `${API_BASE}/core/doctors/${id}/absences`,
+    absence:   (id: string, absenceId: string) => `${API_BASE}/core/doctors/${id}/absences/${absenceId}`,
   },
   treatments: {
     list:         `${API_BASE}/core/treatments`,

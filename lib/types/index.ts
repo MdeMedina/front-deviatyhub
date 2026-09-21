@@ -62,6 +62,8 @@ export interface IPermissions {
   clinic_config: { view: boolean; edit: boolean }
   conversations: { view: boolean; takeover: boolean }
   agenda: { view: boolean; edit: boolean }
+  /** Jornada propia de un profesional. Solo lo tiene el rol Doctor. */
+  own_schedule?: { view: boolean; edit: boolean }
 }
 
 export interface IRole {
@@ -150,6 +152,25 @@ export interface IAppointmentSummary {
 }
 
 // Doctores y tratamientos
+/** Tramo de la jornada semanal. Puede haber varios el mismo día (jornada partida). */
+export interface IScheduleBlock {
+  id?: string
+  day_of_week: number
+  start_time: string
+  end_time: string
+  active?: boolean
+}
+
+export interface IAbsence {
+  id: string
+  starts_at: string
+  ends_at: string
+  all_day?: boolean
+  reason?: string | null
+  /** Solo al crearla: citas ya reservadas que caen dentro. */
+  citas_afectadas?: number
+}
+
 export interface IDoctor {
   id: string
   name: string

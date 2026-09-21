@@ -17,8 +17,12 @@ export const useLogin = () => {
     
     onSuccess: (data) => {
       setSession(data)
-      // Redirect to dashboard or conversations as default
-      router.push('/dashboard')
+      // Un profesional no ve el dashboard (son datos de negocio, no suyos), así
+      // que mandarle ahí sería dejarle en una página vacía nada más entrar.
+      const permisos = (data as any)?.user?.role?.permissions
+      const esProfesional = !(data as any)?.user?.role?.is_superadmin
+        && !!permisos?.own_schedule?.view
+      router.push(esProfesional ? '/my-schedule' : '/dashboard')
     },
   })
 }
