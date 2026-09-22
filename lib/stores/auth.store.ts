@@ -11,6 +11,15 @@ interface AuthState {
   clearSession: () => void
   updateTokens: (access_token: string, refresh_token: string) => void
   hasPermission: (permission: string) => boolean
+  /**
+   * Como hasPermission, pero SIN el atajo de superadmin.
+   *
+   * Hay opciones que no son un privilegio sino una pertenencia: "Mi jornada"
+   * solo tiene sentido para quien atiende pacientes. Con el atajo, un
+   * superadmin la veía en el menú y al entrar se encontraba con que su cuenta
+   * no es la de un profesional.
+   */
+  hasRolePermission: (permission: string) => boolean
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -46,6 +55,17 @@ export const useAuthStore = create<AuthState>()(
         
         // Superadmins bypass all permission checks
         if (user.role.is_superadmin) return true
+
+        const [module, action] = permission.split('.')
+        if (!module || !action) return false
+
+        const permissions = user.role.permissions as unknown as Record<string, Record<string, boolean>>
+        return !!permissions[module]?.[action]
+      },
+
+      hasRolePermission: (permission: string) => {
+        const { user } = get()
+        if (!user) return false
 
         const [module, action] = permission.split('.')
         if (!module || !action) return false

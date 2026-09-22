@@ -38,6 +38,12 @@ interface NavGroup {
      * nuevo que los roles ya existentes no tendrían y perderían el acceso.
      */
     hiddenWhen?: string
+    /**
+     * El permiso se exige tal cual, sin el atajo de superadmin. Para opciones
+     * que no son un privilegio sino una pertenencia: "Mi jornada" es de quien
+     * tiene jornada, y un superadmin no la tiene por ser superadmin.
+     */
+    strict?: boolean
   }[]
 }
 
@@ -48,7 +54,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, permission: null, hiddenWhen: 'own_schedule.view' },
       { label: 'Conversaciones', href: '/conversations', icon: MessageSquare, permission: 'conversations.view' },
       { label: 'Agenda', href: '/agenda', icon: Calendar, permission: 'agenda.view' },
-      { label: 'Mi jornada', href: '/my-schedule', icon: CalendarClock, permission: 'own_schedule.view' },
+      { label: 'Mi jornada', href: '/my-schedule', icon: CalendarClock, permission: 'own_schedule.view', strict: true },
     ]
   },
   {
@@ -73,7 +79,7 @@ const NAV_GROUPS: NavGroup[] = [
 
 export const Sidebar: React.FC = () => {
   const pathname = usePathname()
-  const { hasPermission } = useAuthStore()
+  const { hasPermission, hasRolePermission } = useAuthStore()
   const { isSidebarOpen, toggleSidebar, theme, toggleTheme } = useUIStore()
 
   return (
@@ -111,11 +117,17 @@ export const Sidebar: React.FC = () => {
       {/* Navigation Groups */}
       <nav className="flex-1 overflow-y-auto overflow-x-hidden py-3.5 px-2.5 space-y-4">
         {NAV_GROUPS.map((group) => {
-          const visibleItems = group.items.filter(
-            item =>
-              (!item.permission || hasPermission(item.permission as any)) &&
-              !(item.hiddenWhen && hasPermission(item.hiddenWhen as any))
-          )
+          const visibleItems = group.items.filter(item => {
+            const puede = !item.permission
+              ? true
+              : item.strict
+                ? hasRolePermission(item.permission)
+                : hasPermission(item.permission as any)
+            // "hiddenWhen" también se evalúa sin el atajo: si no, el Dashboard
+            // desaparecería para el superadmin, que tiene todos los permisos.
+            const oculto = !!item.hiddenWhen && hasRolePermission(item.hiddenWhen)
+            return puede && !oculto
+          })
 
           if (visibleItems.length === 0) return null
 
