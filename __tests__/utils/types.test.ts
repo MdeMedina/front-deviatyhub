@@ -44,16 +44,15 @@ describe('Data Integrity — TypeScript Schema Definitions', () => {
   it('successfully validates the IAppointment schema with all required relational metadata', () => {
     const appointment: IAppointment = {
       id: 'app-1',
-      contact_name: 'John Doe',
-      contact_id: 'contact-1',
+      contactName: 'John Doe',
+      contactId: 'contact-1',
       treatment: { id: 't-1', name: 'Limpieza' },
       doctor: { id: 'd-1', name: 'Dr. Smith' },
-      scheduled_at: new Date().toISOString(),
-      duration_min: 30,
+      scheduledAt: new Date().toISOString(),
+      durationMin: 30,
       status: AppointmentStatus.PENDING,
       source: AppointmentSource.AGENT,
-      channel: Channel.WHATSAPP,
-      conversation_id: 'conv-1',
+      conversationId: 'conv-1',
       notes: 'Test note'
     }
     expect(appointment.status).toBe(AppointmentStatus.PENDING)
@@ -64,10 +63,8 @@ describe('Data Integrity — TypeScript Schema Definitions', () => {
       id: 'conv-1',
       channel: Channel.INSTAGRAM,
       status: ConversationStatus.OPEN,
-      current_step: ConversationStep.INICIO,
-      last_message: { id: 'm-1', content: 'Hello', sent_at: new Date().toISOString() },
-      appointment_id: null,
-      started_at: new Date().toISOString(),
+      currentStep: ConversationStep.INICIO,
+      startedAt: new Date().toISOString(),
       contact: {
         id: 'c-1',
         name: 'Jane Doe',
@@ -77,10 +74,10 @@ describe('Data Integrity — TypeScript Schema Definitions', () => {
         channel: Channel.INSTAGRAM,
         last_interaction_at: new Date().toISOString()
       },
-      appointment: null,
-      assigned_user_id: null,
+      appointments: [],
+      assignedUserId: null,
       messages: [
-        { id: 'm-1', role: MessageRole.USER, content: 'Hello', sent_at: new Date().toISOString() }
+        { id: 'm-1', role: MessageRole.USER, content: 'Hello', sentAt: new Date().toISOString() }
       ]
     }
     expect(conversation.messages).toHaveLength(1)

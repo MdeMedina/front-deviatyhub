@@ -38,10 +38,9 @@ describe('Conversations Module — Hook useConversations', () => {
       status: 200,
       data: {
         success: true,
-        data: {
-          data: mockConversations,
-          meta: { page: 1, limit: 10, total: 1, total_pages: 1 }
-        }
+        // El backend responde el array plano dentro de "data" (sin paginar),
+        // y apiClient devuelve ese contenido tal cual.
+        data: mockConversations
       }
     }))
 
@@ -49,8 +48,8 @@ describe('Conversations Module — Hook useConversations', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
-    expect(result.current.data?.data).toHaveLength(1)
-    expect(result.current.data?.data[0].id).toBe('conv-1')
+    expect(result.current.data).toHaveLength(1)
+    expect(result.current.data?.[0].id).toBe('conv-1')
   })
 
   it('applies filters correctly to the API request', async () => {

@@ -32,6 +32,16 @@ describe('Metrics Module — Hook useMetrics (Fase 7.1)', () => {
     appointments_rescheduled: 30,
     appointments_cancelled: 12,
     out_of_hours_conversations: 45,
+    trends: {
+      conversations_attended: 12.4,
+      containment_rate: 2.1,
+      avg_response_time_ms: -14.2,
+      appointments_scheduled: 15,
+      appointments_rescheduled: -4.8,
+      appointments_cancelled: -8.3,
+      human_takeovers: -6.5,
+      out_of_hours_conversations: 10.2,
+    },
     intentions_distribution: [
       { intention: 'Agendar Cita', count: 120, percentage: 48.0 },
       { intention: 'Anular Cita', count: 30, percentage: 12.0 },

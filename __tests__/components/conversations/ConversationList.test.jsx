@@ -30,7 +30,7 @@ describe('ConversationList Component (Fase 4.5)', () => {
   // ✅ TEST 1: Renderiza Empty State
   it('renders EmptyState when no conversations are found', () => {
     useConversations.mockReturnValue({
-      data: { data: [] },
+      data: [],
       isLoading: false,
       isError: false,
     })
@@ -43,7 +43,7 @@ describe('ConversationList Component (Fase 4.5)', () => {
   // ✅ TEST 2: Aplicación de Filtros
   it('updates status filter and triggers a new fetch', () => {
     useConversations.mockReturnValue({
-      data: { data: [] },
+      data: [],
       isLoading: false,
       isError: false,
     })
@@ -64,7 +64,7 @@ describe('ConversationList Component (Fase 4.5)', () => {
     ]
 
     useConversations.mockReturnValue({
-      data: { data: mockConvs },
+      data: mockConvs,
       isLoading: false,
       isError: false,
     })
@@ -75,6 +75,45 @@ describe('ConversationList Component (Fase 4.5)', () => {
     expect(screen.getByText('Ana Lopez')).toBeInTheDocument()
     expect(screen.getByText('IA')).toBeInTheDocument()
     expect(screen.getByText('Humano')).toBeInTheDocument()
+  })
+
+  it('shows the last message as the preview instead of the placeholder', () => {
+    const mockConvs = [
+      makeConversation({
+        id: 'conv-7',
+        contact: { name: 'Miguel Medina' },
+        messages: [{ id: 'm1', role: 'ASSISTANT', content: 'La hora de 12:00 esta disponible', sentAt: new Date().toISOString() }],
+      }),
+    ]
+
+    useConversations.mockReturnValue({
+      data: mockConvs,
+      isLoading: false,
+      isError: false,
+    })
+
+    render(<ConversationList onSelect={mockOnSelect} />)
+
+    expect(screen.getByText('La hora de 12:00 esta disponible')).toBeInTheDocument()
+    expect(screen.queryByText('Iniciando conversación...')).not.toBeInTheDocument()
+  })
+
+  it('calls onSelect with the conversation id when an item is clicked', () => {
+    const mockConvs = [
+      makeConversation({ id: 'conv-42', contact: { name: 'Miguel Medina' }, status: 'OPEN' }),
+    ]
+
+    useConversations.mockReturnValue({
+      data: mockConvs,
+      isLoading: false,
+      isError: false,
+    })
+
+    render(<ConversationList onSelect={mockOnSelect} />)
+
+    fireEvent.click(screen.getByText('Miguel Medina'))
+
+    expect(mockOnSelect).toHaveBeenCalledWith('conv-42')
   })
 
   // ❌ TEST 4: Estado de Carga Initial

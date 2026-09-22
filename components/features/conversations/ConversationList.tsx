@@ -29,7 +29,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
 
   useConversationSocketListeners()
 
-  const conversations = response?.data || []
+  const conversations = response ?? []
 
   return (
     <div className="flex flex-col h-full bg-[var(--card)]">
@@ -158,12 +158,12 @@ function ConversationItem({
           {conversation.contact?.name || 'Usuario desconocido'}
         </span>
         <span data-mono className="text-[11px] text-[var(--dim)] whitespace-nowrap">
-          {new Date(conversation.last_message?.sent_at || conversation.started_at || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {new Date(conversation.messages?.[0]?.sentAt || conversation.startedAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </span>
       </div>
 
       <p className="text-[12px] text-[var(--muted)] line-clamp-1 mb-2.5">
-        {conversation.last_message?.content || 'Iniciando conversación...'}
+        {conversation.messages?.[0]?.content || 'Iniciando conversación...'}
       </p>
 
       <div className="flex items-center gap-1.5 flex-wrap">

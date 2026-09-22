@@ -80,6 +80,67 @@ describe('Dashboard Page — Home Screen', () => {
     expect(screen.getByTestId('dashboard-loading')).toBeInTheDocument()
   })
 
+  describe('Estado de la IA', () => {
+    const mockBaseEndpoints = () => {
+      simpleServer.use(ENDPOINTS.clinic.config, async () => ({
+        status: 200,
+        data: { success: true, data: { name: 'Clinica Dental' } },
+      }))
+      simpleServer.use(ENDPOINTS.metrics.summary, async () => ({
+        status: 200,
+        data: {
+          success: true,
+          data: {
+            period: '7d',
+            conversations_attended: 42,
+            containment_rate: 0.85,
+            human_takeovers: 7,
+            appointments_scheduled: 3,
+            appointments_rescheduled: 0,
+            appointments_cancelled: 5,
+            out_of_hours_conversations: 9,
+            avg_response_time_ms: 2000,
+            intentions_distribution: [],
+            interactions_by_hour: [],
+            trends: {},
+          },
+        },
+      }))
+    }
+
+    it('shows the real agent mode coming from the backend, not a fixed label', async () => {
+      mockBaseEndpoints()
+      simpleServer.use(ENDPOINTS.agentConfig, async () => ({
+        status: 200,
+        data: { success: true, data: { id: 'a1', clinic_id: 'c1', actions: {}, mode: 'PAUSED', updated_at: '' } },
+      }))
+
+      render(<DashboardPage />, { wrapper: createWrapper() })
+
+      await waitFor(() => {
+        expect(screen.getByTestId('agent-status-label')).toHaveTextContent('En pausa')
+      })
+      expect(screen.queryByText('Activo y operando')).not.toBeInTheDocument()
+    })
+
+    it('shows the real counters instead of hardcoded numbers', async () => {
+      mockBaseEndpoints()
+      simpleServer.use(ENDPOINTS.agentConfig, async () => ({
+        status: 200,
+        data: { success: true, data: { id: 'a1', clinic_id: 'c1', actions: {}, mode: 'AUTONOMOUS', updated_at: '' } },
+      }))
+
+      render(<DashboardPage />, { wrapper: createWrapper() })
+
+      await waitFor(() => expect(screen.getByTestId('agent-status-label')).toBeInTheDocument())
+      // 18 / 143 / 26 eran los valores inventados que había antes.
+      expect(screen.getByText('7')).toBeInTheDocument()
+      expect(screen.getByText('9')).toBeInTheDocument()
+      expect(screen.getByText('5')).toBeInTheDocument()
+      expect(screen.queryByText('143')).not.toBeInTheDocument()
+    })
+  })
+
   it('renders welcoming header and user greeting when clinic details are loaded', async () => {
     simpleServer.use(ENDPOINTS.clinic.config, async () => ({
       status: 200,

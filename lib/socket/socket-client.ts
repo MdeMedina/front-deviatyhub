@@ -4,6 +4,21 @@ import { SocketEvent } from '@/lib/types'
 class SocketClient {
   private socket: Socket | null = null
   private baseUrl: string = process.env.NEXT_PUBLIC_SOCKET_URL || process.env.NEXT_PUBLIC_API_URL || ''
+  private connected = false
+  private statusListeners = new Set<(connected: boolean) => void>()
+
+  private setStatus(connected: boolean) {
+    if (this.connected === connected) return
+    this.connected = connected
+    this.statusListeners.forEach((cb) => cb(connected))
+  }
+
+  /** Avisa cuando la conexión cae o vuelve. Devuelve la función para desuscribirse. */
+  onStatusChange(cb: (connected: boolean) => void): () => void {
+    this.statusListeners.add(cb)
+    cb(this.connected)
+    return () => this.statusListeners.delete(cb)
+  }
 
   /**
    * Initializes the socket connection with the provided JWT token.
@@ -18,15 +33,25 @@ class SocketClient {
       auth: { token },
       reconnection: true,
       reconnectionDelay: 1000,
-      reconnectionAttempts: 5,
-      transports: ['websocket'], // Prefer websocket for performance
+      // Reintentos sin límite: con 5 intentos el socket se rendía a los pocos
+      // segundos, así que cualquier reinicio del backend (un despliegue tarda
+      // minutos) dejaba la pestaña muda hasta recargarla a mano.
+      reconnectionAttempts: Infinity,
+      reconnectionDelayMax: 10000,
+      // Con solo websocket, si el upgrade falla no queda alternativa.
+      transports: ['websocket', 'polling'],
     })
 
     this.socket.on('connect', () => {
-      console.log('Socket connected successfully')
+      this.setStatus(true)
+    })
+
+    this.socket.on('disconnect', () => {
+      this.setStatus(false)
     })
 
     this.socket.on('connect_error', (error) => {
+      this.setStatus(false)
       console.error('Socket connection error:', error.message)
     })
   }
@@ -39,6 +64,7 @@ class SocketClient {
       this.socket.disconnect()
       this.socket = null
     }
+    this.setStatus(false)
   }
 
   /**
@@ -65,7 +91,7 @@ class SocketClient {
    * Returns true if the socket is currently connected.
    */
   isConnected(): boolean {
-    return this.socket?.connected || false
+    return this.socket?.connected ?? this.connected
   }
 
   /**

@@ -36,6 +36,7 @@ describe('AgentActionToggle Organism — Configuration Panel UI', () => {
         integrations: [IntegrationType.WHATSAPP]
       }
     },
+    mode: 'AUTONOMOUS' as const,
     updated_at: '2026-05-24T14:16:51Z'
   }
 

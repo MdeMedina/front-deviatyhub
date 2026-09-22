@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Spinner } from '@/components/ui/Spinner'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { WhatsAppText } from '@/components/ui/WhatsAppText'
 import { useAuthStore } from '@/lib/stores/auth.store'
 
 interface ConversationDetailProps {
@@ -186,7 +187,7 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
           <div className="space-y-2.5">
             <div className="flex justify-between items-center text-[12px]">
               <span className="text-[var(--muted)]">Estado bot</span>
-              <Badge variant="neutral" size="sm">{conversation.current_step}</Badge>
+              <Badge variant="neutral" size="sm">{conversation.currentStep}</Badge>
             </div>
             <div className="flex justify-between items-center text-[12px]">
               <span className="text-[var(--muted)]">Canal</span>
@@ -220,10 +221,10 @@ function MessageBubble({ message }: { message: any }) {
               ? 'bg-[var(--blue-solid)] text-[var(--on-blue)] border border-[var(--blue-solid)]'
               : 'bg-[var(--ink)] text-[var(--bg)] border border-[var(--ink)]'
         }`}>
-          {message.content}
+          <WhatsAppText>{message.content}</WhatsAppText>
         </div>
         <p className={`microlabel px-0.5 tabular ${isUser ? 'text-left' : 'text-right'}`}>
-          {isAssistant ? 'IA' : isHuman ? 'Agente' : 'Paciente'} · {new Date(message.sent_at || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {isAssistant ? 'IA' : isHuman ? 'Agente' : 'Paciente'} · {new Date(message.sentAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </p>
       </div>
     </div>

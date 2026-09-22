@@ -4,18 +4,23 @@ import React, { Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ConversationList } from '@/components/features/conversations/ConversationList'
 import { ConversationDetail } from '@/components/features/conversations/ConversationDetail'
+import { useSocketStatus } from '@/lib/socket/hooks/use-socket-status'
 
 function ConversationsContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const selectedId = searchParams.get('id')
+  const socketConnected = useSocketStatus()
 
   const handleSelect = (id: string) => {
     router.push(`/conversations?id=${id}`)
   }
 
   return (
-    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+    // La altura disponible depende solo de los paddings fijos del layout
+    // (pt-14 del main + py-7 y pb-14 del contenedor): 56 + 28 + 56 = 140px.
+    // Así el panel no depende de la altura del bloque de título, que varía.
+    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto h-[calc(100vh-140px)]">
       {/* Header Bar */}
       <div className="flex items-end justify-between gap-5 flex-wrap pb-4 border-b border-[var(--line)]">
         <div className="flex flex-col gap-1">
@@ -27,9 +32,10 @@ function ConversationsContent() {
           </p>
         </div>
 
-        <div data-badge style={{ height: '32px' }}>
-          <span data-dot style={{ background: 'var(--pos)' }} />
-          Socket conectado
+        {/* Refleja la conexión real: en verde solo si de verdad está viva. */}
+        <div data-badge style={{ height: '32px' }} data-testid="socket-status">
+          <span data-dot style={{ background: socketConnected ? 'var(--pos)' : 'var(--neg)' }} />
+          {socketConnected ? 'Socket conectado' : 'Sin conexión en tiempo real'}
         </div>
       </div>
 
@@ -37,8 +43,8 @@ function ConversationsContent() {
       <div
         data-card
         data-conv
-        className="w-full overflow-hidden"
-        style={{ height: 'calc(100vh - 220px)', minHeight: '520px' }}
+        className="w-full overflow-hidden flex-1 min-h-0"
+        style={{ minHeight: '520px' }}
       >
         {/* Columna 1: Lista (se oculta bajo 820px) */}
         <div data-conv-list="true" className="border-r border-[var(--line)] h-full flex flex-col min-w-0">

@@ -27,7 +27,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
 
   const isAI = appointment.source === AppointmentSource.AGENT || (appointment.source as any) === 'AI'
 
-  const time = new Date(appointment.scheduled_at).toLocaleTimeString([], { 
+  const time = new Date(appointment.scheduledAt).toLocaleTimeString([], { 
     hour: '2-digit', 
     minute: '2-digit' 
   })
@@ -52,7 +52,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
       </div>
 
       <h3 className="text-[13.5px] font-semibold text-[var(--ink)] mb-1.5 truncate">
-        {appointment.contact_name}
+        {appointment.contactName}
       </h3>
 
       <div className="space-y-1">

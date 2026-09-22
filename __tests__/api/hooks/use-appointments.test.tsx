@@ -28,16 +28,15 @@ describe('Agenda Module — Hooks', () => {
   const mockAppointments = [
     {
       id: 'apt-1',
-      contact_name: 'John Doe',
-      contact_id: 'c1',
+      contactName: 'John Doe',
+      contactId: 'c1',
       treatment: { id: 't1', name: 'Limpieza' },
       doctor: { id: 'd1', name: 'Dr. Smith' },
-      scheduled_at: new Date().toISOString(),
-      duration_min: 30,
+      scheduledAt: new Date().toISOString(),
+      durationMin: 30,
       status: AppointmentStatus.CONFIRMED,
       source: AppointmentSource.HUMAN,
-      channel: Channel.WHATSAPP,
-      conversation_id: 'conv-1',
+      conversationId: 'conv-1',
       notes: ''
     }
   ]
@@ -48,15 +47,16 @@ describe('Agenda Module — Hooks', () => {
         status: 200,
         data: {
           success: true,
-          data: { data: mockAppointments, meta: { total: 1, page: 1, limit: 10, total_pages: 1 } }
+          // El endpoint responde el array plano dentro de "data".
+          data: mockAppointments
         }
       }))
 
       const { result } = renderHook(() => useAppointments(), { wrapper: createWrapper() })
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true))
-      expect(result.current.data?.data).toHaveLength(1)
-      expect(result.current.data?.data[0].contact_name).toBe('John Doe')
+      expect(result.current.data).toHaveLength(1)
+      expect(result.current.data?.[0].contactName).toBe('John Doe')
     })
   })
 

@@ -62,6 +62,8 @@ export interface IPermissions {
   clinic_config: { view: boolean; edit: boolean }
   conversations: { view: boolean; takeover: boolean }
   agenda: { view: boolean; edit: boolean }
+  /** Jornada propia de un profesional. Solo lo tiene el rol Doctor. */
+  own_schedule?: { view: boolean; edit: boolean }
 }
 
 export interface IRole {
@@ -150,6 +152,25 @@ export interface IAppointmentSummary {
 }
 
 // Doctores y tratamientos
+/** Tramo de la jornada semanal. Puede haber varios el mismo día (jornada partida). */
+export interface IScheduleBlock {
+  id?: string
+  day_of_week: number
+  start_time: string
+  end_time: string
+  active?: boolean
+}
+
+export interface IAbsence {
+  id: string
+  starts_at: string
+  ends_at: string
+  all_day?: boolean
+  reason?: string | null
+  /** Solo al crearla: citas ya reservadas que caen dentro. */
+  citas_afectadas?: number
+}
+
 export interface IDoctor {
   id: string
   name: string
@@ -198,19 +219,20 @@ export interface IEncyclopediaEntry {
 }
 
 // Agenda
+// Refleja la respuesta real del core-service (objetos Prisma en camelCase).
 export interface IAppointment {
   id: string
-  contact_name: string
-  contact_id: string
-  treatment: ITreatmentSummary
-  doctor: IDoctorSummary
-  scheduled_at: string
-  duration_min: number
+  contactName: string | null
+  contactId: string | null
+  contact?: IContactSummary | null
+  treatment: ITreatmentSummary | null
+  doctor: IDoctorSummary | null
+  scheduledAt: string
+  durationMin: number
   status: AppointmentStatus
   source: AppointmentSource
-  channel: Channel
-  conversation_id: string
-  notes: string
+  conversationId: string | null
+  notes: string | null
 }
 
 export interface IAppointmentHistory {
@@ -240,24 +262,29 @@ export interface IMessage {
   id: string
   role: MessageRole
   content: string
-  sent_at: string
+  sentAt: string
 }
 
+// Refleja la respuesta real del core-service (objetos Prisma en camelCase).
+// El endpoint de listado incluye solo el último mensaje (take: 1) para la
+// vista previa, no un campo "last_message".
 export interface IConversationListItem {
   id: string
   channel: Channel
   status: ConversationStatus
-  current_step: ConversationStep
+  currentStep: ConversationStep
   contact: IContactSummary
-  last_message: IMessageSummary
-  appointment_id: string | null
-  started_at: string
+  messages: IMessage[]
+  startedAt: string
+  closedAt?: string | null
+  assignedUserId?: string | null
+  /** El listado no lo devuelve hoy; el detalle expone "appointments". */
+  appointment_id?: string | null
 }
 
 export interface IConversationDetail extends IConversationListItem {
   contact: IContact
-  appointment: IAppointmentSummary | null
-  assigned_user_id: string | null
+  appointments?: IAppointmentSummary[]
   messages: IMessage[]
 }
 
@@ -287,13 +314,31 @@ export interface IHourlyInteraction {
   count: number
 }
 
+/**
+ * Variación respecto al periodo anterior del mismo tamaño, en porcentaje.
+ * null cuando no hay base de comparación (sin datos previos): en ese caso no
+ * debe mostrarse ninguna tendencia en vez de inventar un número.
+ */
+export interface IMetricsTrends {
+  conversations_attended: number | null
+  containment_rate: number | null
+  avg_response_time_ms: number | null
+  appointments_scheduled: number | null
+  appointments_rescheduled: number | null
+  appointments_cancelled: number | null
+  human_takeovers: number | null
+  out_of_hours_conversations: number | null
+}
+
 export interface IMetricsSummary {
   period: string
   from: string
   to: string
   conversations_attended: number
-  avg_response_time_ms: number
-  containment_rate: number
+  /** null si todavía no hay ningún par pregunta/respuesta en el periodo. */
+  avg_response_time_ms: number | null
+  /** null si no hubo conversaciones en el periodo. */
+  containment_rate: number | null
   human_takeovers: number
   appointments_scheduled: number
   appointments_rescheduled: number
@@ -301,6 +346,7 @@ export interface IMetricsSummary {
   out_of_hours_conversations: number
   intentions_distribution: IIntentionDistribution[]
   interactions_by_hour: IHourlyInteraction[]
+  trends: IMetricsTrends
 }
 
 // Integraciones
@@ -387,6 +433,14 @@ export interface IAgentActionConfig {
   integrations: IntegrationType[]
 }
 
+/**
+ * Cómo opera el agente con los pacientes.
+ * AUTONOMOUS: responde y gestiona la agenda.
+ * SUPERVISED: responde dudas, pero no agenda, reprograma ni cancela.
+ * PAUSED: no responde; las conversaciones quedan para el equipo.
+ */
+export type AgentMode = 'AUTONOMOUS' | 'SUPERVISED' | 'PAUSED'
+
 export interface IAgentConfig {
   id: string
   clinic_id: string
@@ -395,6 +449,7 @@ export interface IAgentConfig {
     reschedule: IAgentActionConfig
     cancel: IAgentActionConfig
   }
+  mode: AgentMode
   updated_at: string
 }
 

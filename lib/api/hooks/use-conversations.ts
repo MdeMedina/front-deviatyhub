@@ -4,7 +4,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '../client'
 import { ENDPOINTS } from '../endpoints'
 import type { 
-  IPaginatedResponse, 
   IConversationListItem, 
   IConversationDetail,
   ConversationFilters 
@@ -14,7 +13,9 @@ export const useConversations = (filters: ConversationFilters = {}) => {
   return useQuery({
     queryKey: ['conversations', filters],
     queryFn: () => 
-      apiClient.get<IPaginatedResponse<IConversationListItem>>(
+      // apiClient devuelve ya el contenido de "data" del sobre { success, data },
+      // y este endpoint responde un array plano (no viene paginado).
+      apiClient.get<IConversationListItem[]>(
         ENDPOINTS.conversations.list,
         { params: filters }
       ),

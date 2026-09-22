@@ -54,10 +54,10 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
   }
 
   const getPositionStyles = (appointment: IAppointment) => {
-    const date = getParsedDate(appointment.scheduled_at)
+    const date = getParsedDate(appointment.scheduledAt)
     const hour = date.getHours()
     const minutes = date.getMinutes()
-    const duration = appointment.duration_min
+    const duration = appointment.durationMin
 
     const startDecimal = hour + minutes / 60
     const offset = Math.max(0, startDecimal - START_HOUR)
@@ -75,7 +75,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
   // Render Day View
   const renderDayView = () => {
     const dayAppointments = appointments.filter(apt => 
-      isSameDay(getParsedDate(apt.scheduled_at), currentDate)
+      isSameDay(getParsedDate(apt.scheduledAt), currentDate)
     )
 
     if (dayAppointments.length === 0) {
@@ -131,7 +131,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                   <div>
                     <div className="flex justify-between items-start gap-2 mb-0.5">
                       <h4 className="text-[12px] font-semibold text-[var(--ink)] truncate">
-                        {apt.contact_name}
+                        {apt.contactName}
                       </h4>
                       <Badge variant={getStatusTextVariant(apt.status)} size="sm">
                         {apt.status}
@@ -144,7 +144,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                   <div className="flex justify-between items-center microlabel text-[9px] text-[var(--dim)]">
                     <span className="truncate">{apt.doctor?.name}</span>
                     <span className="tabular">
-                      {format(getParsedDate(apt.scheduled_at), 'HH:mm')} ({apt.duration_min} min)
+                      {format(getParsedDate(apt.scheduledAt), 'HH:mm')} ({apt.durationMin} min)
                     </span>
                   </div>
                 </div>
@@ -165,7 +165,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                   }`}
                 >
                   <div className="flex justify-between items-start mb-1.5">
-                    <h4 className="text-[13.5px] font-semibold text-[var(--ink)]">{apt.contact_name}</h4>
+                    <h4 className="text-[13.5px] font-semibold text-[var(--ink)]">{apt.contactName}</h4>
                     <Badge variant={getStatusTextVariant(apt.status)} size="sm">
                       {apt.status}
                     </Badge>
@@ -173,7 +173,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                   <p className="text-[12px] text-[var(--muted)] mb-2">{apt.treatment?.name}</p>
                   <div className="flex justify-between items-center microlabel text-[9.5px] pt-2 border-t border-[var(--line-soft)]">
                     <span>{apt.doctor?.name}</span>
-                    <span className="tabular">{format(getParsedDate(apt.scheduled_at), 'HH:mm')} ({apt.duration_min} min)</span>
+                    <span className="tabular">{format(getParsedDate(apt.scheduledAt), 'HH:mm')} ({apt.durationMin} min)</span>
                   </div>
                 </div>
               )
@@ -191,13 +191,13 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
 
     // Bucket each appointment's hour into the visible range so it always renders
     const bucketHour = (apt: IAppointment) => {
-      const h = getParsedDate(apt.scheduled_at).getHours()
+      const h = getParsedDate(apt.scheduledAt).getHours()
       return Math.min(HOURS[HOURS.length - 1], Math.max(HOURS[0], h))
     }
 
     const apptsFor = (day: Date, hour: number) =>
       appointments.filter(
-        (apt) => isSameDay(getParsedDate(apt.scheduled_at), day) && bucketHour(apt) === hour
+        (apt) => isSameDay(getParsedDate(apt.scheduledAt), day) && bucketHour(apt) === hour
       )
 
     const HEADER_COLS = { display: 'grid', gridTemplateColumns: '64px repeat(7, minmax(0, 1fr))' } as const
@@ -272,7 +272,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                             }}
                           >
                             <span style={{ fontSize: '11.5px', fontWeight: 500, color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
-                              {apt.contact_name}
+                              {apt.contactName}
                             </span>
                             <span style={{ fontSize: '10.5px', color: 'var(--muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
                               {apt.treatment?.name}
@@ -317,7 +317,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
             const isCurrentMonth = day.getMonth() === currentDate.getMonth()
             const isToday = isSameDay(day, new Date())
             const dayAppointments = appointments.filter(apt => 
-              isSameDay(getParsedDate(apt.scheduled_at), day)
+              isSameDay(getParsedDate(apt.scheduledAt), day)
             )
 
             return (
@@ -352,7 +352,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                       }}
                       className="px-1.5 py-0.5 rounded-[4px] bg-[var(--surface-2)] border border-[var(--line)] hover:border-[var(--dim)] cursor-pointer text-[9.5px] font-medium text-[var(--ink)] truncate"
                     >
-                      {apt.contact_name}
+                      {apt.contactName}
                     </div>
                   ))}
                   {dayAppointments.length > 2 && (

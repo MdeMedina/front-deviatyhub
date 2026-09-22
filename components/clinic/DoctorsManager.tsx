@@ -1,5 +1,7 @@
 'use client'
 
+import Link from 'next/link'
+
 import React, { useState } from 'react'
 import {
   useDoctors,
@@ -13,7 +15,7 @@ import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
 import { Modal } from '@/components/ui/Modal'
 import { Input } from '@/components/ui/Input'
-import { Users, Plus, Pencil, Trash2, AlertCircle, Save, Stethoscope, Check } from 'lucide-react'
+import { Users, Plus, Pencil, Trash2, AlertCircle, Save, Stethoscope, Check , CalendarClock } from 'lucide-react'
 import { IDoctor, ITreatmentSummary } from '@/lib/types'
 
 const getInitials = (name: string) => {
@@ -260,6 +262,15 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
                     {!readOnly && (
                       <td>
                         <span style={{ display: 'flex', justifyContent: 'flex-end', gap: '6px' }}>
+                          <Link
+                            data-btn
+                            href={`/knowledge-base/doctors/${doctor.id}/schedule`}
+                            style={{ width: '28px', height: '28px', padding: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                            title={`Jornada y ausencias de ${doctor.name}`}
+                            aria-label={`Jornada y ausencias de ${doctor.name}`}
+                          >
+                            <CalendarClock size={14} strokeWidth={1.75} />
+                          </Link>
                           <button
                             data-btn
                             onClick={() => handleOpenEditModal(doctor)}
