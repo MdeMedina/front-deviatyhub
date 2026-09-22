@@ -13,6 +13,7 @@ import {
 import { ChevronLeft, ChevronRight, AlertCircle, ArrowRight } from 'lucide-react'
 import { useAuthStore } from '@/lib/stores/auth.store'
 import { useAppointments } from '@/lib/api/hooks/use-appointments'
+import { useAgendaAbsences } from '@/lib/api/hooks/use-doctor-schedule'
 import { CalendarGrid } from '@/components/agenda/CalendarGrid'
 import { AppointmentModal } from '@/components/agenda/AppointmentModal'
 import { getDateRange, getRangeLabel } from '@/lib/utils/dates'
@@ -32,6 +33,7 @@ export default function AgendaPage() {
   const { from, to } = getDateRange(view, currentDate)
 
   // Fetch appointments
+  const { data: absences } = useAgendaAbsences(from, to)
   const { data, isLoading } = useAppointments({ 
     startDate: from, 
     endDate: to 
@@ -172,6 +174,7 @@ export default function AgendaPage() {
 
       {/* Main Calendar Matrix */}
       <CalendarGrid
+        absences={absences ?? []}
         view={view}
         currentDate={currentDate}
         appointments={appointments}

@@ -37,6 +37,7 @@ export const ENDPOINTS = {
     encyclopedia: `${API_BASE}/core/treatments/encyclopedia`,
   },
   agenda: {
+    absences:     `${API_BASE}/core/agenda/absences`,
     appointments:   `${API_BASE}/core/agenda/appointments`,
     byId:           (id: string) => `${API_BASE}/core/agenda/appointments/${id}`,
     status:         (id: string) => `${API_BASE}/core/agenda/appointments/${id}/status`,

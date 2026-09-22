@@ -171,6 +171,11 @@ export interface IAbsence {
   citas_afectadas?: number
 }
 
+/** Ausencia tal como la necesita la agenda: con el profesional al que pertenece. */
+export interface IAgendaAbsence extends IAbsence {
+  doctor: { id: string; name: string } | null
+}
+
 export interface IDoctor {
   id: string
   name: string

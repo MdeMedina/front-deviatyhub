@@ -13,16 +13,19 @@ import {
   parseISO
 } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { IAppointment, AppointmentStatus, AppointmentSource } from '@/lib/types'
+import { IAppointment, IAgendaAbsence, AppointmentStatus, AppointmentSource } from '@/lib/types'
 import { Badge } from '@/components/ui/Badge'
 import { Spinner } from '@/components/ui/Spinner'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { Calendar } from 'lucide-react'
+import { Calendar, CalendarOff } from 'lucide-react'
 
 interface CalendarGridProps {
   view: 'day' | 'week' | 'month'
   currentDate: Date
   appointments: IAppointment[]
+  /** Ausencias del rango visible. Un hueco libre y un día sin ese profesional
+   *  se ven idénticos si no se pintan. */
+  absences?: IAgendaAbsence[]
   isLoading: boolean
   onSelectAppointment: (id: string) => void
 }
@@ -35,6 +38,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
   view,
   currentDate,
   appointments = [],
+  absences = [],
   isLoading,
   onSelectAppointment
 }) => {
@@ -50,6 +54,47 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
       case AppointmentStatus.RESCHEDULED: return 'info'
       case AppointmentStatus.COMPLETED: return 'neutral'
       default: return 'neutral'
+    }
+  }
+
+  /** Ausencias que tocan ese día. */
+  const absencesOfDay = (day: Date) =>
+    absences.filter((a) => {
+      const ini = getParsedDate(a.starts_at as any)
+      const fin = getParsedDate(a.ends_at as any)
+      const desde = new Date(day); desde.setHours(0, 0, 0, 0)
+      const hasta = new Date(day); hasta.setHours(23, 59, 59, 999)
+      return ini <= hasta && fin >= desde
+    })
+
+  /** Ausencias que cubren una hora concreta de ese día. */
+  const absencesAtHour = (day: Date, hour: number) =>
+    absencesOfDay(day).filter((a) => {
+      const ini = getParsedDate(a.starts_at as any)
+      const fin = getParsedDate(a.ends_at as any)
+      const slotIni = new Date(day); slotIni.setHours(hour, 0, 0, 0)
+      const slotFin = new Date(day); slotFin.setHours(hour + 1, 0, 0, 0)
+      return ini < slotFin && fin > slotIni
+    })
+
+  /** Franja de la ausencia dentro del día, recortada al horario visible. */
+  const absenceBandStyles = (a: IAgendaAbsence, day: Date) => {
+    const ini = getParsedDate(a.starts_at as any)
+    const fin = getParsedDate(a.ends_at as any)
+    const inicioDia = new Date(day); inicioDia.setHours(0, 0, 0, 0)
+
+    const aDecimal = (d: Date) =>
+      d < inicioDia ? START_HOUR : d.getHours() + d.getMinutes() / 60
+
+    const desde = Math.max(START_HOUR, aDecimal(ini))
+    const hasta = Math.min(START_HOUR + TOTAL_HOURS, fin.getDate() !== day.getDate() && fin > day ? START_HOUR + TOTAL_HOURS : aDecimal(fin))
+
+    const topPercent = ((desde - START_HOUR) / TOTAL_HOURS) * 100
+    const heightPercent = ((hasta - desde) / TOTAL_HOURS) * 100
+
+    return {
+      top: `${Math.min(100, Math.max(0, topPercent))}%`,
+      height: `${Math.min(100 - topPercent, Math.max(2, heightPercent))}%`,
     }
   }
 
@@ -77,8 +122,11 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
     const dayAppointments = appointments.filter(apt => 
       isSameDay(getParsedDate(apt.scheduledAt), currentDate)
     )
+    const dayAbsences = absencesOfDay(currentDate)
 
-    if (dayAppointments.length === 0) {
+    // Un día sin citas pero con una ausencia NO está vacío: esa ausencia es
+    // justo lo que hay que ver antes de ofrecerle una hora a alguien.
+    if (dayAppointments.length === 0 && dayAbsences.length === 0) {
       return (
         <div className="bg-[var(--card)] border border-[var(--line)] rounded-[10px] p-12 flex items-center justify-center min-h-[400px]">
           <EmptyState 
@@ -114,6 +162,22 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
           </div>
 
           <div className="relative w-full h-full min-h-[500px] hidden md:block">
+            {/* Ausencias, detrás de las citas: son el fondo sobre el que se lee la agenda */}
+            {dayAbsences.map((a) => (
+              <div
+                key={a.id}
+                style={absenceBandStyles(a, currentDate)}
+                title={a.reason || 'Ausencia'}
+                className="absolute left-0 right-0 rounded-[6px] border border-dashed border-[var(--line)] bg-[var(--surface)] pointer-events-none flex items-start gap-1.5 p-2 overflow-hidden"
+              >
+                <CalendarOff size={12} className="text-[var(--muted)] mt-0.5 shrink-0" />
+                <span className="text-[11px] text-[var(--muted)] leading-tight">
+                  {a.doctor?.name ? `${a.doctor.name} no atiende` : 'Ausencia'}
+                  {a.reason ? ` · ${a.reason}` : ''}
+                </span>
+              </div>
+            ))}
+
             {dayAppointments.map(apt => {
               const styles = getPositionStyles(apt)
               const isAI = apt.source === AppointmentSource.AGENT || (apt.source as any) === 'AI'
@@ -242,11 +306,40 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                 </div>
                 {daysOfWeek.map((day) => {
                   const cellAppts = apptsFor(day, hour)
+                  const cellAbsences = absencesAtHour(day, hour)
+                  const ausente = cellAbsences.length > 0
                   return (
                     <div
                       key={day.toString()}
-                      style={{ borderLeft: '1px solid var(--line-soft)', minHeight: '58px', padding: '3px', display: 'flex', flexDirection: 'column', gap: '3px' }}
+                      title={
+                        ausente
+                          ? cellAbsences
+                              .map((a) => `${a.doctor?.name ?? 'Profesional'} no atiende${a.reason ? ` · ${a.reason}` : ''}`)
+                              .join('\n')
+                          : undefined
+                      }
+                      style={{
+                        borderLeft: '1px solid var(--line-soft)',
+                        minHeight: '58px',
+                        padding: '3px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '3px',
+                        // Trama diagonal: se distingue de un hueco libre sin
+                        // competir con las citas, que siguen encima y legibles.
+                        ...(ausente
+                          ? {
+                              backgroundImage:
+                                'repeating-linear-gradient(45deg, var(--surface) 0 6px, transparent 6px 12px)',
+                            }
+                          : {}),
+                      }}
                     >
+                      {ausente && cellAppts.length === 0 && (
+                        <span style={{ fontSize: '9.5px', color: 'var(--dim)', padding: '2px 3px', lineHeight: 1.2 }}>
+                          {cellAbsences[0].doctor?.name ?? 'Ausencia'}
+                        </span>
+                      )}
                       {cellAppts.map((apt) => {
                         const isAI = apt.source === AppointmentSource.AGENT || (apt.source as any) === 'AI'
                         return (
@@ -335,11 +428,20 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                   }`}>
                     {day.getDate()}
                   </span>
-                  {dayAppointments.length > 0 && (
-                    <span className="microlabel text-[8.5px] px-1 py-0.2 rounded bg-[var(--surface-2)] text-[var(--ink-soft)] border border-[var(--line)]">
-                      {dayAppointments.length}
-                    </span>
-                  )}
+                  <span className="flex items-center gap-1">
+                    {absencesOfDay(day).length > 0 && (
+                      <CalendarOff
+                        size={11}
+                        className="text-[var(--muted)]"
+                        aria-label="Hay ausencias este día"
+                      />
+                    )}
+                    {dayAppointments.length > 0 && (
+                      <span className="microlabel text-[8.5px] px-1 py-0.2 rounded bg-[var(--surface-2)] text-[var(--ink-soft)] border border-[var(--line)]">
+                        {dayAppointments.length}
+                      </span>
+                    )}
+                  </span>
                 </div>
 
                 <div className="flex-1 overflow-y-auto space-y-1 max-h-[60px]">

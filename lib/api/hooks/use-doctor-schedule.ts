@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '../client'
 import { ENDPOINTS } from '../endpoints'
-import type { IAbsence, IDoctor, IScheduleBlock } from '@/lib/types'
+import type { IAbsence, IAgendaAbsence, IDoctor, IScheduleBlock } from '@/lib/types'
 
 /**
  * Ficha del profesional que corresponde a la cuenta conectada.
@@ -77,5 +77,24 @@ export const useDeleteAbsence = (doctorId?: string) => {
       queryClient.invalidateQueries({ queryKey: ['doctor-absences', doctorId] })
       queryClient.invalidateQueries({ queryKey: ['agenda'] })
     },
+  })
+}
+
+/**
+ * Ausencias que caen dentro del rango que muestra la agenda.
+ *
+ * Sin esto, en pantalla no hay forma de distinguir un hueco libre de un día en
+ * el que ese profesional no viene: los dos se ven en blanco.
+ */
+export const useAgendaAbsences = (startDate?: string, endDate?: string) => {
+  return useQuery({
+    queryKey: ['agenda-absences', startDate, endDate],
+    queryFn: () => {
+      const q = new URLSearchParams()
+      if (startDate) q.append('startDate', startDate)
+      if (endDate) q.append('endDate', endDate)
+      return apiClient.get<IAgendaAbsence[]>(`${ENDPOINTS.agenda.absences}?${q.toString()}`)
+    },
+    enabled: !!startDate && !!endDate,
   })
 }
