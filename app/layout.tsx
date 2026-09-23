@@ -16,6 +16,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Dentral - Panel de Control",
   description: "Plataforma de Inteligencia Artificial para Clínicas Dentales",
+  // El favicon es el isotipo de marca (app/icon.svg). Se declara además aquí
+  // para que quede explícito: hasta ahora se servía el de por defecto de Next,
+  // el triángulo de Vercel, que salía en la pestaña como si fuera nuestro.
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+  },
 };
 
 export default function RootLayout({
