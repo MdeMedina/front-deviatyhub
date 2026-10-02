@@ -38,6 +38,11 @@ async function fetchWithAuth<T>(url: string, options: ApiClientOptions = {}): Pr
   if (access_token) {
     headers['Authorization'] = `Bearer ${access_token}`
   }
+  // Superusuario trabajando dentro de otra clínica. El gateway solo la acepta
+  // si el token es de alguien de la plataforma; a cualquier otro se le ignora.
+  if (state.actingClinic && state.user?.platform_admin) {
+    headers['x-act-as-clinic'] = state.actingClinic.id
+  }
   if (!headers['Content-Type']) {
     headers['Content-Type'] = 'application/json'
   }

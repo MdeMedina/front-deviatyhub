@@ -16,10 +16,14 @@ import {
   Puzzle,
   Settings,
   Users,
-  Lock
+  Lock,
+  Gauge,
+  Building2,
+  LogOut as Salir,
 } from 'lucide-react'
 import { useAuthStore } from '@/lib/stores/auth.store'
 import { useUIStore } from '@/lib/stores/ui.store'
+import { useActAsClinic } from '@/lib/api/hooks/use-platform'
 
 const PAGE_TITLES: Record<string, { title: string; icon: React.ElementType }> = {
   '/dashboard': { title: 'Dashboard', icon: LayoutDashboard },
@@ -33,12 +37,15 @@ const PAGE_TITLES: Record<string, { title: string; icon: React.ElementType }> = 
   '/settings': { title: 'Configuración', icon: Settings },
   '/users': { title: 'Usuarios del sistema', icon: Users },
   '/security': { title: 'Seguridad y permisos', icon: Lock },
+  '/backoffice/clinics': { title: 'Clínicas', icon: Building2 },
+  '/backoffice': { title: 'Backoffice', icon: Gauge },
 }
 
 export const Header: React.FC = () => {
   const router = useRouter()
   const pathname = usePathname()
-  const { user, clearSession } = useAuthStore()
+  const { user, clearSession, actingClinic } = useAuthStore()
+  const { exit } = useActAsClinic()
   const { isSidebarOpen } = useUIStore()
 
   const handleLogout = async () => {
@@ -47,7 +54,7 @@ export const Header: React.FC = () => {
   }
 
   // Derive current page info
-  const matchedKey = Object.keys(PAGE_TITLES).find(k => pathname === k || (k !== '/dashboard' && pathname.startsWith(k)))
+  const matchedKey = Object.keys(PAGE_TITLES).sort((a, b) => b.length - a.length).find(k => pathname === k || (k !== '/dashboard' && pathname.startsWith(k)))
   const pageInfo = matchedKey ? PAGE_TITLES[matchedKey] : { title: 'Dentral', icon: LayoutDashboard }
   const PageIcon = pageInfo.icon
 
@@ -60,6 +67,20 @@ export const Header: React.FC = () => {
       className="fixed top-0 right-0 h-14 bg-[var(--card)] border-b border-[var(--line)] z-30 transition-all duration-200"
       style={{ left: isSidebarOpen ? '240px' : '72px' }}
     >
+      {actingClinic && user?.platform_admin && (
+        <div className="absolute left-0 right-0 top-full h-8 px-6 flex items-center justify-between gap-3 bg-[var(--blue-solid)] text-[var(--on-blue)] text-[12.5px]">
+          <span className="truncate">
+            Estás dentro de <strong className="font-semibold">{actingClinic.name}</strong> como equipo de Dentral. Lo que cambies aquí cambia en su clínica.
+          </span>
+          <button
+            type="button"
+            onClick={() => exit(`/backoffice/clinics/${actingClinic.id}`)}
+            className="inline-flex items-center gap-1.5 h-6 px-2.5 rounded-[6px] border border-white/30 hover:bg-white/10 transition-colors cursor-pointer shrink-0"
+          >
+            <Salir size={12} /> Volver al backoffice
+          </button>
+        </div>
+      )}
       <div className="h-full px-6 flex items-center justify-between gap-4">
         {/* Left: Current Screen Title */}
         <div className="flex items-center gap-3 shrink-0">
@@ -86,7 +107,7 @@ export const Header: React.FC = () => {
           {/* Clinic Name */}
           <div className="hidden lg:block text-right pr-2">
             <p className="microlabel text-[9px] text-[var(--dim)]">Clínica</p>
-            <p className="text-[12.5px] font-medium text-[var(--ink)] truncate max-w-[150px]">Deviaty Dental</p>
+            <p className="text-[12.5px] font-medium text-[var(--ink)] truncate max-w-[150px]">{actingClinic?.name || 'Deviaty Dental'}</p>
           </div>
 
           {/* Notification Bell */}

@@ -15,7 +15,9 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const router = useRouter()
-  const { isAuthenticated, access_token } = useAuthStore()
+  const { isAuthenticated, access_token, actingClinic, user } = useAuthStore()
+  // La franja de "estás dentro de otra clínica" ocupa 32 px bajo la cabecera.
+  const conFranja = !!actingClinic && !!user?.platform_admin
   const { isSidebarOpen } = useUIStore()
   const [mounted, setMounted] = React.useState(false)
 
@@ -50,7 +52,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
       <Header />
       
       <main 
-        className="pt-14 transition-all duration-200 min-h-screen"
+        className={`${conFranja ? 'pt-[88px]' : 'pt-14'} transition-all duration-200 min-h-screen`}
         style={{ paddingLeft: isSidebarOpen ? '240px' : '72px' }}
       >
         <div className="px-8 py-7 pb-14 max-w-[1340px] mx-auto min-w-0 w-full">

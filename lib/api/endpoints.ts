@@ -43,6 +43,12 @@ export const ENDPOINTS = {
     status:         (id: string) => `${API_BASE}/core/agenda/appointments/${id}/status`,
     reschedule:     (id: string) => `${API_BASE}/core/agenda/appointments/${id}/reschedule`,
   },
+  platform: {
+    overview:     `${API_BASE}/core/platform/overview`,
+    clinics:      `${API_BASE}/core/platform/clinics`,
+    clinic:       (id: string) => `${API_BASE}/core/platform/clinics/${id}`,
+    resendInvite: (id: string, userId: string) => `${API_BASE}/core/platform/clinics/${id}/users/${userId}/resend-invite`,
+  },
   conversations: {
     list:       `${API_BASE}/core/conversations`,
     byId:       (id: string) => `${API_BASE}/core/conversations/${id}`,

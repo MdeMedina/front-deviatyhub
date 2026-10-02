@@ -2,8 +2,21 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { IUser, ILoginResponse } from '@/lib/types'
 
+/** Clínica sobre la que está trabajando un superusuario de la plataforma. */
+export interface ActingClinic {
+  id: string
+  name: string
+}
+
 interface AuthState {
   user: IUser | null
+  /**
+   * Solo para el equipo de la plataforma: la clínica en la que ha entrado desde
+   * el backoffice. Todas las peticiones viajan con ella (x-act-as-clinic) y el
+   * gateway las trata como si fueran de esa clínica.
+   */
+  actingClinic: ActingClinic | null
+  setActingClinic: (clinic: ActingClinic | null) => void
   access_token: string | null
   refresh_token: string | null
   isAuthenticated: boolean
@@ -29,6 +42,9 @@ export const useAuthStore = create<AuthState>()(
       access_token: null,
       refresh_token: null,
       isAuthenticated: false,
+      actingClinic: null,
+
+      setActingClinic: (clinic) => set({ actingClinic: clinic }),
 
       setSession: (data) => set({
         user: data.user,
@@ -42,6 +58,7 @@ export const useAuthStore = create<AuthState>()(
         access_token: null,
         refresh_token: null,
         isAuthenticated: false,
+        actingClinic: null,
       }),
 
       updateTokens: (access_token, refresh_token) => set({
@@ -55,6 +72,8 @@ export const useAuthStore = create<AuthState>()(
         
         // Superadmins bypass all permission checks
         if (user.role.is_superadmin) return true
+        // El equipo de la plataforma administra cualquier clínica en la que entre.
+        if (user.platform_admin) return true
 
         const [module, action] = permission.split('.')
         if (!module || !action) return false

@@ -20,6 +20,8 @@ import {
   ChevronLeft,
   ChevronRight,
   CalendarClock,
+  Building2,
+  Gauge,
 } from 'lucide-react'
 import { useAuthStore } from '@/lib/stores/auth.store'
 import { useUIStore } from '@/lib/stores/ui.store'
@@ -45,9 +47,19 @@ interface NavGroup {
      */
     strict?: boolean
   }[]
+  /** Solo para el equipo de la plataforma. */
+  platformOnly?: boolean
 }
 
 const NAV_GROUPS: NavGroup[] = [
+  {
+    name: 'Plataforma',
+    platformOnly: true,
+    items: [
+      { label: 'Backoffice', href: '/backoffice', icon: Gauge, permission: null },
+      { label: 'Clínicas', href: '/backoffice/clinics', icon: Building2, permission: null },
+    ],
+  },
   {
     name: 'Operación',
     items: [
@@ -79,7 +91,7 @@ const NAV_GROUPS: NavGroup[] = [
 
 export const Sidebar: React.FC = () => {
   const pathname = usePathname()
-  const { hasPermission, hasRolePermission } = useAuthStore()
+  const { hasPermission, hasRolePermission, user } = useAuthStore()
   const { isSidebarOpen, toggleSidebar, theme, toggleTheme } = useUIStore()
 
   return (
@@ -117,6 +129,7 @@ export const Sidebar: React.FC = () => {
       {/* Navigation Groups */}
       <nav className="flex-1 overflow-y-auto overflow-x-hidden py-3.5 px-2.5 space-y-4">
         {NAV_GROUPS.map((group) => {
+          if (group.platformOnly && !user?.platform_admin) return null
           const visibleItems = group.items.filter(item => {
             const puede = !item.permission
               ? true
@@ -140,7 +153,8 @@ export const Sidebar: React.FC = () => {
               )}
 
               {visibleItems.map((item) => {
-                const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))
+                const exacto = item.href === '/dashboard' || item.href === '/backoffice'
+                const isActive = pathname === item.href || (!exacto && pathname.startsWith(item.href))
                 const Icon = item.icon
 
                 return (

@@ -80,6 +80,8 @@ export interface IUser {
   clinic_id: string
   active: boolean
   role: IRole
+  /** Equipo de la plataforma: entra al backoffice y puede actuar sobre cualquier clínica. */
+  platform_admin?: boolean
 }
 
 export interface ILoginResponse {
