@@ -20,7 +20,8 @@ import { es } from 'date-fns/locale'
 
 export interface IntegrationCardProps {
   integration: IIntegration
-  onTest: () => void
+  /** Sin él (y sin onConfigure) la tarjeta es solo de lectura. */
+  onTest?: () => void
   isTesting: boolean
   onConfigure?: () => void
 }
@@ -104,6 +105,9 @@ export const IntegrationCard: React.FC<IntegrationCardProps> = ({
         </div>
 
         {/* Actions: two 50% buttons */}
+        {!onTest && !onConfigure ? (
+          <p className="text-[12px] text-[var(--dim)] pt-1">La configura el equipo de Dentral.</p>
+        ) : (
         <div className="flex gap-2 pt-1">
           {onConfigure && (
             <Button onClick={onConfigure} variant="outline" size="sm" className="flex-1">
@@ -111,6 +115,7 @@ export const IntegrationCard: React.FC<IntegrationCardProps> = ({
             </Button>
           )}
 
+          {onTest && (
           <Button
             onClick={onTest}
             loading={isTesting}
@@ -121,7 +126,9 @@ export const IntegrationCard: React.FC<IntegrationCardProps> = ({
           >
             Probar conexión
           </Button>
+          )}
         </div>
+        )}
       </div>
 
       {/* Status footer bar on --surface */}

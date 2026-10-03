@@ -11,6 +11,7 @@ import {
   type PlatformClinicDetail,
 } from '@/lib/api/hooks/use-platform'
 import { ClinicAccessCard } from '@/components/backoffice/ClinicAccessCard'
+import { ClinicWhatsAppCard } from '@/components/backoffice/ClinicWhatsAppCard'
 import { Spinner } from '@/components/ui/Spinner'
 import { Button } from '@/components/ui/Button'
 import { CopyField, Dot, MODO_AGENTE, PageHeader, PlatformOnly, hace } from '@/components/backoffice/shared'
@@ -43,9 +44,9 @@ function puestaEnMarcha(c: PlatformClinicDetail) {
     { ok: c.schedules.some((s) => s.isOpen), label: 'Horario de atención' },
     {
       ok: w.connected,
-      label: w.source === 'server'
-        ? 'WhatsApp conectado (número del servidor)'
-        : w.configured && !w.connected ? 'WhatsApp conectado (credenciales sin verificar)' : 'WhatsApp conectado',
+      label: w.source === 'server' || w.source === 'dentral'
+        ? 'WhatsApp conectado (número de Dentral)'
+        : w.configured && !w.connected ? 'WhatsApp conectado (sin verificar con Meta)' : 'WhatsApp conectado',
     },
     { ok: c.agent_mode !== 'PAUSED', label: 'Agente encendido' },
   ]
@@ -189,16 +190,14 @@ function Ficha() {
             </form>
           </div>
 
+          <ClinicWhatsAppCard clinicId={c.id} clinicName={c.name} />
+
           <div data-card>
-            <div data-hd><h2>Integraciones</h2></div>
-            {c.whatsapp.source === 'server' && (
-              <p className="px-[18px] py-3 text-[12.5px] text-[var(--muted)] border-b border-[var(--line)]">
-                <span className="text-[var(--ink)] font-medium">WhatsApp</span> funciona con el número global del servidor
-                {c.whatsapp.phone_number_id && <> (<span className="tabular">{c.whatsapp.phone_number_id}</span>)</>}. Si la clínica guarda
-                credenciales propias en su panel, pasa a usar las suyas.
-              </p>
-            )}
-            {c.integrations.length === 0 ? (
+            <div data-hd>
+              <h2>Otras integraciones</h2>
+              <span data-lbl>Se configuran entrando al panel de la clínica</span>
+            </div>
+            {c.integrations.filter((i) => i.type !== 'WHATSAPP').length === 0 ? (
               <p className="px-[18px] py-5 text-[13px] text-[var(--muted)]">Ninguna configurada todavía.</p>
             ) : (
               <table data-tbl>
@@ -211,7 +210,7 @@ function Ficha() {
                   </tr>
                 </thead>
                 <tbody>
-                  {c.integrations.map((i) => (
+                  {c.integrations.filter((i) => i.type !== 'WHATSAPP').map((i) => (
                     <tr key={i.type}>
                       <td className="font-medium text-[var(--ink)]">{INTEGRACION[i.type] || i.type}</td>
                       <td>

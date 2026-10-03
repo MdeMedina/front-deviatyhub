@@ -12,7 +12,11 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { useUIStore } from '@/lib/stores/ui.store'
 
 export default function IntegrationsPage() {
-  const { hasPermission } = useAuthStore()
+  const { hasPermission, user } = useAuthStore()
+  // Las integraciones las configura el equipo de Dentral (desde el backoffice o
+  // dentro de la clínica). La clínica las ve, pero no las cambia: el servidor
+  // también se lo rechaza.
+  const gestionaDentral = !!user?.platform_admin
   const { data: integrations, isLoading, isError, refetch } = useIntegrations()
   const testMutation = useTestIntegration()
   const addToast = useUIStore((state) => state.addToast)
@@ -76,7 +80,9 @@ export default function IntegrationsPage() {
             Integraciones Externas
           </h1>
           <p className="text-[13.5px] text-[var(--muted)]">
-            Conecta Dentral con tus plataformas de chat, agenda y gestión clínica.
+            {gestionaDentral
+              ? 'Estás configurando las integraciones de esta clínica como equipo de Dentral.'
+              : 'Las conecta y mantiene el equipo de Dentral. Si necesitas cambiar algo, escríbenos.'}
           </p>
         </div>
 
@@ -124,8 +130,8 @@ export default function IntegrationsPage() {
                 key={integration.type}
                 integration={integration}
                 isTesting={testMutation.isPending && testMutation.variables === integration.type}
-                onTest={() => handleTestConnection(integration.type)}
-                onConfigure={() => setConfiguringType(integration.type)}
+                onTest={gestionaDentral ? () => handleTestConnection(integration.type) : undefined}
+                onConfigure={gestionaDentral ? () => setConfiguringType(integration.type) : undefined}
               />
             ))}
           </div>

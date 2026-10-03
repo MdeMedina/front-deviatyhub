@@ -51,6 +51,7 @@ export const ENDPOINTS = {
     clinics:      `${API_BASE}/core/platform/clinics`,
     clinic:       (id: string) => `${API_BASE}/core/platform/clinics/${id}`,
     access:       (id: string) => `${API_BASE}/core/platform/clinics/${id}/access`,
+    whatsapp:     (id: string, accion = '') => `${API_BASE}/core/platform/clinics/${id}/whatsapp${accion ? `/${accion}` : ''}`,
     users:        (id: string) => `${API_BASE}/core/platform/clinics/${id}/users`,
     resendInvite: (id: string, userId: string) => `${API_BASE}/core/platform/clinics/${id}/users/${userId}/resend-invite`,
   },

@@ -33,8 +33,8 @@ export interface PlatformClinicRow {
 }
 
 export interface WhatsAppStatus {
-  /** 'clinic' = credenciales propias; 'server' = número global del servidor; null = ninguno. */
-  source: 'clinic' | 'server' | null
+  /** 'clinic' = número propio; 'dentral' = número de Dentral asignado; 'server' = número del servidor por defecto; null = ninguno. */
+  source: 'clinic' | 'dentral' | 'server' | null
   configured: boolean
   connected: boolean
   phone_number_id: string | null
@@ -129,6 +129,54 @@ export interface TeamMember {
   invite_pending: boolean
   invite_expires: string | null
   created_at: string | null
+}
+
+export interface ClinicWhatsApp {
+  mode: 'dentral' | 'own' | null
+  phone_number_id: string | null
+  waba_id: string | null
+  has_own_token: boolean
+  connected: boolean
+  last_tested_at: string | null
+  last_test_ok: boolean | null
+  last_error: string | null
+  meta: {
+    display_phone_number?: string
+    verified_name?: string
+    quality_rating?: string
+    code_verification_status?: string
+    name_status?: string
+    checked_at: string
+  } | null
+  webhooks: { subscribed: boolean; checked_at: string; error: string | null } | null
+  dentral_number: {
+    phone_number_id: string
+    holder: { id: string; name: string } | null
+    assigned_in: 'backoffice' | 'server'
+  } | null
+}
+
+export const useClinicWhatsApp = (id: string) =>
+  useQuery({
+    queryKey: ['platform', 'whatsapp', id],
+    queryFn: () => apiClient.get<ClinicWhatsApp>(ENDPOINTS.platform.whatsapp(id)),
+    enabled: !!id,
+  })
+
+/** Todas las acciones devuelven el estado nuevo; se deja en caché tal cual. */
+export const useClinicWhatsAppAction = (id: string) => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (a: { accion: 'dentral' | 'verify' | 'subscribe' | 'disconnect' } | { accion: 'own'; datos: { phone_number_id: string; waba_id?: string; access_token?: string } }) =>
+      a.accion === 'disconnect'
+        ? apiClient.delete<ClinicWhatsApp>(ENDPOINTS.platform.whatsapp(id))
+        : apiClient.post<ClinicWhatsApp>(ENDPOINTS.platform.whatsapp(id, a.accion), a.accion === 'own' ? a.datos : undefined),
+    onSuccess: (data) => {
+      qc.setQueryData(['platform', 'whatsapp', id], data)
+      qc.invalidateQueries({ queryKey: ['platform', 'clinic'] })
+      qc.invalidateQueries({ queryKey: ['platform', 'clinics'] })
+    },
+  })
 }
 
 export const usePlatformTeam = () =>
