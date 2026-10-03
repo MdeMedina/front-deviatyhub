@@ -51,13 +51,29 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
     }
   }
 
+  // Una cita que ya pasó se cierra marcando si el paciente vino. Es lo que
+  // alimenta la asistencia, el ingreso estimado y la garantía en Métricas: no
+  // hay integración con un sistema de fichas que lo traiga solo.
+  const yaPaso = !!appointment && new Date(appointment.scheduledAt).getTime() < Date.now()
+  const puedeMarcarAsistencia = yaPaso && appointment?.status !== AppointmentStatus.CANCELLED
+
+  const ETIQUETAS: Record<string, string> = {
+    PENDING: 'Pendiente',
+    CONFIRMED: 'Confirmada',
+    RESCHEDULED: 'Reprogramada',
+    CANCELLED: 'Cancelada',
+    COMPLETED: 'Asistió',
+    NO_SHOW: 'No asistió',
+  }
+
   const getStatusVariant = (status: AppointmentStatus) => {
     switch (status) {
       case AppointmentStatus.CONFIRMED: return 'success'
       case AppointmentStatus.PENDING: return 'warning'
       case AppointmentStatus.CANCELLED: return 'error'
       case AppointmentStatus.RESCHEDULED: return 'info'
-      case AppointmentStatus.COMPLETED: return 'neutral'
+      case AppointmentStatus.COMPLETED: return 'success'
+      case AppointmentStatus.NO_SHOW: return 'error'
       default: return 'neutral'
     }
   }
@@ -71,7 +87,29 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
       footer={
         appointment && (
           <div className="flex gap-2.5 w-full justify-end">
-            {appointment.status === AppointmentStatus.PENDING && (
+            {puedeMarcarAsistencia && appointment.status !== AppointmentStatus.NO_SHOW && (
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={() => handleStatusUpdate(AppointmentStatus.NO_SHOW)}
+                loading={updateStatus.isPending}
+                icon={<XCircle size={14} />}
+              >
+                No asistió
+              </Button>
+            )}
+            {puedeMarcarAsistencia && appointment.status !== AppointmentStatus.COMPLETED && (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => handleStatusUpdate(AppointmentStatus.COMPLETED)}
+                loading={updateStatus.isPending}
+                icon={<CheckCircle2 size={14} />}
+              >
+                Asistió
+              </Button>
+            )}
+            {!yaPaso && appointment.status === AppointmentStatus.PENDING && (
               <Button 
                 variant="primary" 
                 size="sm"
@@ -82,7 +120,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 Confirmar Cita
               </Button>
             )}
-            {appointment.status !== AppointmentStatus.CANCELLED && appointment.status !== AppointmentStatus.COMPLETED && (
+            {!yaPaso && appointment.status !== AppointmentStatus.CANCELLED && appointment.status !== AppointmentStatus.COMPLETED && (
               <Button 
                 variant="danger" 
                 size="sm"
@@ -118,7 +156,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
               </p>
             </div>
             <Badge variant={getStatusVariant(appointment.status)} size="md">
-              {appointment.status}
+              {ETIQUETAS[appointment.status] || appointment.status}
             </Badge>
           </div>
 

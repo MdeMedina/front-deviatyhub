@@ -299,3 +299,115 @@ export const useActAsClinic = () => {
     },
   }
 }
+
+// ─── Métricas de la plataforma ─────────────────────────────────────────
+
+export interface PlatformHealth {
+  period_days: number
+  telemetry_since: string | null
+  sla: {
+    unansweredAfterSec: number
+    latencyP50Ms: number
+    latencyP95Ms: number
+    webhookMs: number
+    webhookAlertMs: number
+    queueDepth: number
+    queueDepthAlert: number
+    queueAgeAlertSec: number
+    parseErrorRate: number
+    parseErrorAlertRate: number
+    unitCostMinUsd: number
+    unitCostMaxUsd: number
+    dailyCostAlertUsd: number
+  }
+  unanswered: { count: number; items: { clinic_id: string; clinic_name: string; conversation_id: string; waiting_sec: number }[] }
+  latency: {
+    end_to_end: { p50: number | null; p95: number | null }
+    llm: { p50: number | null; p95: number | null }
+    queue_p95_ms: number | null
+    webhook_p95_ms: number | null
+  }
+  queue:
+    | { available: true; waiting: number; active: number; delayed: number; depth: number; oldest_waiting_age_sec: number; failed_last_24h: number }
+    | { available: false; error: string }
+  llm: {
+    turns: number
+    replied: number
+    errors: number
+    error_rate: number | null
+    parse_errors: number
+    parse_error_rate: number | null
+    by_outcome: Record<string, number>
+    prompt_tokens: number
+    completion_tokens: number
+  }
+  cost: { total_usd: number; last_24h_usd: number; projected_month_usd: number; simulator_usd: number }
+  not_available: { pms: string; rag: string }
+}
+
+export interface PlatformClinicMetrics {
+  id: string
+  name: string
+  active: boolean
+  currency: string
+  turns: number
+  ai_cost_usd: number
+  ai_cost_month_usd: number
+  agent_appointments: number
+  attended: number
+  unmarked: number
+  estimated_revenue: number | null
+  autonomy_rate: number | null
+  first_response_p50_sec: number | null
+  guarantee: {
+    current: { status: string; attributedAttended: number; thresholdAppointments: number | null; progress: number | null }
+    previous: { status: string; attributedAttended: number; thresholdAppointments: number | null; nextInvoiceUsd: number }
+  }
+}
+
+export interface ClinicCommercial {
+  clinicId: string
+  monthlyFeeUsd: number
+  avgTicket?: number | null
+  currency: string
+  usdRate: number
+  pilotStartedAt?: string | null
+  weeklyAppointments?: number | null
+  noShowRate?: number | null
+  lostConsultationsWeek?: number | null
+  firstResponseTimeSec?: number | null
+  receptionHoursWeek?: number | null
+  updatedAt?: string | null
+}
+
+export const usePlatformHealth = (days: number) =>
+  useQuery({
+    queryKey: ['platform', 'health', days],
+    queryFn: () => apiClient.get<PlatformHealth>(ENDPOINTS.platform.health, { params: { days } }),
+    refetchInterval: 60_000,
+  })
+
+export const usePlatformClinicsMetrics = (days: number) =>
+  useQuery({
+    queryKey: ['platform', 'clinics-metrics', days],
+    queryFn: () => apiClient.get<PlatformClinicMetrics[]>(ENDPOINTS.platform.clinicsMetrics, { params: { days } }),
+  })
+
+export const useClinicCommercial = (id: string) =>
+  useQuery({
+    queryKey: ['platform', 'commercial', id],
+    queryFn: () => apiClient.get<ClinicCommercial>(ENDPOINTS.platform.commercial(id)),
+    enabled: !!id,
+  })
+
+export const useSaveClinicCommercial = (id: string) => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (datos: Partial<Omit<ClinicCommercial, 'clinicId' | 'updatedAt'>>) =>
+      apiClient.put<ClinicCommercial>(ENDPOINTS.platform.commercial(id), datos),
+    onSuccess: (data) => {
+      qc.setQueryData(['platform', 'commercial', id], data)
+      qc.invalidateQueries({ queryKey: ['platform', 'clinics-metrics'] })
+    },
+  })
+}

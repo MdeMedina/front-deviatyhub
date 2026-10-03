@@ -21,7 +21,10 @@ export enum AppointmentStatus {
   CONFIRMED = 'CONFIRMED',
   RESCHEDULED = 'RESCHEDULED',
   CANCELLED = 'CANCELLED',
-  COMPLETED = 'COMPLETED'
+  /** Asistió. */
+  COMPLETED = 'COMPLETED',
+  /** No asistió y no avisó. */
+  NO_SHOW = 'NO_SHOW'
 }
 
 export enum AppointmentSource {

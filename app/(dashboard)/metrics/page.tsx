@@ -5,6 +5,7 @@ import { AlertCircle } from 'lucide-react'
 import { useMetrics, MetricsPeriod } from '@/lib/api/hooks/use-metrics'
 import { IntentionsChart } from '@/components/metrics/IntentionsChart'
 import { InteractionsHeatmap } from '@/components/metrics/InteractionsHeatmap'
+import { ImpactSection } from '@/components/metrics/ImpactSection'
 import {
   formatCount,
   formatRate,
@@ -172,6 +173,10 @@ function MetricsContent() {
           </button>
         </div>
       </div>
+
+      <ImpactSection days={period === '1d' ? 1 : period === '7d' ? 7 : 30} />
+
+      <h2 className="text-[16px] font-semibold text-[var(--ink)] tracking-[-0.012em] -mb-3">Actividad</h2>
 
       {/* Section: Indicadores */}
       <div data-sec>

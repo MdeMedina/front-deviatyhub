@@ -51,6 +51,10 @@ export const ENDPOINTS = {
     clinics:      `${API_BASE}/core/platform/clinics`,
     clinic:       (id: string) => `${API_BASE}/core/platform/clinics/${id}`,
     access:       (id: string) => `${API_BASE}/core/platform/clinics/${id}/access`,
+    commercial:   (id: string) => `${API_BASE}/core/platform/clinics/${id}/commercial`,
+    impact:       (id: string) => `${API_BASE}/core/platform/clinics/${id}/impact`,
+    health:       `${API_BASE}/core/platform/metrics/health`,
+    clinicsMetrics: `${API_BASE}/core/platform/metrics/clinics`,
     whatsapp:     (id: string, accion = '') => `${API_BASE}/core/platform/clinics/${id}/whatsapp${accion ? `/${accion}` : ''}`,
     users:        (id: string) => `${API_BASE}/core/platform/clinics/${id}/users`,
     resendInvite: (id: string, userId: string) => `${API_BASE}/core/platform/clinics/${id}/users/${userId}/resend-invite`,
@@ -65,6 +69,8 @@ export const ENDPOINTS = {
   },
   metrics: {
     summary: `${API_BASE}/core/metrics/summary`,
+    impact: `${API_BASE}/core/metrics/impact`,
+    guarantee: `${API_BASE}/core/metrics/roi-guarantee`,
   },
   agentConfig: `${API_BASE}/core/agent-config`,
   integrations: {
