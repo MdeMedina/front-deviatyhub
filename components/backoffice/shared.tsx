@@ -77,6 +77,7 @@ export const MODO_AGENTE: Record<string, { label: string; tone: 'pos' | 'blue' |
 }
 
 export function estadoWhatsApp(w: PlatformClinicRow['whatsapp']): { label: string; tone: 'pos' | 'neg' | 'dim' } {
+  if (w.source === 'server') return { label: 'Número del servidor', tone: 'pos' }
   if (w.connected) return { label: 'Conectado', tone: 'pos' }
   if (w.configured) return { label: 'Sin verificar', tone: 'neg' }
   return { label: 'Sin configurar', tone: 'dim' }

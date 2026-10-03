@@ -35,13 +35,18 @@ export default function ClinicDetailPage() {
 
 /** Lo que tiene que estar para que el agente pueda atender sin que nadie lo vigile. */
 function puestaEnMarcha(c: PlatformClinicDetail) {
-  const whatsapp = c.integrations.find((i) => i.type === 'WHATSAPP')
+  const w = c.whatsapp
   return [
     { ok: c.users.some((u) => u.is_owner && !u.invite_pending), label: 'Un administrador aceptó la invitación' },
     { ok: c.counts.doctors > 0, label: `Profesionales cargados (${c.counts.doctors})` },
     { ok: c.counts.treatments > 0, label: `Tratamientos con precio (${c.counts.treatments})` },
     { ok: c.schedules.some((s) => s.isOpen), label: 'Horario de atención' },
-    { ok: !!whatsapp?.connected, label: whatsapp?.configured ? 'WhatsApp conectado (credenciales sin verificar)' : 'WhatsApp conectado' },
+    {
+      ok: w.connected,
+      label: w.source === 'server'
+        ? 'WhatsApp conectado (número del servidor)'
+        : w.configured && !w.connected ? 'WhatsApp conectado (credenciales sin verificar)' : 'WhatsApp conectado',
+    },
     { ok: c.agent_mode !== 'PAUSED', label: 'Agente encendido' },
   ]
 }
@@ -186,6 +191,13 @@ function Ficha() {
 
           <div data-card>
             <div data-hd><h2>Integraciones</h2></div>
+            {c.whatsapp.source === 'server' && (
+              <p className="px-[18px] py-3 text-[12.5px] text-[var(--muted)] border-b border-[var(--line)]">
+                <span className="text-[var(--ink)] font-medium">WhatsApp</span> funciona con el número global del servidor
+                {c.whatsapp.phone_number_id && <> (<span className="tabular">{c.whatsapp.phone_number_id}</span>)</>}. Si la clínica guarda
+                credenciales propias en su panel, pasa a usar las suyas.
+              </p>
+            )}
             {c.integrations.length === 0 ? (
               <p className="px-[18px] py-5 text-[13px] text-[var(--muted)]">Ninguna configurada todavía.</p>
             ) : (

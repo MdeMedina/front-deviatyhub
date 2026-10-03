@@ -29,7 +29,15 @@ export interface PlatformClinicRow {
   conversations_30d: number
   agent_appointments_30d: number
   last_activity_at: string | null
-  whatsapp: { configured: boolean; connected: boolean; phone_number_id: string | null }
+  whatsapp: WhatsAppStatus
+}
+
+export interface WhatsAppStatus {
+  /** 'clinic' = credenciales propias; 'server' = número global del servidor; null = ninguno. */
+  source: 'clinic' | 'server' | null
+  configured: boolean
+  connected: boolean
+  phone_number_id: string | null
 }
 
 export interface PlatformClinicUser {
@@ -56,6 +64,7 @@ export interface PlatformClinicDetail {
   config: { name: string; address: string; phone: string; email: string; timezone: string } | null
   schedules: { dayOfWeek: number; openTime: string; closeTime: string; isOpen: boolean | null }[]
   agent_mode: PlatformClinicRow['agent_mode']
+  whatsapp: WhatsAppStatus
   access: ClinicAccess
   counts: { doctors: number; treatments: number; contacts: number }
   integrations: {
