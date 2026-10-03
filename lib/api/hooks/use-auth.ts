@@ -22,6 +22,12 @@ export const useLogin = () => {
       const permisos = (data as any)?.user?.role?.permissions
       const esProfesional = !(data as any)?.user?.role?.is_superadmin
         && !!permisos?.own_schedule?.view
+      // El equipo de la plataforma no trabaja en una clínica: su entrada es el
+      // backoffice, y a una clínica solo se entra a propósito desde ahí.
+      if ((data as any)?.user?.platform_admin) {
+        router.push('/backoffice')
+        return
+      }
       router.push(esProfesional ? '/my-schedule' : '/dashboard')
     },
   })

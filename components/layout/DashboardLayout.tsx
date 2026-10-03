@@ -1,7 +1,7 @@
 'use client'
 
 import React, { ReactNode, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
 import { useAuthStore } from '@/lib/stores/auth.store'
@@ -15,6 +15,7 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const router = useRouter()
+  const pathname = usePathname()
   const { isAuthenticated, access_token, actingClinic, user } = useAuthStore()
   // La franja de "estás dentro de otra clínica" ocupa 32 px bajo la cabecera.
   const conFranja = !!actingClinic && !!user?.platform_admin
@@ -44,7 +45,15 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
     }
   }, [isAuthenticated, access_token, router, mounted])
 
-  if (!mounted || !isAuthenticated) return null
+  // Un superusuario sin clínica elegida no está en ninguna: las páginas de
+  // clínica (dashboard, conversaciones, agenda...) le mandan al backoffice. Su
+  // cuenta vive técnicamente en una clínica, pero no es la suya.
+  const fueraDeClinica = !!user?.platform_admin && !actingClinic && !pathname.startsWith('/backoffice')
+  useEffect(() => {
+    if (mounted && fueraDeClinica) router.replace('/backoffice')
+  }, [mounted, fueraDeClinica, router])
+
+  if (!mounted || !isAuthenticated || fueraDeClinica) return null
 
   return (
     <div className="min-h-screen bg-[var(--canvas)] text-[var(--ink)]">

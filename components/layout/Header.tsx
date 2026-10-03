@@ -106,8 +106,10 @@ export const Header: React.FC = () => {
         <div className="flex items-center gap-3.5">
           {/* Clinic Name */}
           <div className="hidden lg:block text-right pr-2">
-            <p className="microlabel text-[9px] text-[var(--dim)]">Clínica</p>
-            <p className="text-[12.5px] font-medium text-[var(--ink)] truncate max-w-[150px]">{actingClinic?.name || 'Deviaty Dental'}</p>
+            <p className="microlabel text-[9px] text-[var(--dim)]">{user?.platform_admin && !actingClinic ? 'Espacio' : 'Clínica'}</p>
+            <p className="text-[12.5px] font-medium text-[var(--ink)] truncate max-w-[150px]">
+              {actingClinic?.name || (user?.platform_admin ? 'Plataforma' : 'Deviaty Dental')}
+            </p>
           </div>
 
           {/* Notification Bell */}
@@ -129,7 +131,7 @@ export const Header: React.FC = () => {
 
             <div className="text-left hidden md:block">
               <p className="text-[13px] font-medium text-[var(--ink)] leading-tight">{emailPrefix}</p>
-              <p className="microlabel text-[9.5px] text-[var(--muted)] leading-tight">{user?.role?.name || 'Agente'}</p>
+              <p className="microlabel text-[9.5px] text-[var(--muted)] leading-tight">{user?.platform_admin ? 'Equipo Dentral' : user?.role?.name || 'Agente'}</p>
             </div>
 
             <button 

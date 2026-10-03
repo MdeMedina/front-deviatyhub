@@ -91,7 +91,9 @@ const NAV_GROUPS: NavGroup[] = [
 
 export const Sidebar: React.FC = () => {
   const pathname = usePathname()
-  const { hasPermission, hasRolePermission, user } = useAuthStore()
+  const { hasPermission, hasRolePermission, user, actingClinic } = useAuthStore()
+  // Superusuario fuera de cualquier clínica: solo existe el backoffice.
+  const soloPlataforma = !!user?.platform_admin && !actingClinic
   const { isSidebarOpen, toggleSidebar, theme, toggleTheme } = useUIStore()
 
   return (
@@ -130,6 +132,7 @@ export const Sidebar: React.FC = () => {
       <nav className="flex-1 overflow-y-auto overflow-x-hidden py-3.5 px-2.5 space-y-4">
         {NAV_GROUPS.map((group) => {
           if (group.platformOnly && !user?.platform_admin) return null
+          if (soloPlataforma && !group.platformOnly) return null
           const visibleItems = group.items.filter(item => {
             const puede = !item.permission
               ? true
@@ -187,8 +190,8 @@ export const Sidebar: React.FC = () => {
       <div className="p-3 border-t border-[var(--line)] bg-[var(--card)] flex items-center justify-between">
         {isSidebarOpen ? (
           <div className="overflow-hidden">
-            <p className="microlabel">Plan Actual</p>
-            <p className="text-[12.5px] font-medium text-[var(--ink)] truncate">Enterprise Pro</p>
+            <p className="microlabel">{soloPlataforma ? 'Cuenta' : 'Plan Actual'}</p>
+            <p className="text-[12.5px] font-medium text-[var(--ink)] truncate">{soloPlataforma ? 'Equipo Dentral' : 'Enterprise Pro'}</p>
           </div>
         ) : <div />}
 
