@@ -45,6 +45,8 @@ export const ENDPOINTS = {
   },
   platform: {
     overview:     `${API_BASE}/core/platform/overview`,
+    team:         `${API_BASE}/core/platform/team`,
+    teamMember:   (userId: string) => `${API_BASE}/core/platform/team/${userId}`,
     clinics:      `${API_BASE}/core/platform/clinics`,
     clinic:       (id: string) => `${API_BASE}/core/platform/clinics/${id}`,
     access:       (id: string) => `${API_BASE}/core/platform/clinics/${id}/access`,

@@ -22,6 +22,7 @@ import {
   CalendarClock,
   Building2,
   Gauge,
+  ShieldCheck,
 } from 'lucide-react'
 import { useAuthStore } from '@/lib/stores/auth.store'
 import { useUIStore } from '@/lib/stores/ui.store'
@@ -58,6 +59,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'Backoffice', href: '/backoffice', icon: Gauge, permission: null },
       { label: 'Clínicas', href: '/backoffice/clinics', icon: Building2, permission: null },
+      { label: 'Equipo Dentral', href: '/backoffice/team', icon: ShieldCheck, permission: null },
     ],
   },
   {

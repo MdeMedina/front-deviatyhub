@@ -107,6 +107,47 @@ export interface CreateClinicResult {
   invite_expires: string
 }
 
+export interface TeamMember {
+  id: string
+  email: string
+  active: boolean
+  is_you: boolean
+  /** Acceso fijado en el servidor (PLATFORM_ADMIN_EMAILS): no se quita desde aquí. */
+  from_server: boolean
+  from_backoffice: boolean
+  /** Clínica en la que además trabaja, si su cuenta es de una clínica de verdad. */
+  clinic: string | null
+  invite_pending: boolean
+  invite_expires: string | null
+  created_at: string | null
+}
+
+export const usePlatformTeam = () =>
+  useQuery({
+    queryKey: ['platform', 'team'],
+    queryFn: () => apiClient.get<TeamMember[]>(ENDPOINTS.platform.team),
+  })
+
+export const useInviteTeamMember = () => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (email: string) =>
+      apiClient.post<{ email: string; promoted: boolean; invite_link: string | null; invite_expires: string | null }>(
+        ENDPOINTS.platform.team,
+        { email },
+      ),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['platform', 'team'] }),
+  })
+}
+
+export const useRevokeTeamMember = () => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (userId: string) => apiClient.delete<TeamMember[]>(ENDPOINTS.platform.teamMember(userId)),
+    onSuccess: (data) => qc.setQueryData(['platform', 'team'], data),
+  })
+}
+
 export const usePlatformOverview = () =>
   useQuery({
     queryKey: ['platform', 'overview'],

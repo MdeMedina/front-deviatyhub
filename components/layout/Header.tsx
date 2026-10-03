@@ -19,6 +19,7 @@ import {
   Lock,
   Gauge,
   Building2,
+  ShieldCheck,
   LogOut as Salir,
 } from 'lucide-react'
 import { useAuthStore } from '@/lib/stores/auth.store'
@@ -38,6 +39,7 @@ const PAGE_TITLES: Record<string, { title: string; icon: React.ElementType }> = 
   '/users': { title: 'Usuarios del sistema', icon: Users },
   '/security': { title: 'Seguridad y permisos', icon: Lock },
   '/backoffice/clinics': { title: 'Clínicas', icon: Building2 },
+  '/backoffice/team': { title: 'Equipo Dentral', icon: ShieldCheck },
   '/backoffice': { title: 'Backoffice', icon: Gauge },
 }
 
