@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useInviteTeamMember, usePlatformTeam, useRevokeTeamMember } from '@/lib/api/hooks/use-platform'
+import { useInviteTeamMember, usePlatformTeam, useResendTeamInvite, useRevokeTeamMember } from '@/lib/api/hooks/use-platform'
 import { Spinner } from '@/components/ui/Spinner'
 import { Button } from '@/components/ui/Button'
 import { CopyField, Dot, PageHeader, PlatformOnly, hace } from '@/components/backoffice/shared'
@@ -18,6 +18,8 @@ function Equipo() {
   const { data: equipo = [], isLoading, isError } = usePlatformTeam()
   const invitar = useInviteTeamMember()
   const quitar = useRevokeTeamMember()
+  const reenviar = useResendTeamInvite()
+  const [enlace, setEnlace] = useState<{ id: string; link: string } | null>(null)
   const [correo, setCorreo] = useState('')
   const [resultado, setResultado] = useState<{ email: string; promoted: boolean; link: string | null } | null>(null)
   const [confirmando, setConfirmando] = useState<string | null>(null)
@@ -97,7 +99,8 @@ function Equipo() {
               </thead>
               <tbody>
                 {equipo.map((m) => (
-                  <tr key={m.id}>
+                  <React.Fragment key={m.id}>
+                  <tr>
                     <td>
                       <span className="flex flex-col min-w-0">
                         <span className="text-[var(--ink)] font-medium truncate">
@@ -130,10 +133,38 @@ function Equipo() {
                           <Button size="sm" variant="ghost" onClick={() => setConfirmando(null)}>No</Button>
                         </span>
                       ) : (
-                        <Button size="sm" variant="secondary" onClick={() => setConfirmando(m.id)}>Quitar acceso</Button>
+                        <span className="inline-flex items-center gap-1.5">
+                          {m.invite_pending && (
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              loading={reenviar.isPending && reenviar.variables === m.id}
+                              onClick={async () => {
+                                const r = await reenviar.mutateAsync(m.id)
+                                setEnlace({ id: m.id, link: r.invite_link })
+                              }}
+                            >
+                              Reenviar invitación
+                            </Button>
+                          )}
+                          <Button size="sm" variant="secondary" onClick={() => setConfirmando(m.id)}>Quitar acceso</Button>
+                        </span>
                       )}
                     </td>
                   </tr>
+                  {enlace?.id === m.id && (
+                    <tr>
+                      <td colSpan={5}>
+                        <div className="flex flex-col gap-1.5 py-1">
+                          <span className="text-[12px] text-[var(--muted)]">
+                            Invitación reenviada (la anterior deja de servir). Si tampoco llega, manda este enlace por WhatsApp:
+                          </span>
+                          <CopyField value={enlace.link} />
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>

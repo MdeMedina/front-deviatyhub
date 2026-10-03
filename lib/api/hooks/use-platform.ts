@@ -140,6 +140,12 @@ export const useInviteTeamMember = () => {
   })
 }
 
+export const useResendTeamInvite = () =>
+  useMutation({
+    mutationFn: (userId: string) =>
+      apiClient.post<{ invite_link: string; invite_expires: string }>(ENDPOINTS.platform.teamResend(userId)),
+  })
+
 export const useRevokeTeamMember = () => {
   const qc = useQueryClient()
   return useMutation({

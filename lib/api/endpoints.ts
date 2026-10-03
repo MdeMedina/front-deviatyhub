@@ -47,6 +47,7 @@ export const ENDPOINTS = {
     overview:     `${API_BASE}/core/platform/overview`,
     team:         `${API_BASE}/core/platform/team`,
     teamMember:   (userId: string) => `${API_BASE}/core/platform/team/${userId}`,
+    teamResend:   (userId: string) => `${API_BASE}/core/platform/team/${userId}/resend-invite`,
     clinics:      `${API_BASE}/core/platform/clinics`,
     clinic:       (id: string) => `${API_BASE}/core/platform/clinics/${id}`,
     access:       (id: string) => `${API_BASE}/core/platform/clinics/${id}/access`,
