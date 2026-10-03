@@ -43,7 +43,10 @@ async function fetchWithAuth<T>(url: string, options: ApiClientOptions = {}): Pr
   if (state.actingClinic && state.user?.platform_admin) {
     headers['x-act-as-clinic'] = state.actingClinic.id
   }
-  if (!headers['Content-Type']) {
+  // Solo se declara JSON cuando hay cuerpo. El gateway (Fastify) rechaza con
+  // 400 "Body cannot be empty when content-type is set to 'application/json'"
+  // cualquier petición que lo declare y llegue vacía.
+  if (!headers['Content-Type'] && options.body !== undefined) {
     headers['Content-Type'] = 'application/json'
   }
 
@@ -128,13 +131,13 @@ export const apiClient = {
     fetchWithAuth<T>(url, { ...options, method: 'GET' }),
   
   post: <T>(url: string, body?: any, options?: ApiClientOptions) => 
-    fetchWithAuth<T>(url, { ...options, method: 'POST', body: JSON.stringify(body) }),
+    fetchWithAuth<T>(url, { ...options, method: 'POST', body: JSON.stringify(body ?? {}) }),
   
   put: <T>(url: string, body?: any, options?: ApiClientOptions) => 
-    fetchWithAuth<T>(url, { ...options, method: 'PUT', body: JSON.stringify(body) }),
+    fetchWithAuth<T>(url, { ...options, method: 'PUT', body: JSON.stringify(body ?? {}) }),
   
   patch: <T>(url: string, body?: any, options?: ApiClientOptions) => 
-    fetchWithAuth<T>(url, { ...options, method: 'PATCH', body: JSON.stringify(body) }),
+    fetchWithAuth<T>(url, { ...options, method: 'PATCH', body: JSON.stringify(body ?? {}) }),
   
   delete: <T>(url: string, options?: ApiClientOptions) => 
     fetchWithAuth<T>(url, { ...options, method: 'DELETE' }),
