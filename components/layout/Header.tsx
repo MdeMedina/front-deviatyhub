@@ -108,7 +108,7 @@ export const Header: React.FC = () => {
           <div className="hidden lg:block text-right pr-2">
             <p className="microlabel text-[9px] text-[var(--dim)]">{user?.platform_admin && !actingClinic ? 'Espacio' : 'Clínica'}</p>
             <p className="text-[12.5px] font-medium text-[var(--ink)] truncate max-w-[150px]">
-              {actingClinic?.name || (user?.platform_admin ? 'Plataforma' : 'Deviaty Dental')}
+              {actingClinic?.name || (user?.platform_admin ? 'Plataforma' : user?.clinic_name || 'Tu clínica')}
             </p>
           </div>
 

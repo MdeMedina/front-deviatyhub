@@ -107,7 +107,8 @@ export default function SecurityPage() {
   // Selected role object
   const activeRole = roles?.find((r) => r.id === selectedRoleId) || roles?.[0]
   const currentRoleId = activeRole?.id || ''
-  const isSuperadmin = activeRole?.name?.toLowerCase() === 'superadmin'
+  // El rol de administrador de la clínica (antes se llamaba "Superadmin").
+  const isSuperadmin = !!(activeRole?.is_superadmin || activeRole?.isSuperadmin)
 
   const handleSavePermissions = (newPermissions: IPermissions) => {
     if (!currentRoleId) return

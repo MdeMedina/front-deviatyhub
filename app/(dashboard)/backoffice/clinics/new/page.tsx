@@ -139,9 +139,9 @@ function NuevaClinica() {
 
         <div data-hd style={{ borderTop: '1px solid var(--line)' }}><h2>Quién la administra</h2></div>
         <div className="px-5 py-5 flex flex-col gap-1.5">
-          <Input label="Correo de la persona dueña" type="email" value={correoDueno} onChange={setCorreoDueno} placeholder="dueno@clinica.cl" required />
+          <Input label="Correo del administrador" type="email" value={correoDueno} onChange={setCorreoDueno} placeholder="admin@clinica.cl" required />
           <span className="text-[12px] text-[var(--muted)]">
-            Recibe una invitación para crear su contraseña. Entra con todos los permisos y desde ahí invita a su equipo.
+            Recibe una invitación para crear su contraseña y entra directo al panel de su clínica como Administrador. Desde ahí invita a su equipo.
           </span>
         </div>
 

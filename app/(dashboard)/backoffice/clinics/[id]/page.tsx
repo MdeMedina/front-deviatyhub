@@ -5,11 +5,12 @@ import { useParams } from 'next/navigation'
 import { CheckCircle2, Circle, LogIn } from 'lucide-react'
 import {
   useActAsClinic,
+  useInviteClinicAdmin,
   usePlatformClinic,
   useResendInvite,
-  useUpdateClinic,
   type PlatformClinicDetail,
 } from '@/lib/api/hooks/use-platform'
+import { ClinicAccessCard } from '@/components/backoffice/ClinicAccessCard'
 import { Spinner } from '@/components/ui/Spinner'
 import { Button } from '@/components/ui/Button'
 import { CopyField, Dot, MODO_AGENTE, PageHeader, PlatformOnly, hace } from '@/components/backoffice/shared'
@@ -36,7 +37,7 @@ export default function ClinicDetailPage() {
 function puestaEnMarcha(c: PlatformClinicDetail) {
   const whatsapp = c.integrations.find((i) => i.type === 'WHATSAPP')
   return [
-    { ok: c.users.some((u) => u.is_owner && !u.invite_pending), label: 'La persona dueña aceptó la invitación' },
+    { ok: c.users.some((u) => u.is_owner && !u.invite_pending), label: 'Un administrador aceptó la invitación' },
     { ok: c.counts.doctors > 0, label: `Profesionales cargados (${c.counts.doctors})` },
     { ok: c.counts.treatments > 0, label: `Tratamientos con precio (${c.counts.treatments})` },
     { ok: c.schedules.some((s) => s.isOpen), label: 'Horario de atención' },
@@ -48,8 +49,9 @@ function puestaEnMarcha(c: PlatformClinicDetail) {
 function Ficha() {
   const { id } = useParams<{ id: string }>()
   const { data: c, isLoading, isError } = usePlatformClinic(id)
-  const actualizar = useUpdateClinic(id)
   const reenviar = useResendInvite(id)
+  const invitar = useInviteClinicAdmin(id)
+  const [correoNuevo, setCorreoNuevo] = useState('')
   const { enter } = useActAsClinic()
   const [enlace, setEnlace] = useState<{ userId: string; link: string } | null>(null)
 
@@ -69,24 +71,15 @@ function Ficha() {
         back={{ href: '/backoffice/clinics', label: 'Clínicas' }}
         subtitle={
           <span className="flex items-center gap-2 flex-wrap">
-            <span data-badge><Dot tone={c.active ? 'pos' : 'dim'} />{c.active ? 'Activa' : 'Inactiva'}</span>
+            <span data-badge><Dot tone={c.active ? 'pos' : 'neg'} />{c.active ? 'Con acceso' : 'Entrada bloqueada'}</span>
             {modo && <span data-badge><Dot tone={modo.tone} />Agente {modo.label.toLowerCase()}</span>}
             <span className="tabular text-[12px] text-[var(--dim)]">{c.slug} · {c.plan} · creada {hace(c.created_at)}</span>
           </span>
         }
         actions={
-          <>
-            <Button
-              variant={c.active ? 'danger' : 'secondary'}
-              loading={actualizar.isPending}
-              onClick={() => actualizar.mutate({ active: !c.active })}
-            >
-              {c.active ? 'Desactivar' : 'Reactivar'}
-            </Button>
-            <Button icon={<LogIn size={14} />} onClick={() => enter({ id: c.id, name: c.name })}>
-              Entrar al panel
-            </Button>
-          </>
+          <Button icon={<LogIn size={14} />} onClick={() => enter({ id: c.id, name: c.name })}>
+            Entrar al panel
+          </Button>
         }
       />
 
@@ -118,7 +111,7 @@ function Ficha() {
                           </span>
                         </td>
                         <td>
-                          <span data-badge>{u.role || '—'}{u.is_owner ? ' · dueña' : ''}{u.platform_admin ? ' · Dentral' : ''}</span>
+                          <span data-badge>{u.role || '—'}{u.platform_admin ? ' · Dentral' : ''}</span>
                         </td>
                         <td>
                           {u.invite_pending ? (
@@ -158,6 +151,37 @@ function Ficha() {
                 </tbody>
               </table>
             </div>
+            <form
+              className="px-[18px] py-3 border-t border-[var(--line)] bg-[var(--head)] flex flex-col gap-2"
+              onSubmit={async (e) => {
+                e.preventDefault()
+                if (!correoNuevo.includes('@')) return
+                const r = await invitar.mutateAsync(correoNuevo.trim())
+                setCorreoNuevo('')
+                setEnlace({ userId: r.user.id, link: r.invite_link })
+              }}
+            >
+              <div className="flex items-center gap-2 flex-wrap">
+                <input
+                  data-inp
+                  type="email"
+                  placeholder="correo@clinica.cl"
+                  value={correoNuevo}
+                  onChange={(e) => setCorreoNuevo(e.target.value)}
+                  className="flex-1 min-w-[200px]"
+                  style={{ height: '32px' }}
+                  aria-label="Correo del nuevo administrador"
+                />
+                <Button type="submit" size="sm" loading={invitar.isPending} disabled={!correoNuevo.includes('@')}>
+                  Invitar administrador
+                </Button>
+              </div>
+              <span className="text-[11.5px] text-[var(--muted)]">
+                {invitar.isError
+                  ? (invitar.error as Error)?.message
+                  : 'Entra con todos los permisos de las secciones habilitadas. El resto del equipo lo invita la clínica desde su panel.'}
+              </span>
+            </form>
           </div>
 
           <div data-card>
@@ -197,6 +221,8 @@ function Ficha() {
         </div>
 
         <div className="flex flex-col gap-5 min-w-0">
+          <ClinicAccessCard clinic={c} />
+
           <div data-card>
             <div data-hd>
               <h2>Puesta en marcha</h2>

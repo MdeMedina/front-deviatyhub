@@ -116,7 +116,7 @@ export const PermissionsEditor: React.FC<PermissionsEditorProps> = ({
       {isSuperadmin && (
         <div style={{ padding: '8px 18px', background: 'var(--surface)', borderBottom: '1px solid var(--line)', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span data-badge>Acceso Total</span>
-          <span style={{ fontSize: '12px', color: 'var(--muted)' }}>El rol Superadmin tiene todos los permisos activos por defecto.</span>
+          <span style={{ fontSize: '12px', color: 'var(--muted)' }}>El rol Administrador tiene todos los permisos de las secciones habilitadas para la clínica.</span>
         </div>
       )}
 

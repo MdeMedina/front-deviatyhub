@@ -199,7 +199,9 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
         {actionsMeta.map((actionInfo) => {
           const actionConfig = config.actions[actionInfo.key]
-          const isActived = actionConfig.active
+          // Bloqueada desde la plataforma: se ve apagada y no se puede encender.
+          const bloqueada = config.platform?.actions?.[actionInfo.key] === false
+          const isActived = actionConfig.active && !bloqueada
 
           return (
             <div
@@ -214,7 +216,7 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
                 <button
                   type="button"
                   data-testid={`action-toggle-${actionInfo.key}`}
-                  disabled={readOnly}
+                  disabled={readOnly || bloqueada}
                   onClick={() => handleToggleAction(actionInfo.key)}
                   style={{
                     width: '38px',
@@ -223,9 +225,9 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
                     border: '1px solid var(--line)',
                     background: isActived ? 'var(--blue)' : 'var(--surface-2)',
                     position: 'relative',
-                    cursor: readOnly ? 'not-allowed' : 'pointer',
+                    cursor: readOnly || bloqueada ? 'not-allowed' : 'pointer',
                     padding: 0,
-                    opacity: readOnly ? 0.6 : 1,
+                    opacity: readOnly || bloqueada ? 0.6 : 1,
                     transition: 'background-color .15s',
                   }}
                   aria-label={`Toggle ${actionInfo.title}`}
@@ -251,6 +253,11 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
                 <p style={{ margin: 0, fontSize: '12.5px', lineHeight: 1.6, color: 'var(--muted)' }}>
                   {actionInfo.description}
                 </p>
+                {bloqueada && (
+                  <p style={{ margin: 0, fontSize: '12px', color: 'var(--neg)' }}>
+                    No está incluida en el plan de tu clínica. Escríbenos para habilitarla.
+                  </p>
+                )}
 
                 {/* Channels */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>

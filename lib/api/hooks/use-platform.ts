@@ -56,6 +56,7 @@ export interface PlatformClinicDetail {
   config: { name: string; address: string; phone: string; email: string; timezone: string } | null
   schedules: { dayOfWeek: number; openTime: string; closeTime: string; isOpen: boolean | null }[]
   agent_mode: PlatformClinicRow['agent_mode']
+  access: ClinicAccess
   counts: { doctors: number; treatments: number; contacts: number }
   integrations: {
     type: string
@@ -66,6 +67,27 @@ export interface PlatformClinicDetail {
     external_id: string | null
   }[]
   users: PlatformClinicUser[]
+}
+
+export interface ClinicAccess {
+  modules: Record<string, boolean>
+  agent: {
+    enabled: boolean
+    channels: Record<string, boolean>
+    actions: Record<string, boolean>
+    reminders: boolean
+  }
+}
+
+/** Cambio parcial: solo lo que viene se toca. */
+export interface ClinicAccessPatch {
+  modules?: Record<string, boolean>
+  agent?: Partial<{
+    enabled: boolean
+    channels: Record<string, boolean>
+    actions: Record<string, boolean>
+    reminders: boolean
+  }>
 }
 
 export interface CreateClinicInput {
@@ -118,6 +140,29 @@ export const useUpdateClinic = (id: string) => {
     mutationFn: (input: Partial<{ name: string; plan: 'STARTER' | 'PRO'; active: boolean; billingEmail: string }>) =>
       apiClient.patch<PlatformClinicDetail>(ENDPOINTS.platform.clinic(id), input),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['platform'] }),
+  })
+}
+
+export const useUpdateClinicAccess = (id: string) => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (patch: ClinicAccessPatch) => apiClient.patch<PlatformClinicDetail>(ENDPOINTS.platform.access(id), patch),
+    onSuccess: (data) => {
+      qc.setQueryData(['platform', 'clinic', id], data)
+      qc.invalidateQueries({ queryKey: ['platform', 'clinics'] })
+    },
+  })
+}
+
+export const useInviteClinicAdmin = (clinicId: string) => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (email: string) =>
+      apiClient.post<{ user: { id: string; email: string }; invite_link: string; invite_expires: string }>(
+        ENDPOINTS.platform.users(clinicId),
+        { email },
+      ),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['platform', 'clinic', clinicId] }),
   })
 }
 

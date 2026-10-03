@@ -82,6 +82,9 @@ export interface IUser {
   role: IRole
   /** Equipo de la plataforma: entra al backoffice y puede actuar sobre cualquier clínica. */
   platform_admin?: boolean
+  clinic_name?: string | null
+  /** Secciones del panel que la plataforma le habilita a la clínica. Ausente = todas. */
+  clinic_modules?: Record<string, boolean>
 }
 
 export interface ILoginResponse {
@@ -458,6 +461,11 @@ export interface IAgentConfig {
   }
   mode: AgentMode
   updated_at: string
+  /** Lo que la plataforma le tiene bloqueado al agente. La clínica no lo puede encender. */
+  platform?: {
+    agent_enabled: boolean
+    actions: Partial<Record<'schedule' | 'reschedule' | 'cancel', boolean>>
+  }
 }
 
 // Simulador

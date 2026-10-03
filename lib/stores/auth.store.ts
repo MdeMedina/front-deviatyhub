@@ -70,13 +70,18 @@ export const useAuthStore = create<AuthState>()(
         const { user } = get()
         if (!user) return false
         
-        // Superadmins bypass all permission checks
-        if (user.role.is_superadmin) return true
         // El equipo de la plataforma administra cualquier clínica en la que entre.
         if (user.platform_admin) return true
 
         const [module, action] = permission.split('.')
         if (!module || !action) return false
+
+        // Lo que la plataforma no le habilita a la clínica no lo tiene nadie de
+        // ella, tampoco su administrador.
+        if (user.clinic_modules?.[module] === false) return false
+
+        // El administrador de la clínica tiene todo lo habilitado.
+        if (user.role.is_superadmin) return true
 
         const permissions = user.role.permissions as unknown as Record<string, Record<string, boolean>>
         return !!permissions[module]?.[action]

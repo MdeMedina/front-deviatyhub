@@ -92,7 +92,7 @@ function Clinicas() {
                         </Link>
                       </td>
                       <td>
-                        <span data-badge><Dot tone={c.active ? 'pos' : 'dim'} />{c.active ? 'Activa' : 'Inactiva'}</span>
+                        <span data-badge><Dot tone={c.active ? 'pos' : 'neg'} />{c.active ? 'Con acceso' : 'Bloqueada'}</span>
                       </td>
                       <td>
                         {modo ? <span data-badge><Dot tone={modo.tone} />{modo.label}</span> : <span className="text-[var(--dim)]">—</span>}
