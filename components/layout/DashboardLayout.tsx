@@ -8,6 +8,8 @@ import { useAuthStore } from '@/lib/stores/auth.store'
 import { useUIStore } from '@/lib/stores/ui.store'
 import { socketClient } from '@/lib/socket/socket-client'
 import { ToastContainer } from '../ui/ToastContainer'
+import { apiClient, segundosRestantes } from '@/lib/api/client'
+import { ENDPOINTS } from '@/lib/api/endpoints'
 
 interface DashboardLayoutProps {
   children: ReactNode
@@ -44,6 +46,29 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
       socketClient.disconnect()
     }
   }, [isAuthenticated, access_token, router, mounted])
+
+  // Cuando vence el token se comprueba la sesión sin esperar a que el usuario
+  // haga algo: /auth/me con el token vencido dispara la renovación y, si ya no
+  // se puede (la sesión de 7 días caducó, se cerró o se bloqueó la cuenta o la
+  // clínica), el cliente cierra la sesión y vuelve al login.
+  useEffect(() => {
+    if (!mounted || !isAuthenticated) return
+    const restante = segundosRestantes(access_token)
+    if (restante == null) return
+    const comprobar = () => {
+      apiClient.get(ENDPOINTS.auth.me).catch(() => undefined)
+    }
+    // Al volver a la pestaña tras un rato, también.
+    const alVolver = () => {
+      if (document.visibilityState === 'visible' && (segundosRestantes(access_token) ?? 1) <= 0) comprobar()
+    }
+    document.addEventListener('visibilitychange', alVolver)
+    const t = setTimeout(comprobar, Math.max(0, restante * 1000) + 1500)
+    return () => {
+      clearTimeout(t)
+      document.removeEventListener('visibilitychange', alVolver)
+    }
+  }, [mounted, isAuthenticated, access_token])
 
   // Un superusuario sin clínica elegida no está en ninguna: las páginas de
   // clínica (dashboard, conversaciones, agenda...) le mandan al backoffice. Su

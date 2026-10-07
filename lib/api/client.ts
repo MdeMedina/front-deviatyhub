@@ -23,6 +23,29 @@ function onRefreshed(token: string) {
   refreshSubscribers = []
 }
 
+/**
+ * La sesión terminó y no se puede renovar: se borra y se vuelve al login con
+ * el aviso. Antes, con la renovación rota, la sesión quedaba "abierta" con
+ * tokens vacíos y cada pantalla fallaba sin sacar al usuario.
+ */
+export function cerrarSesionExpirada() {
+  useAuthStore.getState().clearSession()
+  if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
+    window.location.href = '/login?expirada=1'
+  }
+}
+
+/** Segundos que le quedan a un JWT; null si no se puede leer. */
+export function segundosRestantes(token: string | null | undefined): number | null {
+  if (!token) return null
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
+    return typeof payload.exp === 'number' ? payload.exp - Date.now() / 1000 : null
+  } catch {
+    return null
+  }
+}
+
 export interface ApiClientOptions extends RequestInit {
   params?: Record<string, any>
 }
@@ -67,6 +90,14 @@ async function fetchWithAuth<T>(url: string, options: ApiClientOptions = {}): Pr
 
   const response = await fetch(finalUrl, { ...options, headers })
 
+  // Un 401 con sesión abierta pero sin forma de renovarla: se terminó.
+  // (Sin sesión, un 401 es el del propio login con credenciales malas, y ese
+  // lo muestra el formulario.)
+  if (response.status === 401 && access_token && !refresh_token) {
+    cerrarSesionExpirada()
+    throw new ApiError('SESSION_EXPIRED', 'Tu sesión expiró')
+  }
+
   // Handle Token Refresh on 401
   if (response.status === 401 && refresh_token) {
     if (!isRefreshing) {
@@ -80,8 +111,13 @@ async function fetchWithAuth<T>(url: string, options: ApiClientOptions = {}): Pr
 
         const refreshData = await refreshRes.json()
 
-        if (refreshRes.ok && refreshData.success) {
-          const { access_token: newAccess, refresh_token: newRefresh } = refreshData.data
+        // El servidor devolvía los tokens como accessToken/refreshToken y aquí
+        // se leían como access_token/refresh_token: se guardaban vacíos y la
+        // sesión quedaba rota. Se aceptan los dos, y sin tokens no hay sesión.
+        const nuevos = refreshData?.data || {}
+        const newAccess = nuevos.access_token ?? nuevos.accessToken
+        const newRefresh = nuevos.refresh_token ?? nuevos.refreshToken
+        if (refreshRes.ok && refreshData.success && newAccess && newRefresh) {
           updateTokens(newAccess, newRefresh)
           isRefreshing = false
           onRefreshed(newAccess)
@@ -89,18 +125,14 @@ async function fetchWithAuth<T>(url: string, options: ApiClientOptions = {}): Pr
           return fetchWithAuth<T>(url, options)
         } else {
           isRefreshing = false
-          clearSession()
-          if (typeof window !== 'undefined') {
-            window.location.href = '/login'
-          }
-          throw new ApiError('AUTH_FAILED', 'Session expired')
+          refreshSubscribers = []
+          cerrarSesionExpirada()
+          throw new ApiError('SESSION_EXPIRED', 'Tu sesión expiró')
         }
       } catch (error) {
         isRefreshing = false
-        clearSession()
-        if (typeof window !== 'undefined') {
-          window.location.href = '/login'
-        }
+        refreshSubscribers = []
+        cerrarSesionExpirada()
         throw error
       }
     } else {

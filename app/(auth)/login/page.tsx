@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { AlertCircle, SunMoon } from 'lucide-react'
 import { useLogin } from '@/lib/api/hooks/use-auth'
@@ -14,6 +14,13 @@ export default function LoginPage() {
   const [validationError, setValidationError] = useState<string | null>(null)
   const { addToast, toggleTheme } = useUIStore()
   const { mutate: login, isPending } = useLogin()
+
+  // Vuelve aquí desde una sesión vencida: se dice por qué.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('expirada')) {
+      setValidationError('Tu sesión expiró. Vuelve a iniciar sesión.')
+    }
+  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
