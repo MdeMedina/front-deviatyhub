@@ -113,12 +113,19 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-a { 
-  color: var(--blue); 
-  text-decoration: none; 
-}
-a:hover { 
-  color: var(--ink); 
+/* En la capa base, no suelta: en Tailwind v4 las utilidades viven en
+   @layer utilities, y una regla sin capa les gana siempre. Con "a { color }"
+   suelto, ningún enlace podía tener otro color: el botón "Nueva clínica"
+   (un enlace con text-[var(--on-blue)]) salía azul sobre azul, y los ítems
+   del menú lateral, azules en vez de grises. */
+@layer base {
+  a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--ink);
+  }
 }
 
 input, button, select, textarea {
