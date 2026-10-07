@@ -18,6 +18,9 @@ export default function IntegrationsPage() {
   // también se lo rechaza.
   const gestionaDentral = !!user?.platform_admin
   const { data: integrations, isLoading, isError, refetch } = useIntegrations()
+  // La clínica solo ve lo que el equipo de Dentral le dejó conectado. Lo demás
+  // no es algo que pueda activar ella, así que no se le ofrece.
+  const visibles = (integrations || []).filter((i) => gestionaDentral || i.configured || i.connected)
   const testMutation = useTestIntegration()
   const addToast = useUIStore((state) => state.addToast)
   const [configuringType, setConfiguringType] = React.useState<any>(null)
@@ -114,18 +117,18 @@ export default function IntegrationsPage() {
             Reintentar
           </button>
         </div>
-      ) : !integrations || integrations.length === 0 ? (
+      ) : visibles.length === 0 ? (
         <div className="bg-[var(--card)] border border-[var(--line)] rounded-[10px] p-12 flex items-center justify-center min-h-[360px]">
-          <EmptyState 
-            title="No se encontraron integraciones configuradas"
-            description="No hay integraciones configuradas en este momento."
+          <EmptyState
+            title="Todavía no hay integraciones conectadas"
+            description="El equipo de Dentral conecta tu WhatsApp y el resto de las integraciones. Escríbenos para empezar."
             icon={<Puzzle size={22} />}
           />
         </div>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {integrations.map((integration) => (
+            {visibles.map((integration) => (
               <IntegrationCard
                 key={integration.type}
                 integration={integration}

@@ -366,6 +366,8 @@ export interface IMetricsSummary {
 export interface IIntegration {
   type: IntegrationType
   connected: boolean
+  /** Configurada por el equipo de Dentral (verificada o no). */
+  configured?: boolean
   last_tested_at: string
   last_test_ok: boolean
   latency_ms?: number

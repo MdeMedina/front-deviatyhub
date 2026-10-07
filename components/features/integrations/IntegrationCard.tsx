@@ -106,7 +106,7 @@ export const IntegrationCard: React.FC<IntegrationCardProps> = ({
 
         {/* Actions: two 50% buttons */}
         {!onTest && !onConfigure ? (
-          <p className="text-[12px] text-[var(--dim)] pt-1">La configura el equipo de Dentral.</p>
+          <p className="text-[12px] text-[var(--dim)] pt-1">La gestiona el equipo de Dentral. Si necesitas cambiar algo, escríbenos.</p>
         ) : (
         <div className="flex gap-2 pt-1">
           {onConfigure && (
