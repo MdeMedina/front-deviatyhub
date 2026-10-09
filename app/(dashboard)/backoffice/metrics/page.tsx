@@ -20,10 +20,20 @@ type Tono = 'pos' | 'neg' | 'dim'
 const seg = (ms: number | null | undefined) => (ms == null ? '—' : ms < 1000 ? `${ms} ms` : `${(ms / 1000).toFixed(1)} s`)
 const usd = (v: number | null | undefined) => (v == null ? '—' : `US$ ${v.toFixed(2)}`)
 
-/** Una fila de la tabla de SLA: valor actual, meta, alerta y estado. */
-interface FilaSla { metrica: string; valor: string; meta: string; alerta: string; tono: Tono; nota?: string }
+const COLOR: Record<Tono, string> = { pos: 'var(--pos)', neg: 'var(--neg)', dim: 'var(--line)' }
+const ESTADO: Record<Tono, string> = { pos: 'En meta', neg: 'Fuera de meta', dim: 'Sin datos' }
 
-function filasSla(h: PlatformHealth): FilaSla[] {
+/** Un indicador de SLA. Con varias cifras (p50 y p95), cada una va por separado. */
+interface Sla {
+  metrica: string
+  cifras: { etiqueta?: string; valor: string }[]
+  meta: string
+  alerta: string
+  tono: Tono
+  nota?: string
+}
+
+function indicadores(h: PlatformHealth): Sla[] {
   const s = h.sla
   const e2e = h.latency.end_to_end
   const cola = h.queue
@@ -31,14 +41,14 @@ function filasSla(h: PlatformHealth): FilaSla[] {
   return [
     {
       metrica: 'Mensajes sin respuesta',
-      valor: `${h.unanswered.count}`,
+      cifras: [{ valor: `${h.unanswered.count}` }],
       meta: '0',
       alerta: `> 0 por más de ${s.unansweredAfterSec} s`,
       tono: tono(h.unanswered.count === 0),
     },
     {
       metrica: 'Latencia de punta a punta',
-      valor: `p50 ${seg(e2e.p50)} · p95 ${seg(e2e.p95)}`,
+      cifras: [{ etiqueta: 'p50', valor: seg(e2e.p50) }, { etiqueta: 'p95', valor: seg(e2e.p95) }],
       meta: `p50 < ${s.latencyP50Ms / 1000} s · p95 < ${s.latencyP95Ms / 1000} s`,
       alerta: 'p95 > 15 s',
       tono: tono(e2e.p50 == null ? null : e2e.p50 < s.latencyP50Ms && (e2e.p95 ?? 0) < s.latencyP95Ms),
@@ -46,37 +56,80 @@ function filasSla(h: PlatformHealth): FilaSla[] {
     },
     {
       metrica: 'Webhook de Meta',
-      valor: `p95 ${seg(h.latency.webhook_p95_ms)}`,
+      cifras: [{ etiqueta: 'p95', valor: seg(h.latency.webhook_p95_ms) }],
       meta: `< ${s.webhookMs} ms`,
       alerta: `> ${s.webhookAlertMs} ms`,
       tono: tono(h.latency.webhook_p95_ms == null ? null : h.latency.webhook_p95_ms < s.webhookMs),
     },
     {
-      metrica: 'Cola de mensajes (BullMQ)',
-      valor: cola.available ? `${cola.depth} en cola · la más antigua ${cola.oldest_waiting_age_sec} s` : 'Sin datos',
-      meta: `< ${s.queueDepth}`,
+      metrica: 'Cola de mensajes',
+      cifras: cola.available
+        ? [{ etiqueta: 'en cola', valor: `${cola.depth}` }, { etiqueta: 'la más antigua', valor: `${cola.oldest_waiting_age_sec} s` }]
+        : [{ valor: '—' }],
+      meta: `< ${s.queueDepth} en cola`,
       alerta: `> ${s.queueDepthAlert} o > ${s.queueAgeAlertSec} s`,
       tono: cola.available ? tono(cola.depth < s.queueDepth && cola.oldest_waiting_age_sec <= s.queueAgeAlertSec) : 'dim',
       nota: cola.available ? `Espera p95: ${seg(h.latency.queue_p95_ms)} · ${cola.failed_last_24h} fallidos en 24 h` : cola.error,
     },
     {
       metrica: 'Respuestas ilegibles del modelo',
-      valor: pct(h.llm.parse_error_rate),
+      cifras: [{ valor: pct(h.llm.parse_error_rate) }],
       meta: `< ${s.parseErrorRate * 100} %`,
       alerta: `> ${s.parseErrorAlertRate * 100} %`,
       tono: tono(h.llm.parse_error_rate == null ? null : h.llm.parse_error_rate < s.parseErrorRate),
       nota: `${h.llm.parse_errors} de ${h.llm.turns} turnos · ${h.llm.errors} errores`,
     },
     {
-      metrica: 'Costo de IA, día',
-      valor: usd(h.cost.last_24h_usd),
+      metrica: 'Costo de IA del día',
+      cifras: [{ valor: usd(h.cost.last_24h_usd) }],
       meta: '—',
       alerta: `> US$ ${s.dailyCostAlertUsd} al día`,
       tono: tono(h.cost.last_24h_usd <= s.dailyCostAlertUsd),
     },
-    { metrica: 'Integración con sistema de fichas', valor: 'No aplica', meta: '> 99 %', alerta: '—', tono: 'dim', nota: h.not_available.pms },
-    { metrica: 'RAG en dos niveles', valor: 'No aplica', meta: '—', alerta: '—', tono: 'dim', nota: h.not_available.rag },
   ]
+}
+
+function TarjetaSla({ i }: { i: Sla }) {
+  return (
+    <div data-card className="flex flex-col min-w-0" style={{ borderTop: `3px solid ${COLOR[i.tono]}` }}>
+      <div className="px-4 pt-3.5 pb-3 flex flex-col gap-2.5 flex-1">
+        <div className="flex items-start justify-between gap-2">
+          <span className="text-[13.5px] font-semibold text-[var(--ink)] leading-snug">{i.metrica}</span>
+          <span data-badge className="shrink-0"><Dot tone={i.tono} />{ESTADO[i.tono]}</span>
+        </div>
+        <div className="flex items-end gap-5 flex-wrap">
+          {i.cifras.map((c) => (
+            <div key={c.etiqueta ?? 'valor'} className="flex flex-col gap-0.5">
+              <span className="tabular text-[26px] font-semibold tracking-[-0.02em] text-[var(--ink)] leading-none">{c.valor}</span>
+              {c.etiqueta && <span className="text-[11.5px] text-[var(--muted)]">{c.etiqueta}</span>}
+            </div>
+          ))}
+        </div>
+        {i.nota && <span className="text-[12px] text-[var(--muted)] leading-snug">{i.nota}</span>}
+      </div>
+      <dl className="grid grid-cols-2 border-t border-[var(--line)] bg-[var(--head)] text-[12px]">
+        <div className="px-4 py-2 flex flex-col gap-0.5 border-r border-[var(--line)] min-w-0">
+          <dt data-lbl>Meta</dt>
+          <dd className="tabular text-[var(--ink-soft)]">{i.meta}</dd>
+        </div>
+        <div className="px-4 py-2 flex flex-col gap-0.5 min-w-0">
+          <dt data-lbl>Alerta</dt>
+          <dd className="tabular text-[var(--ink-soft)]">{i.alerta}</dd>
+        </div>
+      </dl>
+    </div>
+  )
+}
+
+/** Una cifra dentro de la tarjeta de una clínica. */
+function Cifra({ etiqueta, valor, detalle }: { etiqueta: string; valor: React.ReactNode; detalle?: React.ReactNode }) {
+  return (
+    <div className="rounded-[8px] border border-[var(--line)] bg-[var(--surface)] px-3 py-2.5 flex flex-col gap-1 min-w-0">
+      <span data-lbl>{etiqueta}</span>
+      <span className="tabular text-[19px] font-semibold text-[var(--ink)] leading-none truncate">{valor}</span>
+      {detalle && <span className="text-[11.5px] leading-snug">{detalle}</span>}
+    </div>
+  )
 }
 
 const GARANTIA: Record<string, { texto: string; tono: Tono }> = {
@@ -86,13 +139,25 @@ const GARANTIA: Record<string, { texto: string; tono: Tono }> = {
   GUARANTEE_TRIGGERED: { texto: 'Activada', tono: 'neg' },
 }
 
+function Seccion({ titulo, detalle, children }: { titulo: string; detalle?: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <section className="flex flex-col gap-3">
+      <div className="flex items-baseline justify-between gap-3 flex-wrap">
+        <h2 className="text-[16px] font-semibold text-[var(--ink)] tracking-[-0.012em]">{titulo}</h2>
+        {detalle && <span className="text-[12px] text-[var(--muted)]">{detalle}</span>}
+      </div>
+      {children}
+    </section>
+  )
+}
+
 function Metricas() {
   const [dias, setDias] = useState(30)
   const { data: h, isLoading } = usePlatformHealth(dias)
   const { data: clinicas = [], isLoading: cargandoClinicas } = usePlatformClinicsMetrics(dias)
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-6">
       <PageHeader
         title="Métricas de la plataforma"
         subtitle={h?.telemetry_since ? `Telemetría desde ${new Date(h.telemetry_since).toLocaleDateString('es-CL', { day: 'numeric', month: 'long' })}.` : 'La telemetría por turno empieza con este despliegue.'}
@@ -137,115 +202,97 @@ function Metricas() {
             </div>
           </div>
 
-          <div data-card>
-            <div data-hd><h2>SLA de la plataforma</h2><span data-lbl>Meta · alerta</span></div>
-            <div style={{ overflowX: 'auto' }}>
-              <table data-tbl>
-                <thead>
-                  <tr><th>Métrica</th><th>Ahora</th><th>Meta</th><th>Alerta</th><th>Estado</th></tr>
-                </thead>
-                <tbody>
-                  {filasSla(h).map((f) => (
-                    <tr key={f.metrica}>
-                      <td>
-                        <span className="flex flex-col">
-                          <span className="font-medium text-[var(--ink)]">{f.metrica}</span>
-                          {f.nota && <span className="text-[11.5px] text-[var(--dim)] max-w-[420px]">{f.nota}</span>}
-                        </span>
-                      </td>
-                      <td className="tabular whitespace-nowrap">{f.valor}</td>
-                      <td className="tabular text-[var(--muted)] whitespace-nowrap">{f.meta}</td>
-                      <td className="tabular text-[var(--muted)] whitespace-nowrap">{f.alerta}</td>
-                      <td>
-                        <span data-badge><Dot tone={f.tono} />{f.tono === 'pos' ? 'En meta' : f.tono === 'neg' ? 'Fuera de meta' : 'Sin datos'}</span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          <Seccion titulo="SLA de la plataforma" detalle="Cada indicador contra su meta y su umbral de alerta">
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {indicadores(h).map((i) => <TarjetaSla key={i.metrica} i={i} />)}
             </div>
-          </div>
+            <div className="grid gap-3 md:grid-cols-2">
+              {[
+                { titulo: 'Integración con sistema de fichas', texto: h.not_available.pms },
+                { titulo: 'RAG en dos niveles', texto: h.not_available.rag },
+              ].map((n) => (
+                <div key={n.titulo} className="rounded-[10px] border border-dashed border-[var(--line)] px-4 py-3 flex flex-col gap-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[13px] font-medium text-[var(--ink-soft)]">{n.titulo}</span>
+                    <span data-badge>No aplica</span>
+                  </div>
+                  <span className="text-[12px] text-[var(--muted)] leading-snug">{n.texto}</span>
+                </div>
+              ))}
+            </div>
+          </Seccion>
 
           {h.unanswered.count > 0 && (
-            <div data-card>
-              <div data-hd><h2>Mensajes sin respuesta</h2><span data-lbl>últimas 24 h</span></div>
-              <table data-tbl>
-                <thead><tr><th>Clínica</th><th>Conversación</th><th>Esperando</th></tr></thead>
-                <tbody>
-                  {h.unanswered.items.map((u) => (
-                    <tr key={u.conversation_id}>
-                      <td className="font-medium text-[var(--ink)]">{u.clinic_name}</td>
-                      <td className="tabular text-[12px] text-[var(--muted)]">{u.conversation_id}</td>
-                      <td className="tabular">{u.waiting_sec >= 3600 ? `${Math.round(u.waiting_sec / 3600)} h` : `${Math.round(u.waiting_sec / 60)} min`}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <Seccion titulo="Mensajes sin respuesta" detalle="Últimas 24 horas">
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                {h.unanswered.items.map((u) => (
+                  <div key={u.conversation_id} data-card className="px-4 py-3 flex flex-col gap-1" style={{ borderTop: '3px solid var(--neg)' }}>
+                    <span className="text-[13.5px] font-semibold text-[var(--ink)]">{u.clinic_name}</span>
+                    <span className="tabular text-[20px] font-semibold text-[var(--neg)] leading-none">
+                      {u.waiting_sec >= 3600 ? `${Math.round(u.waiting_sec / 3600)} h` : `${Math.round(u.waiting_sec / 60)} min`}
+                    </span>
+                    <span className="tabular text-[11.5px] text-[var(--dim)] truncate">{u.conversation_id}</span>
+                  </div>
+                ))}
+              </div>
+            </Seccion>
           )}
         </>
       )}
 
-      <div data-card>
-        <div data-hd>
-          <h2>Por clínica</h2>
-          <span data-lbl>Costo unitario meta US$ {h?.sla.unitCostMinUsd ?? 41}–{h?.sla.unitCostMaxUsd ?? 58} al mes</span>
-        </div>
+      <Seccion titulo="Por clínica" detalle={`Costo unitario meta US$ ${h?.sla.unitCostMinUsd ?? 41}–${h?.sla.unitCostMaxUsd ?? 58} al mes`}>
         {cargandoClinicas ? (
           <div className="py-10 flex justify-center"><Spinner /></div>
+        ) : clinicas.length === 0 ? (
+          <div data-card className="px-4 py-6 text-[13px] text-[var(--muted)]">Todavía no hay clínicas.</div>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table data-tbl>
-              <thead>
-                <tr>
-                  <th>Clínica</th>
-                  <th style={{ textAlign: 'right' }}>Turnos</th>
-                  <th style={{ textAlign: 'right' }}>IA al mes</th>
-                  <th style={{ textAlign: 'right' }}>Citas agente</th>
-                  <th style={{ textAlign: 'right' }}>Asistidas</th>
-                  <th style={{ textAlign: 'right' }}>Ingreso estimado</th>
-                  <th style={{ textAlign: 'right' }}>Autonomía</th>
-                  <th>Garantía (mes)</th>
-                  <th>Mes anterior</th>
-                </tr>
-              </thead>
-              <tbody>
-                {clinicas.map((c) => {
-                  const actual = GARANTIA[c.guarantee.current.status] ?? GARANTIA.EN_CURSO
-                  const previo = GARANTIA[c.guarantee.previous.status] ?? GARANTIA.EN_CURSO
-                  return (
-                    <tr key={c.id}>
-                      <td>
-                        <Link href={`/backoffice/clinics/${c.id}`} className="font-medium text-[var(--ink)] hover:text-[var(--blue)]">{c.name}</Link>
-                      </td>
-                      <td className="tabular" style={{ textAlign: 'right' }}>{c.turns}</td>
-                      <td className="tabular" style={{ textAlign: 'right' }}>{usd(c.ai_cost_month_usd)}</td>
-                      <td className="tabular" style={{ textAlign: 'right' }}>{c.agent_appointments}</td>
-                      <td className="tabular" style={{ textAlign: 'right' }}>
-                        {c.attended}{c.unmarked > 0 && <span className="text-[var(--neg)]"> · {c.unmarked} sin marcar</span>}
-                      </td>
-                      <td className="tabular" style={{ textAlign: 'right' }}>{dinero(c.estimated_revenue, c.currency)}</td>
-                      <td className="tabular" style={{ textAlign: 'right' }}>{pct(c.autonomy_rate)}</td>
-                      <td>
-                        <span data-badge>
-                          <Dot tone={actual.tono} />{actual.texto}
-                          {c.guarantee.current.thresholdAppointments != null && ` · ${c.guarantee.current.attributedAttended}/${c.guarantee.current.thresholdAppointments}`}
-                        </span>
-                      </td>
-                      <td>
-                        <span data-badge><Dot tone={previo.tono} />{previo.texto}{c.guarantee.previous.status === 'GUARANTEE_TRIGGERED' ? ' · factura US$ 0' : ''}</span>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+          <div className="flex flex-col gap-3">
+            {clinicas.map((c) => {
+              const actual = GARANTIA[c.guarantee.current.status] ?? GARANTIA.EN_CURSO
+              const previo = GARANTIA[c.guarantee.previous.status] ?? GARANTIA.EN_CURSO
+              return (
+                <div key={c.id} data-card>
+                  <div data-hd>
+                    <Link href={`/backoffice/clinics/${c.id}`} className="text-[14.5px] font-semibold text-[var(--ink)] hover:text-[var(--blue)]">
+                      {c.name}
+                    </Link>
+                    <span data-badge><Dot tone={c.active ? 'pos' : 'neg'} />{c.active ? 'Con acceso' : 'Bloqueada'}</span>
+                  </div>
+                  <div className="p-3.5 grid gap-2.5 grid-cols-2 sm:grid-cols-3 xl:grid-cols-6">
+                    <Cifra etiqueta="Turnos" valor={c.turns} />
+                    <Cifra etiqueta="IA al mes" valor={usd(c.ai_cost_month_usd)} />
+                    <Cifra etiqueta="Citas del agente" valor={c.agent_appointments} />
+                    <Cifra
+                      etiqueta="Asistidas"
+                      valor={c.attended}
+                      detalle={c.unmarked > 0 ? <span className="text-[var(--neg)]">{c.unmarked} sin marcar</span> : undefined}
+                    />
+                    <Cifra etiqueta="Ingreso estimado" valor={dinero(c.estimated_revenue, c.currency)} />
+                    <Cifra etiqueta="Autonomía" valor={pct(c.autonomy_rate)} />
+                  </div>
+                  <div className="px-3.5 py-2.5 border-t border-[var(--line)] bg-[var(--head)] flex items-center gap-x-5 gap-y-2 flex-wrap text-[12.5px]">
+                    <span className="flex items-center gap-2">
+                      <span data-lbl>Garantía del mes</span>
+                      <span data-badge>
+                        <Dot tone={actual.tono} />{actual.texto}
+                        {c.guarantee.current.thresholdAppointments != null && ` · ${c.guarantee.current.attributedAttended}/${c.guarantee.current.thresholdAppointments}`}
+                      </span>
+                    </span>
+                    <span className="flex items-center gap-2">
+                      <span data-lbl>Mes anterior</span>
+                      <span data-badge><Dot tone={previo.tono} />{previo.texto}{c.guarantee.previous.status === 'GUARANTEE_TRIGGERED' ? ' · factura US$ 0' : ''}</span>
+                    </span>
+                  </div>
+                </div>
+              )
+            })}
           </div>
         )}
-      </div>
+      </Seccion>
+
       <p className="text-[11.5px] text-[var(--dim)]">
-        El costo de IA usa los precios públicos de OpenAI y cobra todos los tokens de entrada a precio normal (no descuenta los de caché),
-        así que está ligeramente por encima del real. No incluye Meta ni la infraestructura.
+        El costo de IA usa los precios públicos de OpenAI y cobra todos los tokens de entrada a precio normal: no descuenta los que OpenAI sirve
+        desde caché, así que puede estar hasta al doble del real. No incluye Meta ni la infraestructura.
       </p>
     </div>
   )
