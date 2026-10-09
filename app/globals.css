@@ -87,8 +87,8 @@
   --color-neg: var(--neg);
   --color-panel: var(--panel);
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-app-sans);
+  --font-mono: var(--font-app-mono);
 
   --radius-sm: 6px;
   --radius-md: 7px;
@@ -109,7 +109,7 @@ html, body {
 body {
   background: var(--bg);
   color: var(--ink);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-app-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -171,13 +171,13 @@ input::placeholder, textarea::placeholder {
 
 /* Números siempre tabulares en KPIs, precios, horas y latencias */
 .tabular, [data-mono] { 
-  font-family: var(--font-geist-mono), monospace; 
+  font-family: var(--font-app-mono), monospace; 
   font-variant-numeric: tabular-nums; 
 }
 
 /* Microetiqueta: la usa toda la UI para rótulos de campo, cabeceras de tabla y metadatos */
 .microlabel, [data-lbl] {
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-app-mono), monospace;
   font-size: 10.5px;
   font-weight: 500;
   letter-spacing: .09em;
@@ -313,7 +313,7 @@ input::placeholder, textarea::placeholder {
 }
 
 [data-field] > label {
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-app-mono), monospace;
   font-size: 10.5px;
   font-weight: 500;
   letter-spacing: 0.09em;
@@ -405,7 +405,7 @@ table[data-tbl] {
 [data-tbl] th {
   text-align: left;
   padding: 10px 16px;
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-app-mono), monospace;
   font-size: 10px;
   letter-spacing: 0.09em;
   text-transform: uppercase;

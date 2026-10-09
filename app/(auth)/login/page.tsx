@@ -181,7 +181,7 @@ export default function LoginPage() {
         
         <div style={{ position: 'absolute', top: '56px', left: '56px', right: '56px', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#5FBF8D' }} />
-          <span style={{ fontFamily: 'var(--font-geist-mono), monospace', fontSize: '10.5px', letterSpacing: '0.09em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)' }}>
+          <span style={{ fontFamily: 'var(--font-app-mono), monospace', fontSize: '10.5px', letterSpacing: '0.09em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)' }}>
             Nueva versión 2.4 ya disponible
           </span>
         </div>
