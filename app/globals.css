@@ -88,7 +88,8 @@
   --color-panel: var(--panel);
 
   --font-sans: var(--font-app-sans);
-  --font-mono: var(--font-app-mono);
+  /* Sin tipografía monoespaciada: todo es Roboto, también lo que use font-mono. */
+  --font-mono: var(--font-app-sans);
 
   --radius-sm: 6px;
   --radius-md: 7px;
@@ -119,6 +120,10 @@ body {
    (un enlace con text-[var(--on-blue)]) salía azul sobre azul, y los ítems
    del menú lateral, azules en vez de grises. */
 @layer base {
+  /* Todo en Roboto: el navegador pone estos en monoespaciada por defecto. */
+  code, pre, kbd, samp {
+    font-family: var(--font-app-sans), system-ui, sans-serif;
+  }
   a {
     color: var(--blue);
     text-decoration: none;
@@ -171,13 +176,13 @@ input::placeholder, textarea::placeholder {
 
 /* Números siempre tabulares en KPIs, precios, horas y latencias */
 .tabular, [data-mono] { 
-  font-family: var(--font-app-mono), monospace; 
+  font-family: var(--font-app-sans), system-ui, sans-serif; 
   font-variant-numeric: tabular-nums; 
 }
 
 /* Microetiqueta: la usa toda la UI para rótulos de campo, cabeceras de tabla y metadatos */
 .microlabel, [data-lbl] {
-  font-family: var(--font-app-mono), monospace;
+  font-family: var(--font-app-sans), system-ui, sans-serif;
   font-size: 10.5px;
   font-weight: 500;
   letter-spacing: .09em;
@@ -313,7 +318,7 @@ input::placeholder, textarea::placeholder {
 }
 
 [data-field] > label {
-  font-family: var(--font-app-mono), monospace;
+  font-family: var(--font-app-sans), system-ui, sans-serif;
   font-size: 10.5px;
   font-weight: 500;
   letter-spacing: 0.09em;
@@ -405,7 +410,7 @@ table[data-tbl] {
 [data-tbl] th {
   text-align: left;
   padding: 10px 16px;
-  font-family: var(--font-app-mono), monospace;
+  font-family: var(--font-app-sans), system-ui, sans-serif;
   font-size: 10px;
   letter-spacing: 0.09em;
   text-transform: uppercase;

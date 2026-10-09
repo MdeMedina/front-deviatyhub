@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
-import { Roboto, Roboto_Mono } from "next/font/google";
+import { Roboto } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/components/providers/QueryProvider";
 
-// Roboto y Roboto Mono son variables: cubren todos los pesos que usa la
-// interfaz (400 a 700) sin declararlos uno por uno.
-const fuenteSans = Roboto({
+// Una sola tipografía en toda la app: Roboto. Es variable, así que cubre
+// todos los pesos que usa la interfaz (400 a 700) sin declararlos uno a uno.
+const fuente = Roboto({
   variable: "--font-app-sans",
-  subsets: ["latin"],
-});
-
-const fuenteMono = Roboto_Mono({
-  variable: "--font-app-mono",
   subsets: ["latin"],
 });
 
@@ -34,7 +29,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${fuenteSans.variable} ${fuenteMono.variable} h-full antialiased`}
+      className={`${fuente.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[var(--bg)] text-[var(--ink)]">
         <QueryProvider>

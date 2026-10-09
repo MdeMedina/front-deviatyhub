@@ -235,7 +235,7 @@ export default function UsersPage() {
               <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 <div data-field>
                   <label>Usuario</label>
-                  <p style={{ margin: 0, fontFamily: 'var(--font-app-mono)', fontSize: '13px', color: 'var(--ink)', background: 'var(--surface)', padding: '8px 12px', borderRadius: '7px', border: '1px solid var(--line)' }}>
+                  <p style={{ margin: 0, fontFamily: 'var(--font-app-sans)', fontSize: '13px', color: 'var(--ink)', background: 'var(--surface)', padding: '8px 12px', borderRadius: '7px', border: '1px solid var(--line)' }}>
                     {editingUser?.email}
                   </p>
                 </div>
