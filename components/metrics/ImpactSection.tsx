@@ -15,6 +15,8 @@ import { Spinner } from '@/components/ui/Spinner'
 type Estado = 'ok' | 'bajo' | 'sin'
 
 const COLOR: Record<Estado, string> = { ok: 'var(--pos)', bajo: 'var(--neg)', sin: 'var(--dim)' }
+/** Franja superior de la tarjeta: sin datos va del color del borde, no gris oscuro. */
+const FRANJA: Record<Estado, string> = { ok: 'var(--pos)', bajo: 'var(--neg)', sin: 'var(--line)' }
 const ETIQUETA: Record<Estado, string> = { ok: 'En meta', bajo: 'Bajo la meta', sin: 'Sin datos' }
 
 /** Una métrica de impacto: valor, meta de la especificación y si se cumple. */
@@ -26,17 +28,22 @@ function Kpi({ titulo, valor, meta, estado, detalle }: {
   detalle?: React.ReactNode
 }) {
   return (
-    <div data-card className="px-4 py-3.5 flex flex-col gap-1.5 min-w-0">
-      <div className="flex items-start justify-between gap-2">
-        <span data-lbl>{titulo}</span>
-        <span className="inline-flex items-center gap-1 text-[10.5px] text-[var(--muted)] shrink-0">
-          <span className="w-1.5 h-1.5 rounded-full" style={{ background: COLOR[estado] }} />
-          {ETIQUETA[estado]}
-        </span>
+    <div data-card className="flex flex-col min-w-0" style={{ borderTop: `3px solid ${FRANJA[estado]}` }}>
+      <div className="px-4 pt-3.5 pb-3 flex flex-col gap-2 flex-1">
+        <div className="flex items-start justify-between gap-2">
+          <span className="text-[13px] font-semibold text-[var(--ink)] leading-snug">{titulo}</span>
+          <span data-badge className="shrink-0">
+            <span data-dot style={{ background: COLOR[estado] }} />
+            {ETIQUETA[estado]}
+          </span>
+        </div>
+        <span className="tabular text-[26px] font-semibold tracking-[-0.02em] text-[var(--ink)] leading-none">{valor}</span>
+        {detalle && <span className="text-[12px] text-[var(--ink-soft)] leading-snug">{detalle}</span>}
       </div>
-      <span className="tabular text-[24px] font-semibold tracking-[-0.02em] text-[var(--ink)] leading-none">{valor}</span>
-      <span className="text-[11.5px] text-[var(--muted)]">Meta: {meta}</span>
-      {detalle && <span className="text-[11.5px] text-[var(--ink-soft)]">{detalle}</span>}
+      <div className="px-4 py-2 border-t border-[var(--line)] bg-[var(--head)] flex flex-col gap-0.5">
+        <span data-lbl>Meta</span>
+        <span className="text-[12px] text-[var(--ink-soft)]">{meta}</span>
+      </div>
     </div>
   )
 }
@@ -60,7 +67,7 @@ function TarjetaGarantia() {
   const avance = Math.min(100, m.progress ?? 0)
 
   return (
-    <div data-card>
+    <div data-card style={{ borderTop: `3px solid ${m.status === 'SIN_TICKET' ? 'var(--line)' : ESTADO_GARANTIA[m.status].color}` }}>
       <div data-hd>
         <h2>Garantía de {nombreDelMes(m.from)}</h2>
         <span className="inline-flex items-center gap-1.5 text-[12px] text-[var(--ink-soft)]">

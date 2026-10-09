@@ -176,24 +176,23 @@ function MetricsContent() {
 
       <ImpactSection days={period === '1d' ? 1 : period === '7d' ? 7 : 30} />
 
-      <h2 className="text-[16px] font-semibold text-[var(--ink)] tracking-[-0.012em] -mb-3">Actividad</h2>
 
       {/* Section: Indicadores */}
       <div data-sec>
-        <span>Indicadores</span>
+        <span>Actividad</span>
         <span data-lbl style={{ border: '1px solid var(--line)', borderRadius: '5px', padding: '2px 7px', background: 'var(--card)' }}>
           {currentPeriodLabel}
         </span>
         <span data-rule />
       </div>
 
-      {/* Unified 4×2 KPI Matrix */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '1px', background: 'var(--line)', border: '1px solid var(--line)', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 1px 2px rgba(20,20,25,.05)' }}>
+      {/* Cada indicador en su tarjeta, para que se distinga del fondo */}
+      <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         {metricCards.map((m) => (
-          <div key={m.testId} data-testid={m.testId} style={{ background: 'var(--card)', padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <span data-lbl style={{ color: 'var(--ink-soft)' }}>{m.title}</span>
+          <div key={m.testId} data-testid={m.testId} data-card style={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--ink)' }}>{m.title}</span>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '9px' }}>
-              <span data-mono style={{ fontSize: '25px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }}>
+              <span data-mono style={{ fontSize: '26px', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--ink)', lineHeight: 1 }}>
                 {m.value}
               </span>
               {/* Sin periodo anterior con el que comparar no se pinta nada. */}
@@ -203,7 +202,7 @@ function MetricsContent() {
                 </span>
               )}
             </div>
-            <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>{m.subtitle}</span>
+            <span style={{ fontSize: '12px', color: 'var(--muted)' }}>{m.subtitle}</span>
           </div>
         ))}
       </div>
