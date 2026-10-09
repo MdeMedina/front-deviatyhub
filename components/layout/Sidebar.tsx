@@ -110,12 +110,7 @@ export const Sidebar: React.FC = () => {
       <div className="h-14 flex items-center px-4 justify-between border-b border-[var(--line)] bg-[var(--card)]">
         <div className="flex items-center gap-2 overflow-hidden">
           {isSidebarOpen ? (
-            <>
-              <Logo variant="lockup" size={15} />
-              <span className="microlabel px-1.5 py-0.5 rounded border border-[var(--line)] bg-[var(--surface)]">
-                PRO
-              </span>
-            </>
+            <Logo variant="lockup" size={15} />
           ) : (
             <span className="w-[30px] h-[30px] grid place-items-center rounded-full bg-[var(--surface)] border border-[var(--line)] text-[var(--ink)] shrink-0">
               <Logo variant="mark" size={17} />
