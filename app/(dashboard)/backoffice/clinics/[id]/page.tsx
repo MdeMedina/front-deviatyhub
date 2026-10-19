@@ -13,6 +13,7 @@ import {
 import { ClinicAccessCard } from '@/components/backoffice/ClinicAccessCard'
 import { ClinicWhatsAppCard } from '@/components/backoffice/ClinicWhatsAppCard'
 import { ClinicCommercialCard } from '@/components/backoffice/ClinicCommercialCard'
+import { ClinicAgentSettingsCard } from '@/components/backoffice/ClinicAgentSettingsCard'
 import { Spinner } from '@/components/ui/Spinner'
 import { Button } from '@/components/ui/Button'
 import { CopyField, Dot, MODO_AGENTE, PageHeader, PlatformOnly, hace } from '@/components/backoffice/shared'
@@ -234,6 +235,8 @@ function Ficha() {
 
         <div className="flex flex-col gap-5 min-w-0">
           <ClinicAccessCard clinic={c} />
+
+          <ClinicAgentSettingsCard clinicId={c.id} />
 
           <ClinicCommercialCard clinicId={c.id} />
 

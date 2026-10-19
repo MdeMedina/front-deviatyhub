@@ -411,3 +411,32 @@ export const useSaveClinicCommercial = (id: string) => {
     },
   })
 }
+
+
+// ─── Ajustes del agente ────────────────────────────────────────────────
+
+export interface AgentSettings {
+  nombre: string
+  trato: 'tu' | 'usted'
+  anticipacionMinDias: number
+  anticipacionMaxDias: number | null
+  evaluacionPrimero: boolean
+  abonoEvaluacionRepetida: boolean
+  recordatorios: { horas: number[]; pedirConfirmacion: boolean }
+  atencionHumana: string
+}
+
+export const useAgentSettings = (id: string) =>
+  useQuery({
+    queryKey: ['platform', 'agent-settings', id],
+    queryFn: () => apiClient.get<{ mode: string | null; settings: AgentSettings }>(ENDPOINTS.platform.agentSettings(id)),
+    enabled: !!id,
+  })
+
+export const useSaveAgentSettings = (id: string) => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (s: Partial<AgentSettings>) => apiClient.put<{ settings: AgentSettings }>(ENDPOINTS.platform.agentSettings(id), s),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['platform', 'agent-settings', id] }),
+  })
+}

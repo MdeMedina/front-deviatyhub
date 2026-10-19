@@ -52,6 +52,7 @@ export const ENDPOINTS = {
     clinic:       (id: string) => `${API_BASE}/core/platform/clinics/${id}`,
     access:       (id: string) => `${API_BASE}/core/platform/clinics/${id}/access`,
     commercial:   (id: string) => `${API_BASE}/core/platform/clinics/${id}/commercial`,
+    agentSettings: (id: string) => `${API_BASE}/core/platform/clinics/${id}/agent-settings`,
     impact:       (id: string) => `${API_BASE}/core/platform/clinics/${id}/impact`,
     health:       `${API_BASE}/core/platform/metrics/health`,
     clinicsMetrics: `${API_BASE}/core/platform/metrics/clinics`,
