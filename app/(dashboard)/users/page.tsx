@@ -46,16 +46,16 @@ export default function UsersPage() {
         <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
           <AlertCircle size={22} />
         </div>
-        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
-        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+        <h2 className="text-[20px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
+        <p className="text-[14.5px] text-[var(--muted)] leading-relaxed mb-5">
           No tienes los permisos necesarios para gestionar los usuarios del sistema. Por favor contacta al administrador.
         </p>
         <Link
           href="/dashboard"
-          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[13px] transition-opacity gap-2"
+          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[14.5px] transition-opacity gap-2"
         >
           Ir al Dashboard
-          <ArrowRight size={14} />
+          <ArrowRight size={16} />
         </Link>
       </div>
     )
@@ -110,14 +110,14 @@ export default function UsersPage() {
     deleteMutation.isPending
 
   return (
-    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+    <div className="flex flex-col gap-5 max-w-[1680px] mx-auto">
       {/* Header Bar */}
       <div className="flex items-end justify-between gap-5 flex-wrap pb-4 border-b border-[var(--line)]">
         <div className="flex flex-col gap-1">
-          <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
+          <h1 className="text-[28px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
             Usuarios & Accesos
           </h1>
-          <p className="text-[13.5px] text-[var(--muted)]">
+          <p className="text-[15px] text-[var(--muted)]">
             Gestiona el personal de la clínica y sus niveles de acceso.
           </p>
         </div>
@@ -127,7 +127,7 @@ export default function UsersPage() {
             data-btn="primary"
             onClick={() => setIsInviteOpen(true)}
           >
-            <Plus size={14} strokeWidth={1.9} />
+            <Plus size={16} strokeWidth={1.9} />
             Invitar usuario
           </button>
         )}
@@ -137,12 +137,12 @@ export default function UsersPage() {
       {loadingUsers ? (
         <div className="flex flex-col items-center justify-center min-h-[360px] bg-[var(--card)] border border-[var(--line)] rounded-[10px]">
           <Spinner size="md" />
-          <span className="microlabel text-[10px] mt-2">Cargando usuarios</span>
+          <span className="microlabel text-[11.5px] mt-2">Cargando usuarios</span>
         </div>
       ) : errorUsers ? (
         <div className="flex flex-col items-center justify-center min-h-[360px] bg-[var(--card)] border border-[var(--line)] rounded-[10px] p-6 text-center">
           <AlertCircle size={24} className="text-[var(--neg)] mb-2" />
-          <p className="text-[13.5px] font-semibold text-[var(--ink)]">Error al cargar la lista de usuarios</p>
+          <p className="text-[15px] font-semibold text-[var(--ink)]">Error al cargar la lista de usuarios</p>
         </div>
       ) : (
         <UsersTable
@@ -172,7 +172,7 @@ export default function UsersPage() {
             <div data-hd>
               <h2>Invitar nuevo usuario</h2>
               <button data-btn onClick={() => setIsInviteOpen(false)} style={{ width: '28px', height: '28px', padding: 0, borderColor: 'transparent', background: 'none' }}>
-                <X size={15} strokeWidth={1.75} />
+                <X size={17} strokeWidth={1.75} />
               </button>
             </div>
             <form onSubmit={handleInviteSubmit}>
@@ -207,7 +207,7 @@ export default function UsersPage() {
                     ))}
                   </select>
                 </div>
-                <p style={{ margin: 0, fontSize: '12px', lineHeight: 1.55, color: 'var(--muted)' }}>
+                <p style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.55, color: 'var(--muted)' }}>
                   El usuario recibirá un enlace para establecer su contraseña y activar la cuenta.
                 </p>
               </div>
@@ -228,14 +228,14 @@ export default function UsersPage() {
             <div data-hd>
               <h2>Editar Usuario</h2>
               <button data-btn onClick={() => setEditingUser(null)} style={{ width: '28px', height: '28px', padding: 0, borderColor: 'transparent', background: 'none' }}>
-                <X size={15} strokeWidth={1.75} />
+                <X size={17} strokeWidth={1.75} />
               </button>
             </div>
             <form onSubmit={handleEditSubmit}>
               <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 <div data-field>
                   <label>Usuario</label>
-                  <p style={{ margin: 0, fontFamily: 'var(--font-app-sans)', fontSize: '13px', color: 'var(--ink)', background: 'var(--surface)', padding: '8px 12px', borderRadius: '7px', border: '1px solid var(--line)' }}>
+                  <p style={{ margin: 0, fontFamily: 'var(--font-app-sans)', fontSize: '14.5px', color: 'var(--ink)', background: 'var(--surface)', padding: '8px 12px', borderRadius: '7px', border: '1px solid var(--line)' }}>
                     {editingUser?.email}
                   </p>
                 </div>
@@ -286,15 +286,15 @@ export default function UsersPage() {
             <div data-hd>
               <h2>Eliminar usuario</h2>
               <button data-btn onClick={() => setDeletingUser(null)} style={{ width: '28px', height: '28px', padding: 0, borderColor: 'transparent', background: 'none' }}>
-                <X size={15} strokeWidth={1.75} />
+                <X size={17} strokeWidth={1.75} />
               </button>
             </div>
             <div style={{ padding: '18px' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px', background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: '7px' }}>
                 <AlertCircle size={20} style={{ color: 'var(--neg)', flexShrink: 0, marginTop: '2px' }} />
                 <div>
-                  <p style={{ margin: 0, fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>¿Estás seguro de eliminar este usuario?</p>
-                  <p style={{ margin: '4px 0 0', fontSize: '12.5px', lineHeight: 1.55, color: 'var(--muted)' }}>
+                  <p style={{ margin: 0, fontSize: '15px', fontWeight: 500, color: 'var(--ink)' }}>¿Estás seguro de eliminar este usuario?</p>
+                  <p style={{ margin: '4px 0 0', fontSize: '14px', lineHeight: 1.55, color: 'var(--muted)' }}>
                     Se revocará el acceso de <strong style={{ color: 'var(--ink)' }}>{deletingUser.email}</strong> al panel de forma permanente. Esta acción no se puede deshacer.
                   </p>
                 </div>
@@ -306,7 +306,7 @@ export default function UsersPage() {
                 type="button"
                 onClick={handleDeleteConfirm}
                 disabled={deleteMutation.isPending}
-                className="h-8 px-3.5 inline-flex items-center gap-2 rounded-[7px] text-[13px] font-medium border border-[var(--line)] text-[var(--neg)] hover:border-[var(--neg)] transition-colors disabled:opacity-50 cursor-pointer"
+                className="h-8 px-3.5 inline-flex items-center gap-2 rounded-[7px] text-[14.5px] font-medium border border-[var(--line)] text-[var(--neg)] hover:border-[var(--neg)] transition-colors disabled:opacity-50 cursor-pointer"
               >
                 {deleteMutation.isPending ? 'Eliminando...' : 'Eliminar usuario'}
               </button>

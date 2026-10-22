@@ -37,7 +37,7 @@ export const Input: React.FC<InputProps> = ({
   const inputId = id || `input-${name || reactId}`
   const errorId = `${inputId}-error`
 
-  const heightClass = inputSize === 'lg' ? 'h-10 text-[14px]' : 'h-9 text-[13.5px]'
+  const heightClass = inputSize === 'lg' ? 'h-11 text-[15.5px]' : 'h-10 text-[15px]'
 
   const baseInputStyles = `w-full px-3 bg-[var(--card)] border rounded-[7px] text-[var(--ink)] placeholder:text-[var(--dim)] transition-[border-color,box-shadow] duration-150 outline-none disabled:bg-[var(--surface)] disabled:text-[var(--dim)] disabled:cursor-not-allowed ${heightClass}`
   

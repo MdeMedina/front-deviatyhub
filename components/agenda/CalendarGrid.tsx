@@ -143,7 +143,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
         {/* Timeline Column */}
         <div className="w-16 shrink-0 border-r border-[var(--line-soft)] bg-[var(--head)] py-4 hidden md:block">
           {HOURS.map(h => (
-            <div key={h} className="h-16 flex justify-center items-start microlabel text-[10px] tabular">
+            <div key={h} className="h-16 flex justify-center items-start microlabel text-[11.5px] tabular">
               {String(h).padStart(2, '0')}:00
             </div>
           ))}
@@ -170,8 +170,8 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                 title={a.reason || 'Ausencia'}
                 className="absolute left-0 right-0 rounded-[6px] border border-dashed border-[var(--line)] bg-[var(--surface)] pointer-events-none flex items-start gap-1.5 p-2 overflow-hidden"
               >
-                <CalendarOff size={12} className="text-[var(--muted)] mt-0.5 shrink-0" />
-                <span className="text-[11px] text-[var(--muted)] leading-tight">
+                <CalendarOff size={13} className="text-[var(--muted)] mt-0.5 shrink-0" />
+                <span className="text-[12.5px] text-[var(--muted)] leading-tight">
                   {a.doctor?.name ? `${a.doctor.name} no atiende` : 'Ausencia'}
                   {a.reason ? ` · ${a.reason}` : ''}
                 </span>
@@ -194,18 +194,18 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                 >
                   <div>
                     <div className="flex justify-between items-start gap-2 mb-0.5">
-                      <h4 className="text-[12px] font-semibold text-[var(--ink)] truncate">
+                      <h4 className="text-[13.5px] font-semibold text-[var(--ink)] truncate">
                         {apt.contactName}
                       </h4>
                       <Badge variant={getStatusTextVariant(apt.status)} size="sm">
                         {apt.status}
                       </Badge>
                     </div>
-                    <p className="text-[10.5px] text-[var(--muted)] truncate">
+                    <p className="text-[12px] text-[var(--muted)] truncate">
                       {apt.treatment?.name}
                     </p>
                   </div>
-                  <div className="flex justify-between items-center microlabel text-[9px] text-[var(--dim)]">
+                  <div className="flex justify-between items-center microlabel text-[10.5px] text-[var(--dim)]">
                     <span className="truncate">{apt.doctor?.name}</span>
                     <span className="tabular">
                       {format(getParsedDate(apt.scheduledAt), 'HH:mm')} ({apt.durationMin} min)
@@ -229,13 +229,13 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                   }`}
                 >
                   <div className="flex justify-between items-start mb-1.5">
-                    <h4 className="text-[13.5px] font-semibold text-[var(--ink)]">{apt.contactName}</h4>
+                    <h4 className="text-[15px] font-semibold text-[var(--ink)]">{apt.contactName}</h4>
                     <Badge variant={getStatusTextVariant(apt.status)} size="sm">
                       {apt.status}
                     </Badge>
                   </div>
-                  <p className="text-[12px] text-[var(--muted)] mb-2">{apt.treatment?.name}</p>
-                  <div className="flex justify-between items-center microlabel text-[9.5px] pt-2 border-t border-[var(--line-soft)]">
+                  <p className="text-[13.5px] text-[var(--muted)] mb-2">{apt.treatment?.name}</p>
+                  <div className="flex justify-between items-center microlabel text-[11px] pt-2 border-t border-[var(--line-soft)]">
                     <span>{apt.doctor?.name}</span>
                     <span className="tabular">{format(getParsedDate(apt.scheduledAt), 'HH:mm')} ({apt.durationMin} min)</span>
                   </div>
@@ -271,11 +271,11 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
         <div data-hd>
           <h2>Semana del {format(weekStart, "d 'de' MMMM", { locale: es })}</h2>
           <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', color: 'var(--muted)' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--muted)' }}>
               <span style={{ width: '9px', height: '9px', borderRadius: '3px', border: '1px solid var(--blue-line)', background: 'var(--blue-tint)' }} />
               Agendada por IA
             </span>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', color: 'var(--muted)' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--muted)' }}>
               <span style={{ width: '9px', height: '9px', borderRadius: '3px', border: '1px solid var(--line)', background: 'var(--surface-2)' }} />
               Manual
             </span>
@@ -293,7 +293,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                   style={{ padding: '9px 10px', borderLeft: '1px solid var(--line-soft)', display: 'flex', flexDirection: 'column', gap: '2px' }}
                 >
                   <span data-lbl>{format(day, 'eee', { locale: es })}</span>
-                  <span data-mono style={{ fontSize: '13px', color: 'var(--ink)' }}>{format(day, 'd')}</span>
+                  <span data-mono style={{ fontSize: '14.5px', color: 'var(--ink)' }}>{format(day, 'd')}</span>
                 </div>
               ))}
             </div>
@@ -301,7 +301,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
             {/* Hour rows */}
             {HOURS.map((hour) => (
               <div key={hour} style={{ ...HEADER_COLS, borderBottom: '1px solid var(--line-soft)' }}>
-                <div data-mono style={{ fontSize: '10.5px', color: 'var(--dim)', padding: '6px 8px', textAlign: 'right' }}>
+                <div data-mono style={{ fontSize: '12px', color: 'var(--dim)', padding: '6px 8px', textAlign: 'right' }}>
                   {String(hour).padStart(2, '0')}:00
                 </div>
                 {daysOfWeek.map((day) => {
@@ -336,7 +336,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                       }}
                     >
                       {ausente && cellAppts.length === 0 && (
-                        <span style={{ fontSize: '9.5px', color: 'var(--dim)', padding: '2px 3px', lineHeight: 1.2 }}>
+                        <span style={{ fontSize: '11px', color: 'var(--dim)', padding: '2px 3px', lineHeight: 1.2 }}>
                           {cellAbsences[0].doctor?.name ?? 'Ausencia'}
                         </span>
                       )}
@@ -364,10 +364,10 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                               textAlign: 'left',
                             }}
                           >
-                            <span style={{ fontSize: '11.5px', fontWeight: 500, color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
+                            <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
                               {apt.contactName}
                             </span>
-                            <span style={{ fontSize: '10.5px', color: 'var(--muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
+                            <span style={{ fontSize: '12px', color: 'var(--muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
                               {apt.treatment?.name}
                             </span>
                           </button>
@@ -398,7 +398,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
         {/* Day Name Headers */}
         <div className="grid grid-cols-7 border-b border-[var(--line)] bg-[var(--head)] py-2 text-center">
           {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map(d => (
-            <span key={d} className="microlabel text-[9.5px]">
+            <span key={d} className="microlabel text-[11px]">
               {d}
             </span>
           ))}
@@ -421,7 +421,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                 }`}
               >
                 <div className="flex justify-between items-center mb-1">
-                  <span className={`inline-flex items-center justify-center w-5 h-5 rounded-[4px] text-[11px] font-semibold tabular ${
+                  <span className={`inline-flex items-center justify-center w-5 h-5 rounded-[4px] text-[12.5px] font-semibold tabular ${
                     isToday 
                       ? 'bg-[var(--blue)] text-white' 
                       : !isCurrentMonth ? 'text-[var(--dim)]' : 'text-[var(--ink)]'
@@ -431,13 +431,13 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                   <span className="flex items-center gap-1">
                     {absencesOfDay(day).length > 0 && (
                       <CalendarOff
-                        size={11}
+                        size={12}
                         className="text-[var(--muted)]"
                         aria-label="Hay ausencias este día"
                       />
                     )}
                     {dayAppointments.length > 0 && (
-                      <span className="microlabel text-[8.5px] px-1 py-0.2 rounded bg-[var(--surface-2)] text-[var(--ink-soft)] border border-[var(--line)]">
+                      <span className="microlabel text-[10px] px-1 py-0.2 rounded bg-[var(--surface-2)] text-[var(--ink-soft)] border border-[var(--line)]">
                         {dayAppointments.length}
                       </span>
                     )}
@@ -452,13 +452,13 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                         e.stopPropagation()
                         onSelectAppointment(apt.id)
                       }}
-                      className="px-1.5 py-0.5 rounded-[4px] bg-[var(--surface-2)] border border-[var(--line)] hover:border-[var(--dim)] cursor-pointer text-[9.5px] font-medium text-[var(--ink)] truncate"
+                      className="px-1.5 py-0.5 rounded-[4px] bg-[var(--surface-2)] border border-[var(--line)] hover:border-[var(--dim)] cursor-pointer text-[11px] font-medium text-[var(--ink)] truncate"
                     >
                       {apt.contactName}
                     </div>
                   ))}
                   {dayAppointments.length > 2 && (
-                    <div className="microlabel text-[8px] text-center text-[var(--dim)]">
+                    <div className="microlabel text-[9.5px] text-center text-[var(--dim)]">
                       +{dayAppointments.length - 2} más
                     </div>
                   )}
@@ -475,7 +475,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
     return (
       <div className="flex flex-col items-center justify-center py-24 bg-[var(--card)] border border-[var(--line)] rounded-[10px] min-h-[380px]">
         <Spinner size="md" />
-        <p className="microlabel text-[10px] mt-2">Sincronizando agenda</p>
+        <p className="microlabel text-[11.5px] mt-2">Sincronizando agenda</p>
       </div>
     )
   }
@@ -484,7 +484,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
     <div className="w-full space-y-4">
       {/* Legend bar for day/month (week shows its legend in the card header) */}
       {view !== 'week' && (
-        <div className="flex items-center gap-4 text-[11.5px] text-[var(--muted)]">
+        <div className="flex items-center gap-4 text-[13px] text-[var(--muted)]">
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-[3px] bg-[var(--blue-tint)] border border-[var(--blue-line)]" />
             <span>Agendada por IA</span>

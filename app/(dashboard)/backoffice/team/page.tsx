@@ -42,7 +42,7 @@ function Equipo() {
 
       <form onSubmit={enviar} data-card>
         <div data-hd><h2>Invitar al equipo</h2></div>
-        <div className="px-[18px] py-4 flex flex-col gap-2.5">
+        <div className="px-[22px] py-4 flex flex-col gap-2.5">
           <div className="flex items-center gap-2 flex-wrap">
             <input
               data-inp
@@ -58,14 +58,14 @@ function Equipo() {
               Dar acceso de superusuario
             </Button>
           </div>
-          <span className="text-[12px] text-[var(--muted)]">
+          <span className="text-[13.5px] text-[var(--muted)]">
             {invitar.isError
               ? <span className="text-[var(--neg)]">{(invitar.error as Error)?.message}</span>
               : 'Si el correo ya tiene cuenta en una clínica, se le suma el acceso. Si no, recibe una invitación para crear su contraseña.'}
           </span>
           {resultado && (
             <div className="flex flex-col gap-1.5 pt-1">
-              <span className="text-[12.5px] text-[var(--ink)]">
+              <span className="text-[14px] text-[var(--ink)]">
                 {resultado.promoted
                   ? `${resultado.email} ya tenía cuenta: ahora también es superusuario. Lo verá la próxima vez que inicie sesión.`
                   : `Invitación enviada a ${resultado.email}. Enlace por si el correo no llega:`}
@@ -84,7 +84,7 @@ function Equipo() {
         {isLoading ? (
           <div className="py-12 flex justify-center"><Spinner /></div>
         ) : isError ? (
-          <p className="px-[18px] py-5 text-[13px] text-[var(--neg)]">No se pudo cargar el equipo.</p>
+          <p className="px-[22px] py-5 text-[14.5px] text-[var(--neg)]">No se pudo cargar el equipo.</p>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table data-tbl>
@@ -106,7 +106,7 @@ function Equipo() {
                         <span className="text-[var(--ink)] font-medium truncate">
                           {m.email}{m.is_you && <span className="text-[var(--muted)] font-normal"> · tú</span>}
                         </span>
-                        {m.clinic && <span className="text-[11.5px] text-[var(--dim)]">También trabaja en {m.clinic}</span>}
+                        {m.clinic && <span className="text-[13px] text-[var(--dim)]">También trabaja en {m.clinic}</span>}
                       </span>
                     </td>
                     <td>
@@ -122,7 +122,7 @@ function Equipo() {
                     <td className="text-[var(--muted)] whitespace-nowrap">{hace(m.created_at)}</td>
                     <td style={{ textAlign: 'right' }}>
                       {m.is_you || m.from_server ? (
-                        <span className="text-[11.5px] text-[var(--dim)]" title={m.from_server ? 'Se quita en PLATFORM_ADMIN_EMAILS del servidor' : undefined}>
+                        <span className="text-[13px] text-[var(--dim)]" title={m.from_server ? 'Se quita en PLATFORM_ADMIN_EMAILS del servidor' : undefined}>
                           {m.is_you ? '' : 'Solo en el servidor'}
                         </span>
                       ) : confirmando === m.id ? (
@@ -156,7 +156,7 @@ function Equipo() {
                     <tr>
                       <td colSpan={5}>
                         <div className="flex flex-col gap-1.5 py-1">
-                          <span className="text-[12px] text-[var(--muted)]">
+                          <span className="text-[13.5px] text-[var(--muted)]">
                             Invitación reenviada (la anterior deja de servir). Si tampoco llega, manda este enlace por WhatsApp:
                           </span>
                           <CopyField value={enlace.link} />
@@ -171,7 +171,7 @@ function Equipo() {
           </div>
         )}
         {quitar.isError && (
-          <p className="px-[18px] py-3 text-[12.5px] text-[var(--neg)] border-t border-[var(--line)]">{(quitar.error as Error)?.message}</p>
+          <p className="px-[22px] py-3 text-[14px] text-[var(--neg)] border-t border-[var(--line)]">{(quitar.error as Error)?.message}</p>
         )}
       </div>
     </div>

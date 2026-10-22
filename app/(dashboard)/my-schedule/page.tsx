@@ -27,10 +27,10 @@ export default function MySchedulePage() {
         <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--muted)] mb-3">
           <AlertCircle size={22} />
         </div>
-        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">
+        <h2 className="text-[20px] font-semibold text-[var(--ink)] mb-1.5">
           Tu cuenta no es la de un profesional
         </h2>
-        <p className="text-[13px] text-[var(--muted)] leading-relaxed">
+        <p className="text-[14.5px] text-[var(--muted)] leading-relaxed">
           Esta página muestra la jornada de quien atiende pacientes. Para gestionar la de un
           profesional concreto, entra a su ficha desde la base de conocimiento.
         </p>
@@ -47,11 +47,11 @@ export default function MySchedulePage() {
     >
       <div className="flex items-center gap-3 pb-4 border-b border-[var(--line)]">
         <div className="w-9 h-9 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--ink)]">
-          <CalendarClock size={18} />
+          <CalendarClock size={20} />
         </div>
         <div>
-          <h1 className="text-[18px] font-semibold text-[var(--ink)]">Mi jornada</h1>
-          <p className="text-[13px] text-[var(--muted)]">
+          <h1 className="text-[20px] font-semibold text-[var(--ink)]">Mi jornada</h1>
+          <p className="text-[14.5px] text-[var(--muted)]">
             {doctor.name}
             {doctor.title ? ` · ${doctor.title}` : ''}
           </p>

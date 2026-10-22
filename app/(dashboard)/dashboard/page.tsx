@@ -89,7 +89,7 @@ function DashboardContent() {
 
   if (isClinicPending || isMetricsPending) {
     return (
-      <div className="flex flex-col gap-6 max-w-[1340px] mx-auto animate-dentral-shimmer" data-testid="dashboard-loading">
+      <div className="flex flex-col gap-6 max-w-[1680px] mx-auto animate-dentral-shimmer" data-testid="dashboard-loading">
         <div className="flex flex-col gap-2.5">
           <div className="h-[22px] w-[220px] bg-[var(--surface-2)] rounded-[6px]" />
           <div className="h-[14px] w-[340px] bg-[var(--surface-2)] rounded-[6px]" />
@@ -115,20 +115,20 @@ function DashboardContent() {
 
   const trendBadge = (trend: ReturnType<typeof formatTrend>) =>
     trend ? (
-      <span data-mono style={{ fontSize: '11px', color: trend.positive ? 'var(--pos)' : 'var(--neg)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
+      <span data-mono style={{ fontSize: '12.5px', color: trend.positive ? 'var(--pos)' : 'var(--neg)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
         {trend.label}
       </span>
     ) : null
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1340px] mx-auto">
+    <div className="flex flex-col gap-6 max-w-[1680px] mx-auto">
       {/* 1. Header Section */}
       <div className="flex items-end justify-between gap-6 flex-wrap pb-5 border-b border-[var(--line)]">
         <div className="flex flex-col gap-1.5">
-          <h1 className="text-[29px] font-semibold tracking-[-0.03em] text-[var(--ink)] leading-tight">
+          <h1 className="text-[32px] font-semibold tracking-[-0.03em] text-[var(--ink)] leading-tight">
             Hola, <span className="capitalize" data-testid="user-greeting">{userGreeting}</span>
           </h1>
-          <p className="text-[13.5px] text-[var(--muted)]">
+          <p className="text-[15px] text-[var(--muted)]">
             {getFormattedDate()} · {clinicConfig?.name || 'Deviaty Dental Care'}
           </p>
         </div>
@@ -146,7 +146,7 @@ function DashboardContent() {
             data-btn="primary"
             onClick={openAgentModal}
           >
-            <SlidersHorizontal size={14} strokeWidth={1.75} />
+            <SlidersHorizontal size={16} strokeWidth={1.75} />
             Estado del agente
           </button>
         </div>
@@ -166,61 +166,61 @@ function DashboardContent() {
         {/* Cell 1 */}
         <div style={{ background: 'var(--card)', padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--ink-soft)' }}>
-            <MessageCircle size={14} strokeWidth={1.75} />
+            <MessageCircle size={16} strokeWidth={1.75} />
             <span data-lbl style={{ color: 'var(--ink-soft)' }}>Conversaciones atendidas</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-            <span data-mono style={{ fontSize: '30px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }} data-testid="conversations-kpi">
+            <span data-mono style={{ fontSize: '34px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }} data-testid="conversations-kpi">
               {isMetricsError ? '--' : totalConversationsAttended}
             </span>
             {!isMetricsError && trendBadge(conversationsTrend)}
           </div>
-          <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>Últimos 7 días</span>
+          <span style={{ fontSize: '13px', color: 'var(--dim)' }}>Últimos 7 días</span>
         </div>
 
         {/* Cell 2 */}
         <div style={{ background: 'var(--card)', padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--ink-soft)' }}>
-            <BrainCircuit size={14} strokeWidth={1.75} />
+            <BrainCircuit size={16} strokeWidth={1.75} />
             <span data-lbl style={{ color: 'var(--ink-soft)' }}>Tasa de contención</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-            <span data-mono style={{ fontSize: '30px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }} data-testid="containment-kpi">
+            <span data-mono style={{ fontSize: '34px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }} data-testid="containment-kpi">
               {isMetricsError ? '--' : containmentRateValue}
             </span>
             {!isMetricsError && trendBadge(containmentTrend)}
           </div>
-          <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>Autónomo por IA</span>
+          <span style={{ fontSize: '13px', color: 'var(--dim)' }}>Autónomo por IA</span>
         </div>
 
         {/* Cell 3 */}
         <div style={{ background: 'var(--card)', padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--ink-soft)' }}>
-            <Calendar size={14} strokeWidth={1.75} />
+            <Calendar size={16} strokeWidth={1.75} />
             <span data-lbl style={{ color: 'var(--ink-soft)' }}>Citas agendadas</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-            <span data-mono style={{ fontSize: '30px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }} data-testid="appointments-kpi">
+            <span data-mono style={{ fontSize: '34px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }} data-testid="appointments-kpi">
               {isMetricsError ? '--' : appointmentsScheduledValue}
             </span>
             {!isMetricsError && trendBadge(appointmentsTrend)}
           </div>
-          <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>Reservadas con éxito</span>
+          <span style={{ fontSize: '13px', color: 'var(--dim)' }}>Reservadas con éxito</span>
         </div>
 
         {/* Cell 4 */}
         <div style={{ background: 'var(--card)', padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--ink-soft)' }}>
-            <Clock size={14} strokeWidth={1.75} />
+            <Clock size={16} strokeWidth={1.75} />
             <span data-lbl style={{ color: 'var(--ink-soft)' }}>Tiempo de respuesta</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-            <span data-mono style={{ fontSize: '30px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }}>
+            <span data-mono style={{ fontSize: '34px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }}>
               {isMetricsError ? '--' : responseTimeValue}
             </span>
             {!isMetricsError && trendBadge(responseTrend)}
           </div>
-          <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>Tiempo promedio</span>
+          <span style={{ fontSize: '13px', color: 'var(--dim)' }}>Tiempo promedio</span>
         </div>
       </div>
 
@@ -246,13 +246,13 @@ function DashboardContent() {
               className="hover:bg-[var(--surface)] transition-colors"
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '9px', width: '100%' }}>
-                <span data-icon><MessageSquare size={15} strokeWidth={1.75} /></span>
-                <span style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>Bandeja de entrada</span>
+                <span data-icon><MessageSquare size={17} strokeWidth={1.75} /></span>
+                <span style={{ fontSize: '15px', fontWeight: 500, color: 'var(--ink)' }}>Bandeja de entrada</span>
                 <span data-icon style={{ marginLeft: 'auto', width: '24px', height: '24px', background: 'var(--surface)', color: 'var(--ink-soft)' }}>
-                  <ArrowUpRight size={13} strokeWidth={1.9} />
+                  <ArrowUpRight size={14} strokeWidth={1.9} />
                 </span>
               </div>
-              <p style={{ margin: 0, fontSize: '12.5px', lineHeight: 1.55, color: 'var(--muted)' }}>
+              <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.55, color: 'var(--muted)' }}>
                 Supervisa e interviene chats en tiempo real de WhatsApp e Instagram.
               </p>
             </Link>
@@ -264,13 +264,13 @@ function DashboardContent() {
               className="hover:bg-[var(--surface)] transition-colors"
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '9px', width: '100%' }}>
-                <span data-icon><Calendar size={15} strokeWidth={1.75} /></span>
-                <span style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>Agenda médica</span>
+                <span data-icon><Calendar size={17} strokeWidth={1.75} /></span>
+                <span style={{ fontSize: '15px', fontWeight: 500, color: 'var(--ink)' }}>Agenda médica</span>
                 <span data-icon style={{ marginLeft: 'auto', width: '24px', height: '24px', background: 'var(--surface)', color: 'var(--ink-soft)' }}>
-                  <ArrowUpRight size={13} strokeWidth={1.9} />
+                  <ArrowUpRight size={14} strokeWidth={1.9} />
                 </span>
               </div>
-              <p style={{ margin: 0, fontSize: '12.5px', lineHeight: 1.55, color: 'var(--muted)' }}>
+              <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.55, color: 'var(--muted)' }}>
                 Visualiza el calendario completo de citas y coordina horarios médicos.
               </p>
             </Link>
@@ -282,13 +282,13 @@ function DashboardContent() {
               className="hover:bg-[var(--surface)] transition-colors"
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '9px', width: '100%' }}>
-                <span data-icon><BookOpen size={15} strokeWidth={1.75} /></span>
-                <span style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>Base de conocimiento</span>
+                <span data-icon><BookOpen size={17} strokeWidth={1.75} /></span>
+                <span style={{ fontSize: '15px', fontWeight: 500, color: 'var(--ink)' }}>Base de conocimiento</span>
                 <span data-icon style={{ marginLeft: 'auto', width: '24px', height: '24px', background: 'var(--surface)', color: 'var(--ink-soft)' }}>
-                  <ArrowUpRight size={13} strokeWidth={1.9} />
+                  <ArrowUpRight size={14} strokeWidth={1.9} />
                 </span>
               </div>
-              <p style={{ margin: 0, fontSize: '12.5px', lineHeight: 1.55, color: 'var(--muted)' }}>
+              <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.55, color: 'var(--muted)' }}>
                 Administra las políticas de atención, especialidades y tratamientos de la clínica.
               </p>
             </Link>
@@ -300,13 +300,13 @@ function DashboardContent() {
               className="hover:bg-[var(--surface)] transition-colors"
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '9px', width: '100%' }}>
-                <span data-icon><BarChart3 size={15} strokeWidth={1.75} /></span>
-                <span style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>Métricas y reportes</span>
+                <span data-icon><BarChart3 size={17} strokeWidth={1.75} /></span>
+                <span style={{ fontSize: '15px', fontWeight: 500, color: 'var(--ink)' }}>Métricas y reportes</span>
                 <span data-icon style={{ marginLeft: 'auto', width: '24px', height: '24px', background: 'var(--surface)', color: 'var(--ink-soft)' }}>
-                  <ArrowUpRight size={13} strokeWidth={1.9} />
+                  <ArrowUpRight size={14} strokeWidth={1.9} />
                 </span>
               </div>
-              <p style={{ margin: 0, fontSize: '12.5px', lineHeight: 1.55, color: 'var(--muted)' }}>
+              <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.55, color: 'var(--muted)' }}>
                 Analiza el rendimiento del agente IA, tasas de éxito de citas y velocidad de respuesta.
               </p>
             </Link>
@@ -326,23 +326,23 @@ function DashboardContent() {
                 )}
                 <span style={{ position: 'relative', width: '7px', height: '7px', borderRadius: '50%', background: agentStatus.color }} />
               </span>
-              <span data-testid="agent-status-label" style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>{agentStatus.label}</span>
+              <span data-testid="agent-status-label" style={{ fontSize: '15px', fontWeight: 500, color: 'var(--ink)' }}>{agentStatus.label}</span>
             </div>
-            <p style={{ margin: 0, fontSize: '12.5px', lineHeight: 1.6, color: 'var(--muted)' }}>
+            <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6, color: 'var(--muted)' }}>
               {agentStatus.description}
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '9px', paddingTop: '14px', borderTop: '1px solid var(--line-soft)' }}>
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
-                <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Derivación a humano</span>
-                <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>{formatCount(metrics?.human_takeovers)}</span>
+                <span style={{ fontSize: '14px', color: 'var(--muted)' }}>Derivación a humano</span>
+                <span data-mono style={{ fontSize: '14px', color: 'var(--ink)' }}>{formatCount(metrics?.human_takeovers)}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
-                <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Fuera de horario</span>
-                <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>{formatCount(metrics?.out_of_hours_conversations)}</span>
+                <span style={{ fontSize: '14px', color: 'var(--muted)' }}>Fuera de horario</span>
+                <span data-mono style={{ fontSize: '14px', color: 'var(--ink)' }}>{formatCount(metrics?.out_of_hours_conversations)}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
-                <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Citas canceladas</span>
-                <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>{formatCount(metrics?.appointments_cancelled)}</span>
+                <span style={{ fontSize: '14px', color: 'var(--muted)' }}>Citas canceladas</span>
+                <span data-mono style={{ fontSize: '14px', color: 'var(--ink)' }}>{formatCount(metrics?.appointments_cancelled)}</span>
               </div>
             </div>
           </div>
@@ -369,11 +369,11 @@ function DashboardContent() {
                 onClick={closeAgentModal} 
                 style={{ width: '28px', height: '28px', padding: 0, borderColor: 'transparent', background: 'none' }}
               >
-                <X size={15} strokeWidth={1.75} />
+                <X size={17} strokeWidth={1.75} />
               </button>
             </div>
             <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.6, color: 'var(--muted)' }}>
+              <p style={{ margin: 0, fontSize: '14.5px', lineHeight: 1.6, color: 'var(--muted)' }}>
                 Controla si el agente responde de forma autónoma o deja todas las conversaciones en manos del equipo.
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: 'var(--line)', border: '1px solid var(--line)', borderRadius: '9px', overflow: 'hidden' }}>
@@ -385,8 +385,8 @@ function DashboardContent() {
                     {selectedMode === 'AUTONOMOUS' && <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--blue)' }} />}
                   </span>
                   <span style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                    <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--ink)' }}>Autónomo</span>
-                    <span style={{ fontSize: '12px', lineHeight: 1.5, color: 'var(--muted)' }}>Agenda, reprograma y cancela citas sin intervención.</span>
+                    <span style={{ fontSize: '14.5px', fontWeight: 500, color: 'var(--ink)' }}>Autónomo</span>
+                    <span style={{ fontSize: '13.5px', lineHeight: 1.5, color: 'var(--muted)' }}>Agenda, reprograma y cancela citas sin intervención.</span>
                   </span>
                 </label>
 
@@ -398,8 +398,8 @@ function DashboardContent() {
                     {selectedMode === 'SUPERVISED' && <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--blue)' }} />}
                   </span>
                   <span style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                    <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--ink)' }}>Supervisado</span>
-                    <span style={{ fontSize: '12px', lineHeight: 1.5, color: 'var(--muted)' }}>Propone respuestas y espera aprobación del equipo.</span>
+                    <span style={{ fontSize: '14.5px', fontWeight: 500, color: 'var(--ink)' }}>Supervisado</span>
+                    <span style={{ fontSize: '13.5px', lineHeight: 1.5, color: 'var(--muted)' }}>Propone respuestas y espera aprobación del equipo.</span>
                   </span>
                 </label>
 
@@ -411,8 +411,8 @@ function DashboardContent() {
                     {selectedMode === 'PAUSED' && <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--blue)' }} />}
                   </span>
                   <span style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                    <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--ink)' }}>Pausado</span>
-                    <span style={{ fontSize: '12px', lineHeight: 1.5, color: 'var(--muted)' }}>Todas las conversaciones pasan directo al equipo.</span>
+                    <span style={{ fontSize: '14.5px', fontWeight: 500, color: 'var(--ink)' }}>Pausado</span>
+                    <span style={{ fontSize: '13.5px', lineHeight: 1.5, color: 'var(--muted)' }}>Todas las conversaciones pasan directo al equipo.</span>
                   </span>
                 </label>
               </div>
@@ -434,7 +434,7 @@ export default function DashboardPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex flex-col gap-6 max-w-[1340px] mx-auto animate-dentral-shimmer" data-testid="dashboard-suspense">
+        <div className="flex flex-col gap-6 max-w-[1680px] mx-auto animate-dentral-shimmer" data-testid="dashboard-suspense">
           <div className="h-8 w-48 bg-[var(--surface-2)] rounded-[6px]" />
           <div className="h-32 bg-[var(--card)] border border-[var(--line)] rounded-[10px]" />
         </div>

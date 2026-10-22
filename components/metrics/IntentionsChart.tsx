@@ -36,8 +36,8 @@ export const IntentionsChart: React.FC<IntentionsChartProps> = ({ intentions, pe
             style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
           >
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
-              <span style={{ fontSize: '12.5px', color: 'var(--ink-soft)' }}>{item.intention}</span>
-              <span data-mono style={{ fontSize: '12px', color: 'var(--muted)' }}>
+              <span style={{ fontSize: '14px', color: 'var(--ink-soft)' }}>{item.intention}</span>
+              <span data-mono style={{ fontSize: '13.5px', color: 'var(--muted)' }}>
                 {item.count} · {item.percentage.toFixed(0)}%
               </span>
             </div>

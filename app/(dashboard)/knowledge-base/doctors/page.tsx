@@ -20,13 +20,13 @@ export default function StandaloneDoctorsPage() {
         <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
           <AlertCircle size={22} />
         </div>
-        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
-        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+        <h2 className="text-[20px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
+        <p className="text-[14.5px] text-[var(--muted)] leading-relaxed mb-5">
           No tienes los permisos necesarios para ver o modificar el cuerpo médico de la clínica. Por favor contacta al administrador.
         </p>
         <Link
           href="/knowledge-base"
-          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[13px] transition-opacity"
+          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[14.5px] transition-opacity"
         >
           Volver a Base de Conocimiento
         </Link>
@@ -35,7 +35,7 @@ export default function StandaloneDoctorsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+    <div className="flex flex-col gap-5 max-w-[1680px] mx-auto">
       {/* Back Button Navigation and Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-[var(--line)]">
         <div className="flex items-center gap-3">
@@ -46,18 +46,18 @@ export default function StandaloneDoctorsPage() {
             title="Volver a Base de Conocimiento"
             aria-label="Volver a Base de Conocimiento"
           >
-            <ArrowLeft size={16} strokeWidth={1.75} />
+            <ArrowLeft size={18} strokeWidth={1.75} />
           </Link>
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2.5">
               <span className="w-7 h-7 grid place-items-center border border-[var(--line)] rounded-[7px] bg-[var(--head)] text-[var(--ink)] shrink-0">
-                <Users size={15} strokeWidth={1.75} />
+                <Users size={17} strokeWidth={1.75} />
               </span>
-              <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
+              <h1 className="text-[28px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
                 Gestión Standalone de Doctores
               </h1>
             </div>
-            <p className="text-[13.5px] text-[var(--muted)] ml-[38px]">
+            <p className="text-[15px] text-[var(--muted)] ml-[38px]">
               Cuerpo médico y tratamientos autorizados
             </p>
           </div>

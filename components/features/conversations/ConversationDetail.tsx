@@ -57,7 +57,7 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
     return (
       <div className="flex-1 h-full flex flex-col items-center justify-center bg-[var(--card)] gap-2">
         <Spinner size="md" />
-        <span className="microlabel text-[10px]">Cargando detalles</span>
+        <span className="microlabel text-[11.5px]">Cargando detalles</span>
       </div>
     )
   }
@@ -81,13 +81,13 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
       {/* Thread column (header + messages + footer) */}
       <div className="flex flex-col h-full min-w-0 overflow-hidden bg-[var(--card)]">
         {/* Thread header */}
-        <header className="px-[18px] py-3 border-b border-[var(--line)] bg-[var(--head)] flex items-center justify-between shrink-0">
+        <header className="px-[22px] py-3 border-b border-[var(--line)] bg-[var(--head)] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-[30px] h-[30px] rounded-[8px] bg-[var(--blue-solid)] text-[var(--on-blue)] grid place-items-center font-semibold text-[12px] shrink-0">
+            <div className="w-[30px] h-[30px] rounded-[8px] bg-[var(--blue-solid)] text-[var(--on-blue)] grid place-items-center font-semibold text-[13.5px] shrink-0">
               {initial}
             </div>
             <div className="flex flex-col gap-0.5">
-              <span className="text-[13.5px] font-semibold text-[var(--ink)] leading-tight">{conversation.contact?.name}</span>
+              <span className="text-[15px] font-semibold text-[var(--ink)] leading-tight">{conversation.contact?.name}</span>
               <span className="microlabel">
                 {isHumanControl ? 'Control humano' : 'IA atendiendo'}
               </span>
@@ -102,7 +102,7 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
                   size="sm"
                   onClick={() => release.mutate()}
                   loading={release.isPending}
-                  icon={<ShieldOff size={13} />}
+                  icon={<ShieldOff size={14} />}
                 >
                   Liberar
                 </Button>
@@ -112,7 +112,7 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
                   size="sm"
                   onClick={() => takeover.mutate()}
                   loading={takeover.isPending}
-                  icon={<Shield size={13} />}
+                  icon={<Shield size={14} />}
                 >
                   Tomar Control Manual
                 </Button>
@@ -130,10 +130,10 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
         </div>
 
         {/* Footer Input Area */}
-        <footer className="py-3.5 px-[18px] bg-[var(--card)] border-t border-[var(--line)] shrink-0">
+        <footer className="py-3.5 px-[22px] bg-[var(--card)] border-t border-[var(--line)] shrink-0">
           {!isHumanControl ? (
-            <div className="p-3 rounded-[7px] bg-[var(--blue-tint)] border border-[var(--blue-line)] flex items-center gap-2 text-[12.5px] text-[var(--blue)]">
-              <Info size={15} className="shrink-0" />
+            <div className="p-3 rounded-[7px] bg-[var(--blue-tint)] border border-[var(--blue-line)] flex items-center gap-2 text-[14px] text-[var(--blue)]">
+              <Info size={17} className="shrink-0" />
               <p className="leading-relaxed">
                 El Agente de IA está atendiendo esta conversación. Para intervenir, pulsa <strong>&quot;Tomar Control Manual&quot;</strong>.
               </p>
@@ -163,7 +163,7 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
                 variant="primary"
                 className="h-[38px] w-[38px] p-0 shrink-0"
               >
-                <Send size={15} strokeWidth={1.75} />
+                <Send size={17} strokeWidth={1.75} />
               </Button>
             </form>
           )}
@@ -185,16 +185,16 @@ export const ConversationDetail: React.FC<ConversationDetailProps> = ({ conversa
         <div className="pt-4 border-t border-[var(--line-soft)] flex flex-col gap-3">
           <span className="microlabel">Contexto Actual</span>
           <div className="space-y-2.5">
-            <div className="flex justify-between items-center text-[12px]">
+            <div className="flex justify-between items-center text-[13.5px]">
               <span className="text-[var(--muted)]">Estado bot</span>
               <Badge variant="neutral" size="sm">{conversation.currentStep}</Badge>
             </div>
-            <div className="flex justify-between items-center text-[12px]">
+            <div className="flex justify-between items-center text-[13.5px]">
               <span className="text-[var(--muted)]">Canal</span>
               <Badge variant="info" size="sm">{conversation.channel}</Badge>
             </div>
             {conversation.appointment_id && (
-              <div className="flex justify-between items-center text-[12px]">
+              <div className="flex justify-between items-center text-[13.5px]">
                 <span className="text-[var(--muted)]">Cita médica</span>
                 <Badge variant="success" size="sm">Agendada</Badge>
               </div>
@@ -214,7 +214,7 @@ function MessageBubble({ message }: { message: any }) {
   return (
     <div className={`flex ${isUser ? 'justify-start' : 'justify-end'}`}>
       <div className={`max-w-[75%] space-y-1 ${isUser ? 'order-1' : 'order-2'}`}>
-        <div className={`px-3.5 py-2 rounded-[10px] text-[13px] leading-relaxed ${
+        <div className={`px-3.5 py-2 rounded-[10px] text-[14.5px] leading-relaxed ${
           isUser
             ? 'bg-[var(--card)] text-[var(--ink)] border border-[var(--line)]'
             : isAssistant
@@ -249,7 +249,7 @@ function ContactInfoItem({
       <span className="microlabel">{label}</span>
       <span
         {...(mono ? { 'data-mono': true } : {})}
-        className={`text-[13px] ${muted ? 'text-[var(--muted)]' : 'text-[var(--ink)]'} ${breakAll ? 'break-all' : ''}`}
+        className={`text-[14.5px] ${muted ? 'text-[var(--muted)]' : 'text-[var(--ink)]'} ${breakAll ? 'break-all' : ''}`}
       >
         {value || '-'}
       </span>

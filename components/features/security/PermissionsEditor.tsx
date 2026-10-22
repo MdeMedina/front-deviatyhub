@@ -116,14 +116,14 @@ export const PermissionsEditor: React.FC<PermissionsEditorProps> = ({
       {isSuperadmin && (
         <div style={{ padding: '8px 18px', background: 'var(--surface)', borderBottom: '1px solid var(--line)', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span data-badge>Acceso Total</span>
-          <span style={{ fontSize: '12px', color: 'var(--muted)' }}>El rol Administrador tiene todos los permisos de las secciones habilitadas para la clínica.</span>
+          <span style={{ fontSize: '13.5px', color: 'var(--muted)' }}>El rol Administrador tiene todos los permisos de las secciones habilitadas para la clínica.</span>
         </div>
       )}
 
       {readOnly && !isSuperadmin && (
         <div style={{ padding: '8px 18px', background: 'var(--surface)', borderBottom: '1px solid var(--line)', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span data-badge>Solo lectura</span>
-          <span style={{ fontSize: '12px', color: 'var(--muted)' }}>No tienes permisos para editar los roles.</span>
+          <span style={{ fontSize: '13.5px', color: 'var(--muted)' }}>No tienes permisos para editar los roles.</span>
         </div>
       )}
 
@@ -180,7 +180,7 @@ export const PermissionsEditor: React.FC<PermissionsEditorProps> = ({
                       onChange={(e) => handleCheckboxChange(module.key, 'view', e.target.checked)}
                       className="sr-only"
                     />
-                    {isViewChecked && <Check size={12} strokeWidth={2.5} />}
+                    {isViewChecked && <Check size={13} strokeWidth={2.5} />}
                   </label>
                 </td>
 
@@ -209,7 +209,7 @@ export const PermissionsEditor: React.FC<PermissionsEditorProps> = ({
                         onChange={(e) => handleCheckboxChange(module.key, 'edit', e.target.checked)}
                         className="sr-only"
                       />
-                      {isEditChecked && <Check size={12} strokeWidth={2.5} />}
+                      {isEditChecked && <Check size={13} strokeWidth={2.5} />}
                     </label>
                   ) : module.columns.includes('takeover') ? (
                     <label
@@ -234,7 +234,7 @@ export const PermissionsEditor: React.FC<PermissionsEditorProps> = ({
                         onChange={(e) => handleCheckboxChange(module.key, 'takeover', e.target.checked)}
                         className="sr-only"
                       />
-                      {isTakeoverChecked && <Check size={12} strokeWidth={2.5} />}
+                      {isTakeoverChecked && <Check size={13} strokeWidth={2.5} />}
                     </label>
                   ) : (
                     <span aria-hidden="true" />
@@ -267,7 +267,7 @@ export const PermissionsEditor: React.FC<PermissionsEditorProps> = ({
                         onChange={(e) => handleCheckboxChange(module.key, 'create', e.target.checked)}
                         className="sr-only"
                       />
-                      {isCreateChecked && <Check size={12} strokeWidth={2.5} />}
+                      {isCreateChecked && <Check size={13} strokeWidth={2.5} />}
                     </label>
                   ) : (
                     <span aria-hidden="true" />
@@ -300,7 +300,7 @@ export const PermissionsEditor: React.FC<PermissionsEditorProps> = ({
                         onChange={(e) => handleCheckboxChange(module.key, 'delete', e.target.checked)}
                         className="sr-only"
                       />
-                      {isDeleteChecked && <Check size={12} strokeWidth={2.5} />}
+                      {isDeleteChecked && <Check size={13} strokeWidth={2.5} />}
                     </label>
                   ) : (
                     <span aria-hidden="true" />
@@ -322,7 +322,7 @@ export const PermissionsEditor: React.FC<PermissionsEditorProps> = ({
             onClick={handleReset}
             disabled={isSaving}
           >
-            <RotateCcw size={13} strokeWidth={1.75} />
+            <RotateCcw size={14} strokeWidth={1.75} />
             Restablecer
           </button>
           <button
@@ -332,7 +332,7 @@ export const PermissionsEditor: React.FC<PermissionsEditorProps> = ({
             onClick={handleSave}
             disabled={isSaving}
           >
-            <Save size={14} strokeWidth={1.75} />
+            <Save size={16} strokeWidth={1.75} />
             Guardar cambios
           </button>
         </div>

@@ -37,7 +37,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
       <div className="p-3.5 border-b border-[var(--line)] bg-[var(--head)] space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h2 className="text-[14.5px] font-semibold text-[var(--ink)] tracking-[-0.012em]">Chats</h2>
+            <h2 className="text-[16px] font-semibold text-[var(--ink)] tracking-[-0.012em]">Chats</h2>
             <Badge variant="neutral" size="sm">{conversations.length}</Badge>
           </div>
         </div>
@@ -46,7 +46,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
           placeholder="Buscar contacto..." 
           value={searchQuery}
           onChange={setSearchQuery}
-          leftIcon={<Search size={14} />}
+          leftIcon={<Search size={16} />}
           className="w-full"
         />
 
@@ -80,14 +80,14 @@ export const ConversationList: React.FC<ConversationListProps> = ({
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-16 gap-2">
             <Spinner size="md" />
-            <span className="microlabel text-[10px]">Cargando chats</span>
+            <span className="microlabel text-[11.5px]">Cargando chats</span>
           </div>
         ) : isError ? (
           <div className="p-6 text-center">
-            <p className="text-[13px] text-[var(--neg)] mb-3">Error de conexión al cargar conversaciones</p>
+            <p className="text-[14.5px] text-[var(--neg)] mb-3">Error de conexión al cargar conversaciones</p>
             <button 
               onClick={() => refetch && refetch()}
-              className="text-[12px] font-medium text-[var(--blue)] hover:underline"
+              className="text-[13.5px] font-medium text-[var(--blue)] hover:underline"
             >
               Reintentar
             </button>
@@ -154,15 +154,15 @@ function ConversationItem({
       }`}
     >
       <div className="flex justify-between items-start mb-1">
-        <span className="text-[13.5px] font-semibold text-[var(--ink)] truncate pr-2">
+        <span className="text-[15px] font-semibold text-[var(--ink)] truncate pr-2">
           {conversation.contact?.name || 'Usuario desconocido'}
         </span>
-        <span data-mono className="text-[11px] text-[var(--dim)] whitespace-nowrap">
+        <span data-mono className="text-[12.5px] text-[var(--dim)] whitespace-nowrap">
           {new Date(conversation.messages?.[0]?.sentAt || conversation.startedAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </span>
       </div>
 
-      <p className="text-[12px] text-[var(--muted)] line-clamp-1 mb-2.5">
+      <p className="text-[13.5px] text-[var(--muted)] line-clamp-1 mb-2.5">
         {conversation.messages?.[0]?.content || 'Iniciando conversación...'}
       </p>
 
@@ -177,7 +177,7 @@ function ConversationItem({
           {statusLabel}
         </Badge>
         {conversation.appointment_id && (
-          <Badge variant="success" size="sm" icon={<Calendar size={10} />}>Cita</Badge>
+          <Badge variant="success" size="sm" icon={<Calendar size={11} />}>Cita</Badge>
         )}
       </div>
     </button>

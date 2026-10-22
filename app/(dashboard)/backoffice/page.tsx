@@ -33,9 +33,9 @@ function Resumen() {
         actions={
           <Link
             href="/backoffice/clinics/new"
-            className="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-[7px] bg-[var(--blue-solid)] text-[var(--on-blue)] text-[13px] font-medium hover:opacity-[.88] transition-opacity"
+            className="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-[7px] bg-[var(--blue-solid)] text-[var(--on-blue)] text-[14.5px] font-medium hover:opacity-[.88] transition-opacity"
           >
-            <Plus size={14} /> Nueva clínica
+            <Plus size={16} /> Nueva clínica
           </Link>
         }
       />
@@ -58,7 +58,7 @@ function Resumen() {
           <span data-lbl>{pendientes.length} clínica{pendientes.length === 1 ? '' : 's'}</span>
         </div>
         {pendientes.length === 0 ? (
-          <p className="px-[18px] py-6 text-[13px] text-[var(--muted)]">
+          <p className="px-[22px] py-6 text-[14.5px] text-[var(--muted)]">
             Todas las clínicas activas tienen WhatsApp conectado, profesionales y el agente encendido.
           </p>
         ) : (

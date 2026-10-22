@@ -85,7 +85,7 @@ export function ClinicCommercialCard({ clinicId }: { clinicId: string }) {
         onChange={(e) => setForm((f) => ({ ...f, [c.key]: e.target.value }))}
         style={{ height: 34 }}
       />
-      {c.hint && <span className="text-[11px] text-[var(--muted)] leading-snug">{c.hint}</span>}
+      {c.hint && <span className="text-[12.5px] text-[var(--muted)] leading-snug">{c.hint}</span>}
     </label>
   )
 
@@ -95,7 +95,7 @@ export function ClinicCommercialCard({ clinicId }: { clinicId: string }) {
         <h2>Comercial y línea base</h2>
         {data?.updatedAt && <span data-lbl>Actualizado {new Date(data.updatedAt).toLocaleDateString('es-CL')}</span>}
       </div>
-      <div className="px-[18px] py-3.5 flex flex-col gap-4">
+      <div className="px-[22px] py-3.5 flex flex-col gap-4">
         <div className="grid gap-3 grid-cols-2">
           {COMERCIALES.map(campo)}
           <label className="flex flex-col gap-1">
@@ -108,13 +108,13 @@ export function ClinicCommercialCard({ clinicId }: { clinicId: string }) {
           </label>
         </div>
         <div className="flex flex-col gap-2">
-          <span className="text-[12px] text-[var(--muted)]">Línea base: promedio de las 4 a 8 semanas antes del piloto, sacado de su sistema de fichas.</span>
+          <span className="text-[13.5px] text-[var(--muted)]">Línea base: promedio de las 4 a 8 semanas antes del piloto, sacado de su sistema de fichas.</span>
           <div className="grid gap-3 grid-cols-2">{LINEA_BASE.map(campo)}</div>
         </div>
       </div>
-      <div className="px-[18px] py-3 border-t border-[var(--line)] bg-[var(--head)] flex items-center justify-end gap-3">
-        {guardar.isError && <span className="text-[12px] text-[var(--neg)]">{(guardar.error as Error)?.message}</span>}
-        {guardado && <span className="text-[12px] text-[var(--pos)]">Guardado</span>}
+      <div className="px-[22px] py-3 border-t border-[var(--line)] bg-[var(--head)] flex items-center justify-end gap-3">
+        {guardar.isError && <span className="text-[13.5px] text-[var(--neg)]">{(guardar.error as Error)?.message}</span>}
+        {guardado && <span className="text-[13.5px] text-[var(--pos)]">Guardado</span>}
         <Button type="submit" size="sm" loading={guardar.isPending}>Guardar</Button>
       </div>
     </form>

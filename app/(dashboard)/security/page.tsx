@@ -89,16 +89,16 @@ export default function SecurityPage() {
         <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
           <AlertCircle size={22} />
         </div>
-        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
-        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+        <h2 className="text-[20px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
+        <p className="text-[14.5px] text-[var(--muted)] leading-relaxed mb-5">
           No tienes los permisos necesarios para gestionar directivas de seguridad ni auditar logs. Por favor contacta al administrador.
         </p>
         <Link
           href="/dashboard"
-          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[13px] transition-opacity gap-2"
+          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[14.5px] transition-opacity gap-2"
         >
           Ir al Dashboard
-          <ArrowRight size={14} />
+          <ArrowRight size={16} />
         </Link>
       </div>
     )
@@ -139,14 +139,14 @@ export default function SecurityPage() {
   }
 
   return (
-    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+    <div className="flex flex-col gap-5 max-w-[1680px] mx-auto">
       {/* Header Bar */}
       <div className="flex items-end justify-between gap-5 flex-wrap pb-4 border-b border-[var(--line)]">
         <div className="flex flex-col gap-1">
-          <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
+          <h1 className="text-[28px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
             Seguridad & Auditoría
           </h1>
-          <p className="text-[13.5px] text-[var(--muted)]">
+          <p className="text-[15px] text-[var(--muted)]">
             Controla las directivas de seguridad y audita los cambios del sistema.
           </p>
         </div>
@@ -158,7 +158,7 @@ export default function SecurityPage() {
             data-active={activeTab === 'permissions'}
             onClick={() => setActiveTab('permissions')}
           >
-            <Shield size={14} strokeWidth={1.75} />
+            <Shield size={16} strokeWidth={1.75} />
             Roles y Permisos
           </button>
           <button
@@ -166,7 +166,7 @@ export default function SecurityPage() {
             data-active={activeTab === 'audit'}
             onClick={() => setActiveTab('audit')}
           >
-            <History size={14} strokeWidth={1.75} />
+            <History size={16} strokeWidth={1.75} />
             Logs de auditoría
           </button>
         </div>
@@ -178,7 +178,7 @@ export default function SecurityPage() {
           {rolesLoading ? (
             <div data-card style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px', gap: '8px' }}>
               <Spinner size="md" />
-              <span className="microlabel text-[10px]">Cargando roles y permisos</span>
+              <span className="microlabel text-[11.5px]">Cargando roles y permisos</span>
             </div>
           ) : (
             <div data-card>
@@ -186,7 +186,7 @@ export default function SecurityPage() {
               <div data-hd>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                   <h2>Editor de Permisos</h2>
-                  <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
+                  <span style={{ fontSize: '13.5px', color: 'var(--muted)' }}>
                     Los permisos se aplican a todos los usuarios asignados a este rol.
                   </span>
                 </div>
@@ -217,7 +217,7 @@ export default function SecurityPage() {
                       data-btn="primary"
                       onClick={() => setIsCreateRoleOpen(true)}
                     >
-                      <Plus size={14} strokeWidth={1.9} />
+                      <Plus size={16} strokeWidth={1.9} />
                       Crear rol
                     </button>
                   )}
@@ -255,7 +255,7 @@ export default function SecurityPage() {
             <div data-hd>
               <h2>Crear Nuevo Rol de Seguridad</h2>
               <button data-btn onClick={() => setIsCreateRoleOpen(false)} style={{ width: '28px', height: '28px', padding: 0, borderColor: 'transparent', background: 'none' }}>
-                <X size={15} strokeWidth={1.75} />
+                <X size={17} strokeWidth={1.75} />
               </button>
             </div>
             <form data-testid="create-role-form" onSubmit={handleCreateRoleSubmit}>
@@ -275,10 +275,10 @@ export default function SecurityPage() {
                     required
                   />
                   {newRoleErrors.name && (
-                    <span style={{ fontSize: '11px', color: 'var(--neg)' }}>{newRoleErrors.name}</span>
+                    <span style={{ fontSize: '12.5px', color: 'var(--neg)' }}>{newRoleErrors.name}</span>
                   )}
                 </div>
-                <p style={{ margin: 0, fontSize: '12px', lineHeight: 1.55, color: 'var(--muted)' }}>
+                <p style={{ margin: 0, fontSize: '13.5px', lineHeight: 1.55, color: 'var(--muted)' }}>
                   El nuevo rol se creará con los permisos mínimos por defecto. Podrás configurarlo inmediatamente.
                 </p>
               </div>

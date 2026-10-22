@@ -44,7 +44,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
       {/* Table Search & Header */}
       <div data-hd>
         <div style={{ position: 'relative', width: '280px', maxWidth: '60%' }}>
-          <Search size={14} strokeWidth={1.75} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--dim)' }} />
+          <Search size={16} strokeWidth={1.75} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--dim)' }} />
           <input
             data-inp
             type="text"
@@ -63,7 +63,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
       {filteredUsers.length === 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px', gap: '8px', textAlign: 'center' }}>
           <User style={{ color: 'var(--dim)' }} size={24} />
-          <p style={{ fontSize: '13px', fontWeight: 500, color: 'var(--muted)', margin: 0 }}>No se encontraron usuarios</p>
+          <p style={{ fontSize: '14.5px', fontWeight: 500, color: 'var(--muted)', margin: 0 }}>No se encontraron usuarios</p>
         </div>
       ) : (
         <div style={{ overflowX: 'auto' }}>
@@ -85,7 +85,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                   {/* Email & Initials Avatar */}
                   <td>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span style={{ width: '28px', height: '28px', borderRadius: '7px', background: 'var(--blue-solid)', color: 'var(--on-blue)', display: 'grid', placeItems: 'center', fontSize: '10.5px', fontWeight: 600, flexShrink: 0 }}>
+                      <span style={{ width: '28px', height: '28px', borderRadius: '7px', background: 'var(--blue-solid)', color: 'var(--on-blue)', display: 'grid', placeItems: 'center', fontSize: '12px', fontWeight: 600, flexShrink: 0 }}>
                         {getInitials(u.email)}
                       </span>
                       <span style={{ color: 'var(--ink)', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -97,7 +97,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                   {/* Role Name */}
                   <td>
                     <span data-badge>
-                      <Shield size={11} strokeWidth={2} />
+                      <Shield size={12} strokeWidth={2} />
                       {u.role?.name || 'Usuario'}
                     </span>
                   </td>
@@ -123,7 +123,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                             style={{ width: '28px', height: '28px', padding: 0 }}
                             title={u.active ? 'Desactivar usuario' : 'Activar usuario'}
                           >
-                            {u.active ? <UserMinus size={14} strokeWidth={1.75} /> : <UserCheck size={14} strokeWidth={1.75} />}
+                            {u.active ? <UserMinus size={16} strokeWidth={1.75} /> : <UserCheck size={16} strokeWidth={1.75} />}
                           </button>
                         )}
 
@@ -136,7 +136,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                             style={{ width: '28px', height: '28px', padding: 0 }}
                             title="Editar usuario"
                           >
-                            <Pencil size={14} strokeWidth={1.75} />
+                            <Pencil size={16} strokeWidth={1.75} />
                           </button>
                         )}
 
@@ -149,7 +149,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
                             style={{ width: '28px', height: '28px', padding: 0 }}
                             title="Eliminar usuario"
                           >
-                            <Trash2 size={14} strokeWidth={1.75} />
+                            <Trash2 size={16} strokeWidth={1.75} />
                           </button>
                         )}
                       </span>

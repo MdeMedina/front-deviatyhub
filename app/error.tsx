@@ -21,8 +21,8 @@ export default function Error({
         <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-4">
           <AlertCircle size={22} />
         </div>
-        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Something went wrong!</h2>
-        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+        <h2 className="text-[20px] font-semibold text-[var(--ink)] mb-1.5">Something went wrong!</h2>
+        <p className="text-[14.5px] text-[var(--muted)] leading-relaxed mb-5">
           An unexpected error has occurred. Our team has been notified and is working to fix it.
         </p>
         <button onClick={() => reset()} data-btn="primary">

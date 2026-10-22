@@ -126,7 +126,7 @@ export const ScheduleEditor: React.FC<ScheduleEditorProps> = ({ readOnly }) => {
       <div data-card style={{ maxWidth: '760px' }}>
         <div style={{ padding: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '260px', gap: '8px' }}>
           <Spinner size="md" />
-          <span className="microlabel text-[10px]">Cargando horario semanal...</span>
+          <span className="microlabel text-[11.5px]">Cargando horario semanal...</span>
         </div>
       </div>
     )
@@ -136,7 +136,7 @@ export const ScheduleEditor: React.FC<ScheduleEditorProps> = ({ readOnly }) => {
     return (
       <div data-card style={{ maxWidth: '760px' }}>
         <div style={{ padding: '24px', textAlign: 'center' }}>
-          <p style={{ fontSize: '13px', color: 'var(--neg)', margin: 0 }}>
+          <p style={{ fontSize: '14.5px', color: 'var(--neg)', margin: 0 }}>
             No se pudo cargar el horario de la clínica. Por favor, intente de nuevo.
           </p>
         </div>
@@ -239,8 +239,8 @@ export const ScheduleEditor: React.FC<ScheduleEditorProps> = ({ readOnly }) => {
                   {errorMsg && (
                     <tr>
                       <td colSpan={4} style={{ paddingTop: 0, borderBottom: '1px solid var(--line-soft)' }}>
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--neg)' }}>
-                          <AlertCircle size={12} />
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13.5px', color: 'var(--neg)' }}>
+                          <AlertCircle size={13} />
                           {errorMsg}
                         </span>
                       </td>
@@ -263,7 +263,7 @@ export const ScheduleEditor: React.FC<ScheduleEditorProps> = ({ readOnly }) => {
               </>
             ) : (
               <>
-                <Save size={14} strokeWidth={1.75} />
+                <Save size={16} strokeWidth={1.75} />
                 <span>Guardar cambios</span>
               </>
             )}

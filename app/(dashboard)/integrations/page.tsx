@@ -34,16 +34,16 @@ export default function IntegrationsPage() {
         <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
           <AlertCircle size={22} />
         </div>
-        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
-        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+        <h2 className="text-[20px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
+        <p className="text-[14.5px] text-[var(--muted)] leading-relaxed mb-5">
           No tienes los permisos necesarios para ver o probar las integraciones. Por favor contacta al administrador del sistema.
         </p>
         <Link
           href="/dashboard"
-          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[13px] transition-opacity gap-2"
+          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[14.5px] transition-opacity gap-2"
         >
           Ir al Dashboard
-          <ArrowRight size={14} />
+          <ArrowRight size={16} />
         </Link>
       </div>
     )
@@ -75,14 +75,14 @@ export default function IntegrationsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+    <div className="flex flex-col gap-5 max-w-[1680px] mx-auto">
       {/* Header Bar */}
       <div className="flex items-end justify-between gap-5 flex-wrap pb-4 border-b border-[var(--line)]">
         <div className="flex flex-col gap-1">
-          <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
+          <h1 className="text-[28px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
             Integraciones Externas
           </h1>
-          <p className="text-[13.5px] text-[var(--muted)]">
+          <p className="text-[15px] text-[var(--muted)]">
             {gestionaDentral
               ? 'Estás configurando las integraciones de esta clínica como equipo de Dentral.'
               : 'Las conecta y mantiene el equipo de Dentral. Si necesitas cambiar algo, escríbenos.'}
@@ -95,7 +95,7 @@ export default function IntegrationsPage() {
             onClick={() => refetch()}
             disabled={isLoading}
           >
-            <RefreshCw size={14} strokeWidth={1.75} className={isLoading ? 'animate-spin' : ''} />
+            <RefreshCw size={16} strokeWidth={1.75} className={isLoading ? 'animate-spin' : ''} />
             Actualizar
           </button>
         </div>
@@ -105,14 +105,14 @@ export default function IntegrationsPage() {
       {isLoading ? (
         <div className="flex flex-col items-center justify-center min-h-[360px] bg-[var(--card)] border border-[var(--line)] rounded-[10px]">
           <Spinner size="md" />
-          <span className="microlabel text-[10px] mt-2">Cargando integraciones</span>
+          <span className="microlabel text-[11.5px] mt-2">Cargando integraciones</span>
         </div>
       ) : isError ? (
         <div className="flex flex-col items-center justify-center min-h-[360px] bg-[var(--card)] border border-[var(--line)] rounded-[10px] p-6 gap-3 text-center">
           <div className="w-10 h-10 rounded-[6px] bg-[var(--head)] border border-[var(--line)] flex items-center justify-center text-[var(--neg)]">
             <AlertCircle size={20} />
           </div>
-          <p className="text-[13.5px] font-semibold text-[var(--ink)]">Error al cargar integraciones</p>
+          <p className="text-[15px] font-semibold text-[var(--ink)]">Error al cargar integraciones</p>
           <button data-btn onClick={() => refetch()}>
             Reintentar
           </button>

@@ -141,11 +141,11 @@ export const IntegrationConfigModal: React.FC<IntegrationConfigModalProps> = ({
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-12 gap-2">
           <Spinner size="md" />
-          <span className="microlabel text-[10px]">Cargando esquema de campos...</span>
+          <span className="microlabel text-[11.5px]">Cargando esquema de campos...</span>
         </div>
       ) : isError ? (
         <div className="text-center py-8 flex flex-col items-center gap-4">
-          <p className="text-[13px] font-medium text-[var(--neg)]">Error al obtener los campos de la integración.</p>
+          <p className="text-[14.5px] font-medium text-[var(--neg)]">Error al obtener los campos de la integración.</p>
           <Button variant="outline" size="sm" onClick={() => refetch()}>
             Reintentar
           </Button>
@@ -155,11 +155,11 @@ export const IntegrationConfigModal: React.FC<IntegrationConfigModalProps> = ({
           {/* Security Banner */}
           <div className="bg-[var(--blue-tint)] border border-[var(--blue-line)] rounded-[8px] p-3.5 flex gap-3 text-[var(--ink-soft)]">
             <div className="text-[var(--blue)] mt-0.5 shrink-0">
-              <ShieldCheck size={18} />
+              <ShieldCheck size={20} />
             </div>
             <div>
-              <p className="text-[12.5px] font-semibold leading-normal text-[var(--ink)] m-0">Cifrado de extremo a extremo</p>
-              <p className="text-[11.5px] text-[var(--muted)] font-medium leading-normal mt-0.5 m-0">
+              <p className="text-[14px] font-semibold leading-normal text-[var(--ink)] m-0">Cifrado de extremo a extremo</p>
+              <p className="text-[13px] text-[var(--muted)] font-medium leading-normal mt-0.5 m-0">
                 Tus credenciales y claves de API serán cifradas bajo el estándar AES-256 en nuestros servidores antes de almacenarse en la base de datos.
               </p>
             </div>
@@ -195,8 +195,8 @@ export const IntegrationConfigModal: React.FC<IntegrationConfigModalProps> = ({
                     disabled={saveMutation.isPending}
                   />
                   {field.type === 'password' && field.configured && (
-                    <div className="flex items-center gap-1 text-[11px] text-[var(--muted)] font-medium px-1 mt-1">
-                      <Info size={11} className="text-[var(--blue)] shrink-0" />
+                    <div className="flex items-center gap-1 text-[12.5px] text-[var(--muted)] font-medium px-1 mt-1">
+                      <Info size={12} className="text-[var(--blue)] shrink-0" />
                       <span>Ya tienes una clave guardada. Si la dejas vacía o en ••••••••, se mantendrá la existente.</span>
                     </div>
                   )}

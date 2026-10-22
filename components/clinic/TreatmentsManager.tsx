@@ -224,7 +224,7 @@ export const TreatmentsManager: React.FC<TreatmentsManagerProps> = ({ readOnly }
       <div data-card>
         <div style={{ padding: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '260px', gap: '8px' }}>
           <Spinner size="md" />
-          <span className="microlabel text-[10px]">Cargando catálogo de tratamientos...</span>
+          <span className="microlabel text-[11.5px]">Cargando catálogo de tratamientos...</span>
         </div>
       </div>
     )
@@ -234,7 +234,7 @@ export const TreatmentsManager: React.FC<TreatmentsManagerProps> = ({ readOnly }
     return (
       <div data-card>
         <div style={{ padding: '24px', textAlign: 'center' }}>
-          <p style={{ fontSize: '13px', color: 'var(--neg)', margin: 0 }}>
+          <p style={{ fontSize: '14.5px', color: 'var(--neg)', margin: 0 }}>
             No se pudo cargar el listado de tratamientos. Por favor, intente de nuevo.
           </p>
         </div>
@@ -249,7 +249,7 @@ export const TreatmentsManager: React.FC<TreatmentsManagerProps> = ({ readOnly }
           <h2>Tratamientos</h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{ position: 'relative', width: '240px', maxWidth: '46vw' }}>
-              <Search size={14} strokeWidth={1.75} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--dim)' }} />
+              <Search size={16} strokeWidth={1.75} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--dim)' }} />
               <input
                 data-inp
                 type="text"
@@ -261,7 +261,7 @@ export const TreatmentsManager: React.FC<TreatmentsManagerProps> = ({ readOnly }
             </div>
             {!readOnly && (
               <button data-btn onClick={openAddModal}>
-                <Plus size={14} strokeWidth={1.9} />
+                <Plus size={16} strokeWidth={1.9} />
                 Agregar Tratamiento
               </button>
             )}
@@ -273,8 +273,8 @@ export const TreatmentsManager: React.FC<TreatmentsManagerProps> = ({ readOnly }
             <div style={{ width: '44px', height: '44px', border: '1px solid var(--line)', borderRadius: '7px', background: 'var(--head)', display: 'grid', placeItems: 'center', color: 'var(--muted)' }}>
               <BookOpen size={22} strokeWidth={1.75} />
             </div>
-            <p style={{ fontSize: '14.5px', fontWeight: 600, color: 'var(--ink)', margin: 0 }}>No se encontraron tratamientos</p>
-            <p style={{ fontSize: '12.5px', color: 'var(--muted)', margin: 0, maxWidth: '340px' }}>
+            <p style={{ fontSize: '16px', fontWeight: 600, color: 'var(--ink)', margin: 0 }}>No se encontraron tratamientos</p>
+            <p style={{ fontSize: '14px', color: 'var(--muted)', margin: 0, maxWidth: '340px' }}>
               Intenta modificar tu término de búsqueda o agrega un nuevo tratamiento al catálogo.
             </p>
           </div>
@@ -317,7 +317,7 @@ export const TreatmentsManager: React.FC<TreatmentsManagerProps> = ({ readOnly }
                             aria-label={`Ver ficha de ${treatment.name}`}
                             data-testid={`view-treatment-${treatment.id}`}
                           >
-                            <ArrowUpRight size={14} strokeWidth={1.75} />
+                            <ArrowUpRight size={16} strokeWidth={1.75} />
                           </Link>
                           <button
                             data-btn
@@ -325,7 +325,7 @@ export const TreatmentsManager: React.FC<TreatmentsManagerProps> = ({ readOnly }
                             style={{ width: '28px', height: '28px', padding: 0 }}
                             title="Editar Tratamiento"
                           >
-                            <Pencil size={14} strokeWidth={1.75} />
+                            <Pencil size={16} strokeWidth={1.75} />
                           </button>
                           <button
                             data-btn
@@ -333,7 +333,7 @@ export const TreatmentsManager: React.FC<TreatmentsManagerProps> = ({ readOnly }
                             style={{ width: '28px', height: '28px', padding: 0 }}
                             title="Eliminar Tratamiento"
                           >
-                            <Trash2 size={14} strokeWidth={1.75} />
+                            <Trash2 size={16} strokeWidth={1.75} />
                           </button>
                         </span>
                       </td>
@@ -357,11 +357,11 @@ export const TreatmentsManager: React.FC<TreatmentsManagerProps> = ({ readOnly }
           {/* Medical Encyclopedia Autocomplete */}
           <div className="border border-[var(--line)] bg-[var(--surface)] rounded-[7px] p-3.5 flex flex-col gap-2 relative">
             <label className="microlabel flex items-center gap-1.5 text-[var(--blue)]">
-              <BookOpen size={13} />
+              <BookOpen size={14} />
               Referencia de enciclopedia médica
             </label>
             <div className="relative">
-              <Search size={14} strokeWidth={1.75} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--dim)' }} />
+              <Search size={16} strokeWidth={1.75} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--dim)' }} />
               <input
                 data-inp
                 type="text"
@@ -376,12 +376,12 @@ export const TreatmentsManager: React.FC<TreatmentsManagerProps> = ({ readOnly }
             {encyclopediaQuery.length >= 2 && (
               <div className="absolute left-3.5 right-3.5 top-full mt-1 bg-[var(--card)] border border-[var(--line)] rounded-[8px] shadow-[0_12px_30px_rgba(0,0,0,0.12)] z-50 max-h-48 overflow-y-auto">
                 {isLoadingEnc ? (
-                  <div className="p-3 text-center text-[12px] text-[var(--muted)] flex items-center justify-center gap-2">
+                  <div className="p-3 text-center text-[13.5px] text-[var(--muted)] flex items-center justify-center gap-2">
                     <Spinner size="sm" />
                     Buscando en catálogo médico...
                   </div>
                 ) : encyclopediaResults.length === 0 ? (
-                  <div className="p-3 text-center text-[12px] text-[var(--muted)]">
+                  <div className="p-3 text-center text-[13.5px] text-[var(--muted)]">
                     No se encontraron coincidencias médicas.
                   </div>
                 ) : (
@@ -392,10 +392,10 @@ export const TreatmentsManager: React.FC<TreatmentsManagerProps> = ({ readOnly }
                       onClick={() => handleSelectEncyclopedia(entry.name, entry.description)}
                       className="w-full text-left p-3 hover:bg-[var(--surface)] transition-colors flex items-start gap-2 border-b border-[var(--line-soft)] last:border-b-0 cursor-pointer"
                     >
-                      <Stethoscope size={14} className="text-[var(--blue)] shrink-0 mt-0.5" />
+                      <Stethoscope size={16} className="text-[var(--blue)] shrink-0 mt-0.5" />
                       <div>
-                        <p className="text-[12.5px] font-medium text-[var(--ink)] m-0">{entry.name}</p>
-                        <p className="text-[11px] text-[var(--muted)] line-clamp-1 m-0 mt-0.5">
+                        <p className="text-[14px] font-medium text-[var(--ink)] m-0">{entry.name}</p>
+                        <p className="text-[12.5px] text-[var(--muted)] line-clamp-1 m-0 mt-0.5">
                           {entry.description}
                         </p>
                       </div>
@@ -438,7 +438,7 @@ export const TreatmentsManager: React.FC<TreatmentsManagerProps> = ({ readOnly }
               value={price}
               onChange={setPrice}
               error={errors.price}
-              leftIcon={<DollarSign size={14} />}
+              leftIcon={<DollarSign size={16} />}
               required
             />
 
@@ -449,7 +449,7 @@ export const TreatmentsManager: React.FC<TreatmentsManagerProps> = ({ readOnly }
               value={duration}
               onChange={setDuration}
               error={errors.duration}
-              leftIcon={<Clock size={14} />}
+              leftIcon={<Clock size={16} />}
               required
             />
           </div>
@@ -461,7 +461,7 @@ export const TreatmentsManager: React.FC<TreatmentsManagerProps> = ({ readOnly }
             <Button
               type="submit"
               loading={createTreatment.isPending || updateTreatment.isPending}
-              icon={<Save size={14} />}
+              icon={<Save size={16} />}
             >
               Guardar Tratamiento
             </Button>
@@ -479,8 +479,8 @@ export const TreatmentsManager: React.FC<TreatmentsManagerProps> = ({ readOnly }
           <div className="flex items-start gap-3 p-3.5 bg-[var(--surface)] border border-[var(--line)] rounded-[7px]">
             <AlertCircle size={20} className="shrink-0 mt-0.5 text-[var(--neg)]" />
             <div>
-              <p className="text-[13.5px] font-medium text-[var(--ink)] m-0">¿Estás seguro de eliminar este tratamiento?</p>
-              <p className="text-[12.5px] text-[var(--muted)] mt-1 leading-relaxed m-0">
+              <p className="text-[15px] font-medium text-[var(--ink)] m-0">¿Estás seguro de eliminar este tratamiento?</p>
+              <p className="text-[14px] text-[var(--muted)] mt-1 leading-relaxed m-0">
                 Esta acción eliminará el tratamiento <strong className="text-[var(--ink)]">{selectedTreatment?.name}</strong> del catálogo de forma permanente. Las citas agendadas con este tratamiento no se alterarán.
               </p>
             </div>
@@ -494,7 +494,7 @@ export const TreatmentsManager: React.FC<TreatmentsManagerProps> = ({ readOnly }
               variant="danger"
               onClick={handleDeleteConfirm}
               loading={deleteTreatment.isPending}
-              icon={<Trash2 size={14} />}
+              icon={<Trash2 size={16} />}
             >
               Confirmar Eliminar
             </Button>

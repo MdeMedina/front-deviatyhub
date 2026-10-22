@@ -21,30 +21,30 @@ export default function SettingsPage() {
         <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
           <AlertCircle size={22} />
         </div>
-        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
-        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+        <h2 className="text-[20px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
+        <p className="text-[14.5px] text-[var(--muted)] leading-relaxed mb-5">
           No tienes los permisos necesarios para ver o modificar la configuración de la clínica. Por favor contacta al administrador.
         </p>
         <Link
           href="/dashboard"
-          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[13px] transition-opacity gap-2"
+          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[14.5px] transition-opacity gap-2"
         >
           Ir al Dashboard
-          <ArrowRight size={14} />
+          <ArrowRight size={16} />
         </Link>
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+    <div className="flex flex-col gap-5 max-w-[1680px] mx-auto">
       {/* Header Bar */}
       <div className="flex items-end justify-between gap-5 flex-wrap pb-4 border-b border-[var(--line)]">
         <div className="flex flex-col gap-1">
-          <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
+          <h1 className="text-[28px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
             Configuración de la Clínica
           </h1>
-          <p className="text-[13.5px] text-[var(--muted)]">
+          <p className="text-[15px] text-[var(--muted)]">
             Administra los datos generales de contacto y configuración regional.
           </p>
         </div>
@@ -70,8 +70,8 @@ export default function SettingsPage() {
           <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '14px' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--ink)' }}>Tema oscuro</span>
-                <span style={{ fontSize: '12px', color: 'var(--muted)' }}>Aplica el modo oscuro a todo el panel.</span>
+                <span style={{ fontSize: '14.5px', fontWeight: 500, color: 'var(--ink)' }}>Tema oscuro</span>
+                <span style={{ fontSize: '13.5px', color: 'var(--muted)' }}>Aplica el modo oscuro a todo el panel.</span>
               </div>
               <button 
                 onClick={toggleTheme}
@@ -107,8 +107,8 @@ export default function SettingsPage() {
 
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '14px', paddingTop: '16px', borderTop: '1px solid var(--line-soft)' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--ink)' }}>Recordatorios automáticos</span>
-                <span style={{ fontSize: '12px', color: 'var(--muted)' }}>Enviar recordatorio 24 h antes de cada cita.</span>
+                <span style={{ fontSize: '14.5px', fontWeight: 500, color: 'var(--ink)' }}>Recordatorios automáticos</span>
+                <span style={{ fontSize: '13.5px', color: 'var(--muted)' }}>Enviar recordatorio 24 h antes de cada cita.</span>
               </div>
               <span data-badge>
                 <span data-dot style={{ background: 'var(--pos)' }} />
@@ -118,8 +118,8 @@ export default function SettingsPage() {
 
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '14px', paddingTop: '16px', borderTop: '1px solid var(--line-soft)' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--ink)' }}>Resumen diario por correo</span>
-                <span style={{ fontSize: '12px', color: 'var(--muted)' }}>Reporte de conversaciones y citas del día.</span>
+                <span style={{ fontSize: '14.5px', fontWeight: 500, color: 'var(--ink)' }}>Resumen diario por correo</span>
+                <span style={{ fontSize: '13.5px', color: 'var(--muted)' }}>Reporte de conversaciones y citas del día.</span>
               </div>
               <span data-badge>
                 <span data-dot />

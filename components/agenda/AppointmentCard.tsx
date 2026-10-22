@@ -43,26 +43,26 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
     >
       <div className="flex justify-between items-start mb-2">
         <div className="flex items-center gap-1.5 text-[var(--muted)]">
-          <Clock size={12} className="text-[var(--dim)]" />
-          <span className="microlabel text-[10px] tabular">{time}</span>
+          <Clock size={13} className="text-[var(--dim)]" />
+          <span className="microlabel text-[11.5px] tabular">{time}</span>
         </div>
         <Badge variant={getStatusVariant(appointment.status)} size="sm">
           {appointment.status}
         </Badge>
       </div>
 
-      <h3 className="text-[13.5px] font-semibold text-[var(--ink)] mb-1.5 truncate">
+      <h3 className="text-[15px] font-semibold text-[var(--ink)] mb-1.5 truncate">
         {appointment.contactName}
       </h3>
 
       <div className="space-y-1">
         <div className="flex items-center gap-1.5 text-[var(--muted)]">
-          <Stethoscope size={11} className="text-[var(--dim)]" />
-          <span className="text-[11.5px] truncate">{appointment.treatment?.name}</span>
+          <Stethoscope size={12} className="text-[var(--dim)]" />
+          <span className="text-[13px] truncate">{appointment.treatment?.name}</span>
         </div>
         <div className="flex items-center gap-1.5 text-[var(--muted)]">
-          <User size={11} className="text-[var(--dim)]" />
-          <span className="microlabel text-[9.5px] truncate">{appointment.doctor?.name}</span>
+          <User size={12} className="text-[var(--dim)]" />
+          <span className="microlabel text-[11px] truncate">{appointment.doctor?.name}</span>
         </div>
       </div>
     </button>

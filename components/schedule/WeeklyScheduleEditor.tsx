@@ -95,10 +95,10 @@ export function WeeklyScheduleEditor({ doctorId, doctorName, readOnly = false }:
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <h2 className="text-[15px] font-semibold text-[var(--ink)]">
+        <h2 className="text-[16.5px] font-semibold text-[var(--ink)]">
           Jornada semanal{doctorName ? ` · ${doctorName}` : ''}
         </h2>
-        <p className="text-[13px] text-[var(--muted)] leading-relaxed">
+        <p className="text-[14.5px] text-[var(--muted)] leading-relaxed">
           Las horas que se ofrecen a los pacientes son las de esta jornada. Un día puede tener
           varios tramos: así se representa una jornada partida, y también que no atiendes una
           parte del día. Un día sin tramos es un día en el que no se te agenda nada.
@@ -116,15 +116,15 @@ export function WeeklyScheduleEditor({ doctorId, doctorName, readOnly = false }:
           return (
             <div key={dow} className="flex flex-col gap-2 p-3 sm:flex-row sm:items-start sm:gap-4">
               <div className="w-full sm:w-32 shrink-0 pt-1.5">
-                <span className="text-[13px] font-medium text-[var(--ink)]">{label}</span>
-                <p className="text-[11px] text-[var(--muted)]">
+                <span className="text-[14.5px] font-medium text-[var(--ink)]">{label}</span>
+                <p className="text-[12.5px] text-[var(--muted)]">
                   {cerrada ? 'Clínica cerrada' : `Clínica ${c!.open_time}–${c!.close_time}`}
                 </p>
               </div>
 
               <div className="flex flex-1 flex-col gap-2 min-w-0">
                 {delDia.length === 0 && (
-                  <span className="text-[12px] text-[var(--muted)] py-1.5">No atiende</span>
+                  <span className="text-[13.5px] text-[var(--muted)] py-1.5">No atiende</span>
                 )}
 
                 {delDia.map(({ b, i }) => {
@@ -137,15 +137,15 @@ export function WeeklyScheduleEditor({ doctorId, doctorName, readOnly = false }:
                           value={b.start_time}
                           disabled={readOnly}
                           onChange={(e) => cambiar(i, 'start_time', e.target.value)}
-                          className="px-2 py-1.5 text-[13px] rounded-[7px] border border-[var(--line)] bg-[var(--bg)] text-[var(--ink)] disabled:opacity-60"
+                          className="px-2 py-1.5 text-[14.5px] rounded-[7px] border border-[var(--line)] bg-[var(--bg)] text-[var(--ink)] disabled:opacity-60"
                         />
-                        <span className="text-[13px] text-[var(--muted)]">a</span>
+                        <span className="text-[14.5px] text-[var(--muted)]">a</span>
                         <input
                           type="time"
                           value={b.end_time}
                           disabled={readOnly}
                           onChange={(e) => cambiar(i, 'end_time', e.target.value)}
-                          className="px-2 py-1.5 text-[13px] rounded-[7px] border border-[var(--line)] bg-[var(--bg)] text-[var(--ink)] disabled:opacity-60"
+                          className="px-2 py-1.5 text-[14.5px] rounded-[7px] border border-[var(--line)] bg-[var(--bg)] text-[var(--ink)] disabled:opacity-60"
                         />
                         {!readOnly && (
                           <button
@@ -154,13 +154,13 @@ export function WeeklyScheduleEditor({ doctorId, doctorName, readOnly = false }:
                             aria-label={`Quitar tramo de ${label}`}
                             className="p-1.5 rounded-[7px] text-[var(--muted)] hover:text-[var(--neg)] hover:bg-[var(--head)] transition-colors"
                           >
-                            <Trash2 size={15} />
+                            <Trash2 size={17} />
                           </button>
                         )}
                       </div>
                       {aviso && (
-                        <span className="inline-flex items-center gap-1.5 text-[11px] text-[var(--neg)]">
-                          <AlertTriangle size={12} /> {aviso}
+                        <span className="inline-flex items-center gap-1.5 text-[12.5px] text-[var(--neg)]">
+                          <AlertTriangle size={13} /> {aviso}
                         </span>
                       )}
                     </div>
@@ -168,8 +168,8 @@ export function WeeklyScheduleEditor({ doctorId, doctorName, readOnly = false }:
                 })}
 
                 {solapados(dow) && (
-                  <span className="inline-flex items-center gap-1.5 text-[11px] text-[var(--neg)]">
-                    <AlertTriangle size={12} /> Hay tramos que se pisan entre sí
+                  <span className="inline-flex items-center gap-1.5 text-[12.5px] text-[var(--neg)]">
+                    <AlertTriangle size={13} /> Hay tramos que se pisan entre sí
                   </span>
                 )}
 
@@ -177,9 +177,9 @@ export function WeeklyScheduleEditor({ doctorId, doctorName, readOnly = false }:
                   <button
                     type="button"
                     onClick={() => añadirTramo(dow)}
-                    className="inline-flex items-center gap-1.5 self-start text-[12px] text-[var(--muted)] hover:text-[var(--ink)] transition-colors"
+                    className="inline-flex items-center gap-1.5 self-start text-[13.5px] text-[var(--muted)] hover:text-[var(--ink)] transition-colors"
                   >
-                    <Plus size={13} /> Añadir tramo
+                    <Plus size={14} /> Añadir tramo
                   </button>
                 )}
               </div>
@@ -194,13 +194,13 @@ export function WeeklyScheduleEditor({ doctorId, doctorName, readOnly = false }:
             onClick={() => guardar.mutate(bloques)}
             disabled={!tocado || hayErrores || guardar.isPending}
           >
-            <Save size={15} /> {guardar.isPending ? 'Guardando…' : 'Guardar jornada'}
+            <Save size={17} /> {guardar.isPending ? 'Guardando…' : 'Guardar jornada'}
           </Button>
           {hayErrores && (
-            <span className="text-[12px] text-[var(--neg)]">Corrige los tramos marcados</span>
+            <span className="text-[13.5px] text-[var(--neg)]">Corrige los tramos marcados</span>
           )}
           {guardar.isSuccess && !tocado && (
-            <span className="text-[12px] text-[var(--muted)]">Guardado</span>
+            <span className="text-[13.5px] text-[var(--muted)]">Guardado</span>
           )}
         </div>
       )}

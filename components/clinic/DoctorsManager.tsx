@@ -176,7 +176,7 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
       <div data-card>
         <div style={{ padding: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '260px', gap: '8px' }}>
           <Spinner size="md" />
-          <span className="microlabel text-[10px]">Cargando especialistas clínicos...</span>
+          <span className="microlabel text-[11.5px]">Cargando especialistas clínicos...</span>
         </div>
       </div>
     )
@@ -187,7 +187,7 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
       <div data-card>
         <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', textAlign: 'center' }}>
           <AlertCircle style={{ color: 'var(--neg)' }} size={22} />
-          <p style={{ fontSize: '13px', color: 'var(--neg)', margin: 0 }}>
+          <p style={{ fontSize: '14.5px', color: 'var(--neg)', margin: 0 }}>
             No se pudo obtener el listado de doctores.
           </p>
         </div>
@@ -202,7 +202,7 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
           <h2>Doctores</h2>
           {!readOnly && (
             <button data-btn onClick={handleOpenCreateModal}>
-              <Plus size={14} strokeWidth={1.9} />
+              <Plus size={16} strokeWidth={1.9} />
               Agregar Especialista
             </button>
           )}
@@ -213,8 +213,8 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
             <div style={{ width: '44px', height: '44px', border: '1px solid var(--line)', borderRadius: '7px', background: 'var(--head)', display: 'grid', placeItems: 'center', color: 'var(--muted)' }}>
               <Users size={22} strokeWidth={1.75} />
             </div>
-            <p style={{ fontSize: '14.5px', fontWeight: 600, color: 'var(--ink)', margin: 0 }}>Sin especialistas registrados</p>
-            <p style={{ fontSize: '12.5px', color: 'var(--muted)', margin: 0, maxWidth: '340px' }}>
+            <p style={{ fontSize: '16px', fontWeight: 600, color: 'var(--ink)', margin: 0 }}>Sin especialistas registrados</p>
+            <p style={{ fontSize: '14px', color: 'var(--muted)', margin: 0, maxWidth: '340px' }}>
               Comienza agregando doctores para configurar los calendarios individuales de citas.
             </p>
           </div>
@@ -235,7 +235,7 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
                   <tr key={doctor.id} data-testid={`doctor-card-${doctor.id}`}>
                     <td>
                       <span style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <span style={{ width: '28px', height: '28px', borderRadius: '7px', background: 'var(--head)', border: '1px solid var(--line)', display: 'grid', placeItems: 'center', fontSize: '11px', fontWeight: 600, color: 'var(--ink)', flexShrink: 0 }}>
+                        <span style={{ width: '28px', height: '28px', borderRadius: '7px', background: 'var(--head)', border: '1px solid var(--line)', display: 'grid', placeItems: 'center', fontSize: '12.5px', fontWeight: 600, color: 'var(--ink)', flexShrink: 0 }}>
                           {getInitials(doctor.name)}
                         </span>
                         <span style={{ color: 'var(--ink)', fontWeight: 500 }}>{doctor.name}</span>
@@ -269,7 +269,7 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
                             title={`Jornada y ausencias de ${doctor.name}`}
                             aria-label={`Jornada y ausencias de ${doctor.name}`}
                           >
-                            <CalendarClock size={14} strokeWidth={1.75} />
+                            <CalendarClock size={16} strokeWidth={1.75} />
                           </Link>
                           <button
                             data-btn
@@ -278,7 +278,7 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
                             title={`Editar ${doctor.name}`}
                             aria-label={`Editar ${doctor.name}`}
                           >
-                            <Pencil size={14} strokeWidth={1.75} />
+                            <Pencil size={16} strokeWidth={1.75} />
                           </button>
                           <button
                             data-btn
@@ -288,7 +288,7 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
                             title={`Eliminar ${doctor.name}`}
                             aria-label={`Eliminar ${doctor.name}`}
                           >
-                            <Trash2 size={14} strokeWidth={1.75} />
+                            <Trash2 size={16} strokeWidth={1.75} />
                           </button>
                         </span>
                       </td>
@@ -311,7 +311,7 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
             <Button variant="secondary" onClick={() => setIsModalOpen(false)} disabled={isCreating || isUpdating}>
               Cancelar
             </Button>
-            <Button onClick={() => handleSubmit()} loading={isCreating || isUpdating} icon={<Save size={14} />}>
+            <Button onClick={() => handleSubmit()} loading={isCreating || isUpdating} icon={<Save size={16} />}>
               Guardar ficha
             </Button>
           </>
@@ -356,12 +356,12 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
             {loadingTreatments ? (
               <div className="flex items-center gap-2 py-2 pl-1">
                 <Spinner size="sm" />
-                <span className="text-[12px] text-[var(--muted)]">Cargando tratamientos del catálogo...</span>
+                <span className="text-[13.5px] text-[var(--muted)]">Cargando tratamientos del catálogo...</span>
               </div>
             ) : treatments.length === 0 ? (
               <div className="flex items-center gap-2 p-3 bg-[var(--surface)] border border-[var(--line)] rounded-[7px] text-[var(--muted)]">
-                <Stethoscope size={16} />
-                <span className="text-[12px] font-medium">No hay tratamientos creados en la clínica.</span>
+                <Stethoscope size={18} />
+                <span className="text-[13.5px] font-medium">No hay tratamientos creados en la clínica.</span>
               </div>
             ) : (
               <div className="bg-[var(--surface)] border border-[var(--line)] rounded-[7px] p-1.5 max-h-[180px] overflow-y-auto flex flex-col">
@@ -391,11 +391,11 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
                           }}
                           aria-hidden="true"
                         >
-                          {isChecked && <Check size={12} strokeWidth={3} />}
+                          {isChecked && <Check size={13} strokeWidth={3} />}
                         </span>
-                        <span className="text-[13px] font-medium text-[var(--ink)]">{t.name}</span>
+                        <span className="text-[14.5px] font-medium text-[var(--ink)]">{t.name}</span>
                       </span>
-                      <span data-mono className="text-[11.5px] text-[var(--muted)]">
+                      <span data-mono className="text-[13px] text-[var(--muted)]">
                         ${(t.price ?? 0).toLocaleString('es-CL')}
                       </span>
                     </label>
@@ -408,8 +408,8 @@ export const DoctorsManager: React.FC<DoctorsManagerProps> = ({ readOnly }) => {
           {/* Active status */}
           <div className="flex items-center justify-between border border-[var(--line)] bg-[var(--surface)] rounded-[7px] p-3.5 mt-1">
             <div>
-              <p className="text-[13px] font-medium text-[var(--ink)] m-0">Médico activo</p>
-              <p className="text-[12px] text-[var(--muted)] m-0 mt-0.5">
+              <p className="text-[14.5px] font-medium text-[var(--ink)] m-0">Médico activo</p>
+              <p className="text-[13.5px] text-[var(--muted)] m-0 mt-0.5">
                 Habilita la asignación de citas y horarios para este especialista
               </p>
             </div>

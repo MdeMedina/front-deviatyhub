@@ -17,11 +17,11 @@ export function PlatformOnly({ children }: { children: ReactNode }) {
       <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
         <AlertCircle size={22} />
       </div>
-      <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Solo para el equipo de Dentral</h2>
-      <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+      <h2 className="text-[20px] font-semibold text-[var(--ink)] mb-1.5">Solo para el equipo de Dentral</h2>
+      <p className="text-[14.5px] text-[var(--muted)] leading-relaxed mb-5">
         El backoffice es la administración de la plataforma. Tu cuenta es de una clínica.
       </p>
-      <Link href="/dashboard" className="text-[13px] font-medium text-[var(--blue)] hover:underline">
+      <Link href="/dashboard" className="text-[14.5px] font-medium text-[var(--blue)] hover:underline">
         Volver al panel
       </Link>
     </div>
@@ -42,8 +42,8 @@ export function PageHeader({ title, subtitle, actions, back }: {
             ← {back.label}
           </Link>
         )}
-        <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">{title}</h1>
-        {subtitle && <p className="text-[13.5px] text-[var(--muted)]">{subtitle}</p>}
+        <h1 className="text-[28px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">{title}</h1>
+        {subtitle && <p className="text-[15px] text-[var(--muted)]">{subtitle}</p>}
       </div>
       {actions && <div className="flex items-center gap-2 flex-wrap">{actions}</div>}
     </div>
@@ -54,8 +54,8 @@ export function Stat({ label, value, hint }: { label: string; value: ReactNode; 
   return (
     <div data-card className="px-4 py-3.5 flex flex-col gap-1.5 min-w-0">
       <span data-lbl>{label}</span>
-      <span className="tabular text-[24px] font-semibold tracking-[-0.02em] text-[var(--ink)] leading-none">{value}</span>
-      {hint && <span className="text-[12px] text-[var(--muted)]">{hint}</span>}
+      <span className="tabular text-[28px] font-semibold tracking-[-0.02em] text-[var(--ink)] leading-none">{value}</span>
+      {hint && <span className="text-[13.5px] text-[var(--muted)]">{hint}</span>}
     </div>
   )
 }
@@ -105,15 +105,15 @@ export function CopyField({ value }: { value: string }) {
         readOnly
         value={value}
         onFocus={(e) => e.currentTarget.select()}
-        className="tabular text-[12px] flex-1 min-w-0"
+        className="tabular text-[13.5px] flex-1 min-w-0"
         style={{ height: '34px' }}
       />
       <button
         type="button"
         onClick={copiar}
-        className="h-[34px] px-3 inline-flex items-center gap-1.5 rounded-[7px] border border-[var(--line)] bg-[var(--card)] text-[12.5px] text-[var(--ink-soft)] hover:border-[var(--dim)] hover:text-[var(--ink)] transition-colors cursor-pointer shrink-0"
+        className="h-[34px] px-3 inline-flex items-center gap-1.5 rounded-[7px] border border-[var(--line)] bg-[var(--card)] text-[14px] text-[var(--ink-soft)] hover:border-[var(--dim)] hover:text-[var(--ink)] transition-colors cursor-pointer shrink-0"
       >
-        {copiado ? <Check size={13} /> : <Copy size={13} />}
+        {copiado ? <Check size={14} /> : <Copy size={14} />}
         {copiado ? 'Copiado' : 'Copiar'}
       </button>
     </div>

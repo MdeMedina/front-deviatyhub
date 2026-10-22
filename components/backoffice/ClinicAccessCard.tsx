@@ -51,8 +51,8 @@ function Fila({ label, hint, on, onChange, disabled }: { label: string; hint?: s
   return (
     <div className="flex items-center justify-between gap-3 py-[7px]">
       <div className="flex flex-col min-w-0">
-        <span className={`text-[13px] ${disabled ? 'text-[var(--dim)]' : 'text-[var(--ink)]'}`}>{label}</span>
-        {hint && <span className="text-[11.5px] text-[var(--muted)] leading-snug">{hint}</span>}
+        <span className={`text-[14.5px] ${disabled ? 'text-[var(--dim)]' : 'text-[var(--ink)]'}`}>{label}</span>
+        {hint && <span className="text-[13px] text-[var(--muted)] leading-snug">{hint}</span>}
       </div>
       <Interruptor on={on} onChange={onChange} disabled={disabled} label={label} />
     </div>
@@ -61,7 +61,7 @@ function Fila({ label, hint, on, onChange, disabled }: { label: string; hint?: s
 
 function Grupo({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
-    <div className="px-[18px] py-3 border-t border-[var(--line)] first:border-t-0">
+    <div className="px-[22px] py-3 border-t border-[var(--line)] first:border-t-0">
       <span data-lbl>{titulo}</span>
       <div className="mt-1 flex flex-col">{children}</div>
     </div>
@@ -86,7 +86,7 @@ export function ClinicAccessCard({ clinic }: { clinic: PlatformClinicDetail }) {
       <div data-hd>
         <h2>Accesos</h2>
         {acceso.isError || clinica.isError ? (
-          <span className="text-[12px] text-[var(--neg)]">No se pudo guardar</span>
+          <span className="text-[13.5px] text-[var(--neg)]">No se pudo guardar</span>
         ) : (
           <span data-lbl>{ocupado ? 'Guardando…' : 'Se guarda al cambiar'}</span>
         )}

@@ -50,16 +50,16 @@ function KnowledgeBaseContent() {
         <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
           <AlertCircle size={22} />
         </div>
-        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
-        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+        <h2 className="text-[20px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
+        <p className="text-[14.5px] text-[var(--muted)] leading-relaxed mb-5">
           No tienes los permisos necesarios para ver o modificar la base de conocimiento clínica. Por favor contacta al administrador.
         </p>
         <Link
           href="/dashboard"
-          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[13px] transition-opacity gap-2"
+          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[14.5px] transition-opacity gap-2"
         >
           Ir al Dashboard
-          <ArrowRight size={14} />
+          <ArrowRight size={16} />
         </Link>
       </div>
     )
@@ -91,14 +91,14 @@ function KnowledgeBaseContent() {
   }
 
   return (
-    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+    <div className="flex flex-col gap-5 max-w-[1680px] mx-auto">
       {/* Header Bar */}
       <div className="flex items-end justify-between gap-5 flex-wrap pb-4 border-b border-[var(--line)]">
         <div className="flex flex-col gap-1">
-          <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
+          <h1 className="text-[28px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
             Base de conocimiento
           </h1>
-          <p className="text-[13.5px] text-[var(--muted)]">
+          <p className="text-[15px] text-[var(--muted)]">
             Configuración clínica y catálogo general que utiliza el agente.
           </p>
         </div>
@@ -109,7 +109,7 @@ function KnowledgeBaseContent() {
           </Badge>
         ) : (
           <div data-badge style={{ height: '32px' }}>
-            <Check size={13} strokeWidth={2} />
+            <Check size={14} strokeWidth={2} />
             Sincronizado hace 4 min
           </div>
         )}
@@ -127,7 +127,7 @@ function KnowledgeBaseContent() {
               data-active={isActive}
               onClick={() => handleTabChange(tab.id)}
             >
-              <Icon size={14} strokeWidth={1.75} />
+              <Icon size={16} strokeWidth={1.75} />
               {tab.label}
             </button>
           )
@@ -146,7 +146,7 @@ export default function KnowledgeBasePage() {
   return (
     <Suspense
       fallback={
-        <div className="flex flex-col gap-6 max-w-[1340px] mx-auto animate-dentral-shimmer">
+        <div className="flex flex-col gap-6 max-w-[1680px] mx-auto animate-dentral-shimmer">
           <div className="h-8 w-48 bg-[var(--surface-2)] rounded-[6px]" />
           <div className="h-48 bg-[var(--card)] border border-[var(--line)] rounded-[10px]" />
         </div>

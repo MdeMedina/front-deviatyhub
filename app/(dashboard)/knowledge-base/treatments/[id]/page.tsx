@@ -70,13 +70,13 @@ export default function TreatmentDetailPage() {
         <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
           <AlertCircle size={22} />
         </div>
-        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
-        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+        <h2 className="text-[20px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
+        <p className="text-[14.5px] text-[var(--muted)] leading-relaxed mb-5">
           No tienes permisos para ver el catálogo clínico de tratamientos.
         </p>
         <Link
           href="/knowledge-base"
-          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[13px] transition-opacity"
+          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[14.5px] transition-opacity"
         >
           Volver
         </Link>
@@ -88,7 +88,7 @@ export default function TreatmentDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center p-24 min-h-[500px] gap-3">
         <Spinner size="lg" />
-        <span className="microlabel text-[10px]">Cargando ficha del tratamiento...</span>
+        <span className="microlabel text-[11.5px]">Cargando ficha del tratamiento...</span>
       </div>
     )
   }
@@ -100,13 +100,13 @@ export default function TreatmentDetailPage() {
           <AlertCircle size={22} />
         </div>
         <div>
-          <h3 className="text-[15px] font-semibold text-[var(--ink)]">Error al cargar ficha</h3>
-          <p className="text-[13px] text-[var(--muted)] mt-1">
+          <h3 className="text-[16.5px] font-semibold text-[var(--ink)]">Error al cargar ficha</h3>
+          <p className="text-[14.5px] text-[var(--muted)] mt-1">
             No se pudo obtener la información de este tratamiento clínico. Es posible que haya sido eliminado.
           </p>
         </div>
         <Link href="/knowledge-base?tab=treatments" data-btn>
-          <ArrowLeft size={14} strokeWidth={1.75} />
+          <ArrowLeft size={16} strokeWidth={1.75} />
           Volver a Tratamientos
         </Link>
       </div>
@@ -238,7 +238,7 @@ export default function TreatmentDetailPage() {
   }
 
   return (
-    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+    <div className="flex flex-col gap-5 max-w-[1680px] mx-auto">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-[var(--line)]">
         <div className="flex items-center gap-3">
@@ -250,18 +250,18 @@ export default function TreatmentDetailPage() {
             aria-label="Volver al catálogo"
             data-testid="back-to-treatments"
           >
-            <ArrowLeft size={16} strokeWidth={1.75} />
+            <ArrowLeft size={18} strokeWidth={1.75} />
           </Link>
           <div className="flex flex-col gap-1">
             <div className="flex flex-wrap items-center gap-2.5">
-              <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
+              <h1 className="text-[28px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
                 {treatment.name}
               </h1>
               <Badge variant={treatment.active ? 'success' : 'neutral'} size="sm" dot>
                 {treatment.active ? 'Activo en Clínica' : 'Desactivado'}
               </Badge>
             </div>
-            <p className="text-[13.5px] text-[var(--muted)]">
+            <p className="text-[15px] text-[var(--muted)]">
               Ficha técnica clínico-arancelaria y ofertas vigentes
             </p>
           </div>
@@ -278,25 +278,25 @@ export default function TreatmentDetailPage() {
               <h2>Descripción e indicaciones clínicas</h2>
             </div>
             <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <p className="text-[13.5px] text-[var(--muted)] leading-relaxed m-0">
+              <p className="text-[15px] text-[var(--muted)] leading-relaxed m-0">
                 {treatment.description || 'No se han ingresado detalles descriptivos adicionales para este tratamiento médico.'}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="flex items-center gap-3 bg-[var(--surface)] border border-[var(--line)] rounded-[8px] p-3">
-                  <span data-icon><Clock size={16} strokeWidth={1.75} /></span>
+                  <span data-icon><Clock size={18} strokeWidth={1.75} /></span>
                   <div>
                     <p className="microlabel m-0">Duración estándar</p>
-                    <p className="text-[13px] font-medium text-[var(--ink)] m-0 mt-0.5">{treatment.duration_min} minutos por sesión</p>
+                    <p className="text-[14.5px] font-medium text-[var(--ink)] m-0 mt-0.5">{treatment.duration_min} minutos por sesión</p>
                   </div>
                 </div>
 
                 {treatment.encyclopedia_ref && (
                   <div className="flex items-center gap-3 bg-[var(--surface)] border border-[var(--line)] rounded-[8px] p-3">
-                    <span data-icon><Sparkles size={16} strokeWidth={1.75} /></span>
+                    <span data-icon><Sparkles size={18} strokeWidth={1.75} /></span>
                     <div className="min-w-0">
                       <p className="microlabel m-0">Enciclopedia médica</p>
-                      <p className="text-[13px] font-medium text-[var(--ink)] m-0 mt-0.5 truncate" title={treatment.encyclopedia_ref}>
+                      <p className="text-[14.5px] font-medium text-[var(--ink)] m-0 mt-0.5 truncate" title={treatment.encyclopedia_ref}>
                         {treatment.encyclopedia_ref}
                       </p>
                     </div>
@@ -314,7 +314,7 @@ export default function TreatmentDetailPage() {
             <div style={{ padding: '18px' }} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="bg-[var(--surface)] border border-[var(--line)] rounded-[8px] p-4 text-center flex flex-col gap-1">
                 <p className="microlabel m-0">Precio general</p>
-                <p data-mono className="text-[18px] font-medium text-[var(--ink)] m-0">{fmtPrice(treatment.price)}</p>
+                <p data-mono className="text-[20px] font-medium text-[var(--ink)] m-0">{fmtPrice(treatment.price)}</p>
               </div>
 
               <div className="bg-[var(--surface)] border border-[var(--line)] rounded-[8px] p-4 text-center flex flex-col gap-1">
@@ -324,7 +324,7 @@ export default function TreatmentDetailPage() {
                     {treatment.accepts_isapre ? 'Sí' : 'No'}
                   </Badge>
                 </div>
-                <p data-mono className="text-[18px] font-medium text-[var(--ink)] m-0">{fmtPrice(treatment.price_isapre ?? treatment.price)}</p>
+                <p data-mono className="text-[20px] font-medium text-[var(--ink)] m-0">{fmtPrice(treatment.price_isapre ?? treatment.price)}</p>
               </div>
 
               <div className="bg-[var(--surface)] border border-[var(--line)] rounded-[8px] p-4 text-center flex flex-col gap-1">
@@ -334,7 +334,7 @@ export default function TreatmentDetailPage() {
                     {treatment.accepts_fonasa ? 'Sí' : 'No'}
                   </Badge>
                 </div>
-                <p data-mono className="text-[18px] font-medium text-[var(--ink)] m-0">{fmtPrice(treatment.price_fonasa ?? treatment.price)}</p>
+                <p data-mono className="text-[20px] font-medium text-[var(--ink)] m-0">{fmtPrice(treatment.price_fonasa ?? treatment.price)}</p>
               </div>
             </div>
           </div>
@@ -347,7 +347,7 @@ export default function TreatmentDetailPage() {
           </div>
           <div style={{ padding: '18px' }}>
             {treatment.doctors?.length === 0 ? (
-              <p className="text-[12.5px] text-[var(--muted)] m-0">
+              <p className="text-[14px] text-[var(--muted)] m-0">
                 No hay doctores vinculados a este tratamiento.
               </p>
             ) : (
@@ -358,10 +358,10 @@ export default function TreatmentDetailPage() {
                     className="flex items-center justify-between p-2.5 bg-[var(--surface)] border border-[var(--line)] rounded-[8px]"
                   >
                     <span className="flex items-center gap-2.5">
-                      <span style={{ width: '28px', height: '28px', borderRadius: '7px', background: 'var(--head)', border: '1px solid var(--line)', display: 'grid', placeItems: 'center', fontSize: '11px', fontWeight: 600, color: 'var(--ink)' }}>
+                      <span style={{ width: '28px', height: '28px', borderRadius: '7px', background: 'var(--head)', border: '1px solid var(--line)', display: 'grid', placeItems: 'center', fontSize: '12.5px', fontWeight: 600, color: 'var(--ink)' }}>
                         {getInitials(doc.name)}
                       </span>
-                      <span className="text-[13px] font-medium text-[var(--ink)]">{doc.name}</span>
+                      <span className="text-[14.5px] font-medium text-[var(--ink)]">{doc.name}</span>
                     </span>
                     <Badge variant="info" size="sm" dot>Habilitado</Badge>
                   </div>
@@ -376,12 +376,12 @@ export default function TreatmentDetailPage() {
       <div data-card>
         <div data-hd>
           <div className="flex items-center gap-2">
-            <Tag size={15} strokeWidth={1.75} className="text-[var(--blue)]" />
+            <Tag size={17} strokeWidth={1.75} className="text-[var(--blue)]" />
             <h2>Promociones y ofertas temporales</h2>
           </div>
           {canEdit && (
             <button data-btn="primary" onClick={handleOpenOfferModal} data-testid="add-offer-btn">
-              <Plus size={14} strokeWidth={1.9} />
+              <Plus size={16} strokeWidth={1.9} />
               Nueva oferta
             </button>
           )}
@@ -393,8 +393,8 @@ export default function TreatmentDetailPage() {
               <div style={{ width: '44px', height: '44px', border: '1px solid var(--line)', borderRadius: '7px', background: 'var(--head)', display: 'grid', placeItems: 'center', color: 'var(--muted)' }}>
                 <Tag size={22} strokeWidth={1.75} />
               </div>
-              <p className="text-[14.5px] font-semibold text-[var(--ink)] m-0">Sin promociones activas</p>
-              <p className="text-[12.5px] text-[var(--muted)] m-0 max-w-[340px]">
+              <p className="text-[16px] font-semibold text-[var(--ink)] m-0">Sin promociones activas</p>
+              <p className="text-[14px] text-[var(--muted)] m-0 max-w-[340px]">
                 Configura ofertas para este tratamiento para campañas o temporadas específicas.
               </p>
             </div>
@@ -410,7 +410,7 @@ export default function TreatmentDetailPage() {
 
                   <div className="flex flex-col gap-2">
                     <div className="flex items-start justify-between gap-2">
-                      <h3 className="text-[13.5px] font-semibold text-[var(--ink)] leading-tight m-0">
+                      <h3 className="text-[15px] font-semibold text-[var(--ink)] leading-tight m-0">
                         {offer.label}
                       </h3>
                       <div className="flex items-center gap-1.5 shrink-0">
@@ -426,7 +426,7 @@ export default function TreatmentDetailPage() {
                             aria-label={`Eliminar ${offer.label}`}
                             data-testid={`delete-offer-${offer.id}`}
                           >
-                            <Trash2 size={13} strokeWidth={1.75} />
+                            <Trash2 size={14} strokeWidth={1.75} />
                           </button>
                         )}
                       </div>
@@ -434,22 +434,22 @@ export default function TreatmentDetailPage() {
 
                     <div className="flex flex-col gap-1.5">
                       {offer.discount_pct > 0 && (
-                        <div className="flex items-center gap-1.5 text-[12.5px] text-[var(--blue)] font-medium">
-                          <Percent size={12} />
+                        <div className="flex items-center gap-1.5 text-[14px] text-[var(--blue)] font-medium">
+                          <Percent size={13} />
                           <span>{offer.discount_pct}% de descuento</span>
                         </div>
                       )}
                       {offer.fixed_price > 0 && (
-                        <div className="flex items-center gap-1.5 text-[12.5px] text-[var(--pos)] font-medium">
-                          <DollarSign size={12} />
+                        <div className="flex items-center gap-1.5 text-[14px] text-[var(--pos)] font-medium">
+                          <DollarSign size={13} />
                           <span>Arancel especial: <span data-mono>{fmtPrice(offer.fixed_price)}</span></span>
                         </div>
                       )}
                     </div>
                   </div>
 
-                  <div className="border-t border-[var(--line-soft)] pt-2.5 text-[11px] text-[var(--muted)] flex items-center gap-1.5">
-                    <Calendar size={11} />
+                  <div className="border-t border-[var(--line-soft)] pt-2.5 text-[12.5px] text-[var(--muted)] flex items-center gap-1.5">
+                    <Calendar size={12} />
                     <span>Vigencia: <span data-mono>{formatDate(offer.valid_from)} – {formatDate(offer.valid_until)}</span></span>
                   </div>
                 </div>
@@ -473,7 +473,7 @@ export default function TreatmentDetailPage() {
             <Button
               onClick={() => handleSaveOffer({ preventDefault: () => {} } as React.FormEvent)}
               loading={createOffer.isPending}
-              icon={<Save size={14} />}
+              icon={<Save size={16} />}
             >
               Guardar Promoción
             </Button>
@@ -512,7 +512,7 @@ export default function TreatmentDetailPage() {
                 })
               }}
               error={errors.discountPct}
-              leftIcon={<Percent size={14} />}
+              leftIcon={<Percent size={16} />}
             />
 
             <Input
@@ -529,7 +529,7 @@ export default function TreatmentDetailPage() {
                 })
               }}
               error={errors.fixedPrice}
-              leftIcon={<DollarSign size={14} />}
+              leftIcon={<DollarSign size={16} />}
             />
           </div>
 
@@ -556,7 +556,7 @@ export default function TreatmentDetailPage() {
                 required
               />
               {errors.validFrom && (
-                <p className="text-[11px] font-medium text-[var(--neg)] mt-0.5">{errors.validFrom}</p>
+                <p className="text-[12.5px] font-medium text-[var(--neg)] mt-0.5">{errors.validFrom}</p>
               )}
             </div>
 
@@ -582,7 +582,7 @@ export default function TreatmentDetailPage() {
                 required
               />
               {errors.validUntil && (
-                <p className="text-[11px] font-medium text-[var(--neg)] mt-0.5">{errors.validUntil}</p>
+                <p className="text-[12.5px] font-medium text-[var(--neg)] mt-0.5">{errors.validUntil}</p>
               )}
             </div>
           </div>
@@ -590,8 +590,8 @@ export default function TreatmentDetailPage() {
           {/* Active status */}
           <div className="flex items-center justify-between border border-[var(--line)] bg-[var(--surface)] rounded-[7px] p-3.5">
             <div>
-              <p className="text-[13px] font-medium text-[var(--ink)] m-0">Oferta activa</p>
-              <p className="text-[12px] text-[var(--muted)] m-0 mt-0.5">
+              <p className="text-[14.5px] font-medium text-[var(--ink)] m-0">Oferta activa</p>
+              <p className="text-[13.5px] text-[var(--muted)] m-0 mt-0.5">
                 Habilita la aplicación de esta promoción en cotizaciones del bot
               </p>
             </div>
@@ -644,7 +644,7 @@ export default function TreatmentDetailPage() {
               variant="danger"
               onClick={handleDeleteOfferConfirm}
               loading={deleteOffer.isPending}
-              icon={<Trash2 size={14} />}
+              icon={<Trash2 size={16} />}
             >
               Eliminar Promoción
             </Button>
@@ -654,8 +654,8 @@ export default function TreatmentDetailPage() {
         <div className="flex items-start gap-3 p-3.5 bg-[var(--surface)] border border-[var(--line)] rounded-[7px]">
           <AlertCircle size={20} className="shrink-0 mt-0.5 text-[var(--neg)]" />
           <div>
-            <p className="text-[13.5px] font-medium text-[var(--ink)] m-0">¿Deseas desvincular esta promoción?</p>
-            <p className="text-[12.5px] text-[var(--muted)] mt-1 leading-relaxed m-0">
+            <p className="text-[15px] font-medium text-[var(--ink)] m-0">¿Deseas desvincular esta promoción?</p>
+            <p className="text-[14px] text-[var(--muted)] mt-1 leading-relaxed m-0">
               Esta acción eliminará el descuento y arancel especial asociado a este tratamiento de forma permanente.
             </p>
           </div>

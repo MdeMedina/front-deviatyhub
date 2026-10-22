@@ -15,8 +15,8 @@ const CALIDAD: Record<string, { label: string; tone: 'pos' | 'neg' | 'dim' }> = 
 
 function Paso({ ok, children }: { ok: boolean; children: React.ReactNode }) {
   return (
-    <li className="flex items-start gap-2 text-[12.5px]">
-      {ok ? <CheckCircle2 size={14} className="text-[var(--pos)] shrink-0 mt-[1px]" /> : <Circle size={14} className="text-[var(--dim)] shrink-0 mt-[1px]" />}
+    <li className="flex items-start gap-2 text-[14px]">
+      {ok ? <CheckCircle2 size={16} className="text-[var(--pos)] shrink-0 mt-[1px]" /> : <Circle size={16} className="text-[var(--dim)] shrink-0 mt-[1px]" />}
       <span className={ok ? 'text-[var(--ink-soft)]' : 'text-[var(--ink)]'}>{children}</span>
     </li>
   )
@@ -37,7 +37,7 @@ export function ClinicWhatsAppCard({ clinicId, clinicName }: { clinicId: string;
   const [token, setToken] = useState('')
 
   if (isLoading) return <div data-card className="py-10 flex justify-center"><Spinner /></div>
-  if (isError || !w) return <div data-card className="px-[18px] py-5 text-[13px] text-[var(--neg)]">No se pudo cargar el WhatsApp de la clínica.</div>
+  if (isError || !w) return <div data-card className="px-[22px] py-5 text-[14.5px] text-[var(--neg)]">No se pudo cargar el WhatsApp de la clínica.</div>
 
   const ocupado = accion.isPending
   const dentral = w.dentral_number
@@ -65,23 +65,23 @@ export function ClinicWhatsAppCard({ clinicId, clinicName }: { clinicId: string;
         </span>
       </div>
 
-      <div className="px-[18px] py-4 flex flex-col gap-4">
+      <div className="px-[22px] py-4 flex flex-col gap-4">
         {/* Lo que dice Meta del número conectado */}
         {(w.mode || usaDentralPorServidor) && (
           <div className="flex flex-col gap-2">
             {w.meta?.display_phone_number ? (
               <div className="flex items-baseline gap-2 flex-wrap">
-                <span className="tabular text-[18px] font-semibold text-[var(--ink)]">{w.meta.display_phone_number}</span>
-                {w.meta.verified_name && <span className="text-[13px] text-[var(--muted)]">{w.meta.verified_name}</span>}
+                <span className="tabular text-[20px] font-semibold text-[var(--ink)]">{w.meta.display_phone_number}</span>
+                {w.meta.verified_name && <span className="text-[14.5px] text-[var(--muted)]">{w.meta.verified_name}</span>}
               </div>
             ) : (
-              <span className="text-[13px] text-[var(--muted)]">
+              <span className="text-[14.5px] text-[var(--muted)]">
                 {usaDentralPorServidor
                   ? 'Recibe el número de Dentral porque el servidor la tiene como clínica por defecto. Asígnalo aquí para que quede registrado.'
                   : 'Aún sin verificar con Meta.'}
               </span>
             )}
-            <dl className="grid grid-cols-[130px_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-[12.5px]">
+            <dl className="grid grid-cols-[130px_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-[14px]">
               <dt data-lbl className="pt-[2px]">ID del número</dt>
               <dd className="tabular text-[var(--ink-soft)] break-all">{w.phone_number_id || dentral?.phone_number_id || '—'}</dd>
               {w.mode === 'own' && (<>
@@ -100,8 +100,8 @@ export function ClinicWhatsAppCard({ clinicId, clinicName }: { clinicId: string;
               </dd>
             </dl>
             {w.last_error && !w.last_test_ok && (
-              <p className="flex items-start gap-1.5 text-[12px] text-[var(--neg)]">
-                <AlertTriangle size={13} className="shrink-0 mt-[1px]" /> Meta respondió: {w.last_error}
+              <p className="flex items-start gap-1.5 text-[13.5px] text-[var(--neg)]">
+                <AlertTriangle size={14} className="shrink-0 mt-[1px]" /> Meta respondió: {w.last_error}
               </p>
             )}
           </div>
@@ -114,7 +114,7 @@ export function ClinicWhatsAppCard({ clinicId, clinicName }: { clinicId: string;
             <Paso ok={!!w.waba_id}>ID de la cuenta de WhatsApp Business</Paso>
             <Paso ok={!!w.webhooks?.subscribed}>
               Cuenta suscrita a Dentral (sin esto no llegan los mensajes)
-              {w.webhooks?.error && <span className="block text-[11.5px] text-[var(--neg)]">{w.webhooks.error}</span>}
+              {w.webhooks?.error && <span className="block text-[13px] text-[var(--neg)]">{w.webhooks.error}</span>}
             </Paso>
           </ul>
         )}
@@ -142,7 +142,7 @@ export function ClinicWhatsAppCard({ clinicId, clinicName }: { clinicId: string;
             <label className="flex flex-col gap-1">
               <span data-lbl>Token de acceso (opcional)</span>
               <input data-inp type="password" autoComplete="off" value={token} onChange={(e) => setToken(e.target.value)} placeholder={w.has_own_token ? '•••••••• (se conserva el actual)' : 'Vacío = token de Dentral'} style={{ height: 34 }} />
-              <span className="text-[11.5px] text-[var(--muted)]">
+              <span className="text-[13px] text-[var(--muted)]">
                 Si la clínica compartió su cuenta de WhatsApp con Dentral en Meta, déjalo vacío. Los IDs están en Meta → WhatsApp → Configuración de la API.
               </span>
             </label>
@@ -155,7 +155,7 @@ export function ClinicWhatsAppCard({ clinicId, clinicName }: { clinicId: string;
 
         {/* Confirmaciones */}
         {confirmar === 'dentral' && (
-          <div className="flex flex-col gap-2 p-3 rounded-[8px] border border-[var(--line)] bg-[var(--head)] text-[12.5px]">
+          <div className="flex flex-col gap-2 p-3 rounded-[8px] border border-[var(--line)] bg-[var(--head)] text-[14px]">
             <span className="text-[var(--ink)]">
               {otraTieneDentral
                 ? <>El número de Dentral lo tiene <strong>{dentral?.holder?.name}</strong>. Si lo pasas a {clinicName}, esa clínica deja de recibir mensajes por WhatsApp.</>
@@ -170,7 +170,7 @@ export function ClinicWhatsAppCard({ clinicId, clinicName }: { clinicId: string;
           </div>
         )}
         {confirmar === 'disconnect' && (
-          <div className="flex flex-col gap-2 p-3 rounded-[8px] border border-[var(--line)] bg-[var(--head)] text-[12.5px]">
+          <div className="flex flex-col gap-2 p-3 rounded-[8px] border border-[var(--line)] bg-[var(--head)] text-[14px]">
             <span className="text-[var(--ink)]">{clinicName} deja de recibir y enviar mensajes por WhatsApp hasta que se vuelva a conectar.</span>
             <div className="flex gap-2">
               <Button size="sm" variant="danger" loading={ocupado} onClick={() => accion.mutate({ accion: 'disconnect' }, { onSettled: () => setConfirmar(null) })}>
@@ -181,7 +181,7 @@ export function ClinicWhatsAppCard({ clinicId, clinicName }: { clinicId: string;
           </div>
         )}
 
-        {accion.isError && <p className="text-[12px] text-[var(--neg)]">{(accion.error as Error)?.message}</p>}
+        {accion.isError && <p className="text-[13.5px] text-[var(--neg)]">{(accion.error as Error)?.message}</p>}
 
         {/* Acciones */}
         {!formPropio && !confirmar && (

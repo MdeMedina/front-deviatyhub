@@ -147,7 +147,7 @@ export const PoliciesManager: React.FC<PoliciesManagerProps> = ({ readOnly }) =>
       <div data-card style={{ maxWidth: '760px' }}>
         <div style={{ padding: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '260px', gap: '8px' }}>
           <Spinner size="md" />
-          <span className="microlabel text-[10px]">Cargando políticas clínicas...</span>
+          <span className="microlabel text-[11.5px]">Cargando políticas clínicas...</span>
         </div>
       </div>
     )
@@ -158,7 +158,7 @@ export const PoliciesManager: React.FC<PoliciesManagerProps> = ({ readOnly }) =>
       <div data-card style={{ maxWidth: '760px' }}>
         <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', textAlign: 'center' }}>
           <AlertCircle style={{ color: 'var(--neg)' }} size={22} />
-          <p style={{ fontSize: '13px', color: 'var(--neg)', margin: 0 }}>
+          <p style={{ fontSize: '14.5px', color: 'var(--neg)', margin: 0 }}>
             No se pudieron cargar las políticas de la clínica.
           </p>
         </div>
@@ -173,7 +173,7 @@ export const PoliciesManager: React.FC<PoliciesManagerProps> = ({ readOnly }) =>
           <h2>Políticas de atención</h2>
           {!readOnly && (
             <button data-btn onClick={handleOpenCreateModal}>
-              <Plus size={14} strokeWidth={1.9} />
+              <Plus size={16} strokeWidth={1.9} />
               Agregar Política
             </button>
           )}
@@ -184,8 +184,8 @@ export const PoliciesManager: React.FC<PoliciesManagerProps> = ({ readOnly }) =>
             <div style={{ width: '44px', height: '44px', border: '1px solid var(--line)', borderRadius: '7px', background: 'var(--head)', display: 'grid', placeItems: 'center', color: 'var(--muted)' }}>
               <Shield size={22} strokeWidth={1.75} />
             </div>
-            <p style={{ fontSize: '14.5px', fontWeight: 600, color: 'var(--ink)', margin: 0 }}>Sin políticas vigentes</p>
-            <p style={{ fontSize: '12.5px', color: 'var(--muted)', margin: 0, maxWidth: '340px' }}>
+            <p style={{ fontSize: '16px', fontWeight: 600, color: 'var(--ink)', margin: 0 }}>Sin políticas vigentes</p>
+            <p style={{ fontSize: '14px', color: 'var(--muted)', margin: 0, maxWidth: '340px' }}>
               Crea políticas de inasistencia, cancelaciones fuera de plazo u otras reglas de comportamiento.
             </p>
           </div>
@@ -204,8 +204,8 @@ export const PoliciesManager: React.FC<PoliciesManagerProps> = ({ readOnly }) =>
                 }}
               >
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  <span style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>{policy.title}</span>
-                  <span style={{ fontSize: '12.5px', lineHeight: 1.55, color: 'var(--muted)', whiteSpace: 'pre-line' }}>
+                  <span style={{ fontSize: '15px', fontWeight: 500, color: 'var(--ink)' }}>{policy.title}</span>
+                  <span style={{ fontSize: '14px', lineHeight: 1.55, color: 'var(--muted)', whiteSpace: 'pre-line' }}>
                     {policy.description}
                   </span>
                 </div>
@@ -224,7 +224,7 @@ export const PoliciesManager: React.FC<PoliciesManagerProps> = ({ readOnly }) =>
                       title={`Editar ${policy.title}`}
                       aria-label={`Editar ${policy.title}`}
                     >
-                      <Pencil size={14} strokeWidth={1.75} />
+                      <Pencil size={16} strokeWidth={1.75} />
                     </button>
                     <button
                       data-btn
@@ -234,7 +234,7 @@ export const PoliciesManager: React.FC<PoliciesManagerProps> = ({ readOnly }) =>
                       title={`Eliminar ${policy.title}`}
                       aria-label={`Eliminar ${policy.title}`}
                     >
-                      <Trash2 size={14} strokeWidth={1.75} />
+                      <Trash2 size={16} strokeWidth={1.75} />
                     </button>
                   </span>
                 )}
@@ -254,7 +254,7 @@ export const PoliciesManager: React.FC<PoliciesManagerProps> = ({ readOnly }) =>
             <Button variant="secondary" onClick={() => setIsModalOpen(false)} disabled={isCreating || isUpdating}>
               Cancelar
             </Button>
-            <Button onClick={() => handleSubmit()} loading={isCreating || isUpdating} icon={<Save size={14} />}>
+            <Button onClick={() => handleSubmit()} loading={isCreating || isUpdating} icon={<Save size={16} />}>
               Guardar política
             </Button>
           </>
@@ -307,8 +307,8 @@ export const PoliciesManager: React.FC<PoliciesManagerProps> = ({ readOnly }) =>
           {/* Status Toggle */}
           <div className="flex items-center justify-between border border-[var(--line)] bg-[var(--surface)] rounded-[7px] p-3.5 mt-1">
             <div>
-              <p className="text-[13px] font-medium text-[var(--ink)] m-0">Política activa</p>
-              <p className="text-[12px] text-[var(--muted)] m-0 mt-0.5">
+              <p className="text-[14.5px] font-medium text-[var(--ink)] m-0">Política activa</p>
+              <p className="text-[13.5px] text-[var(--muted)] m-0 mt-0.5">
                 Indica si esta política está actualmente vigente y es obligatoria
               </p>
             </div>

@@ -86,10 +86,10 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
       <Header />
       
       <main 
-        className={`${conFranja ? 'pt-[88px]' : 'pt-14'} transition-all duration-200 min-h-screen`}
-        style={{ paddingLeft: isSidebarOpen ? '240px' : '72px' }}
+        className={`${conFranja ? 'pt-[100px]' : 'pt-16'} transition-all duration-200 min-h-screen`}
+        style={{ paddingLeft: isSidebarOpen ? '264px' : '72px' }}
       >
-        <div className="px-8 py-7 pb-14 max-w-[1340px] mx-auto min-w-0 w-full">
+        <div className="px-10 py-8 pb-16 max-w-[1680px] mx-auto min-w-0 w-full">
           {children}
         </div>
       </main>

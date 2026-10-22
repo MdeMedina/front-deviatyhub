@@ -52,7 +52,7 @@ const AuditLogRow: React.FC<{ log: IAuditLog }> = ({ log }) => {
         <td style={{ color: 'var(--ink)' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ color: 'var(--dim)' }}>
-              {expanded ? <ChevronDown size={13} strokeWidth={1.75} /> : <ChevronRight size={13} strokeWidth={1.75} />}
+              {expanded ? <ChevronDown size={14} strokeWidth={1.75} /> : <ChevronRight size={14} strokeWidth={1.75} />}
             </span>
             <span data-testid={`log-user-${log.id}`}>
               {log.user_email || 'Sistema'}
@@ -63,7 +63,7 @@ const AuditLogRow: React.FC<{ log: IAuditLog }> = ({ log }) => {
         {/* Action Badge */}
         <td>
           <span data-testid={`log-action-${log.id}`}>
-            <span data-badge style={{ fontSize: '10.5px', padding: '2px 8px' }}>
+            <span data-badge style={{ fontSize: '12px', padding: '2px 8px' }}>
               {log.action}
             </span>
           </span>
@@ -92,7 +92,7 @@ const AuditLogRow: React.FC<{ log: IAuditLog }> = ({ log }) => {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span data-lbl>Detalle de Modificación</span>
                 {(log as any).ip_address && (
-                  <span data-mono style={{ fontSize: '11px', color: 'var(--dim)' }}>
+                  <span data-mono style={{ fontSize: '12.5px', color: 'var(--dim)' }}>
                     IP: {(log as any).ip_address}
                   </span>
                 )}
@@ -101,14 +101,14 @@ const AuditLogRow: React.FC<{ log: IAuditLog }> = ({ log }) => {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   <span data-lbl style={{ color: 'var(--neg)' }}>Estado Anterior</span>
-                  <pre data-testid={`log-before-${log.id}`} data-mono style={{ margin: 0, padding: '10px 12px', borderRadius: '6px', background: 'var(--surface)', border: '1px solid var(--line)', fontSize: '11px', color: 'var(--ink-soft)', maxHeight: '180px', overflowY: 'auto' }}>
+                  <pre data-testid={`log-before-${log.id}`} data-mono style={{ margin: 0, padding: '10px 12px', borderRadius: '6px', background: 'var(--surface)', border: '1px solid var(--line)', fontSize: '12.5px', color: 'var(--ink-soft)', maxHeight: '180px', overflowY: 'auto' }}>
                     {prettyJson(log.changes?.before || null)}
                   </pre>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   <span data-lbl style={{ color: 'var(--pos)' }}>Estado Posterior</span>
-                  <pre data-testid={`log-after-${log.id}`} data-mono style={{ margin: 0, padding: '10px 12px', borderRadius: '6px', background: 'var(--surface)', border: '1px solid var(--line)', fontSize: '11px', color: 'var(--ink-soft)', maxHeight: '180px', overflowY: 'auto' }}>
+                  <pre data-testid={`log-after-${log.id}`} data-mono style={{ margin: 0, padding: '10px 12px', borderRadius: '6px', background: 'var(--surface)', border: '1px solid var(--line)', fontSize: '12.5px', color: 'var(--ink-soft)', maxHeight: '180px', overflowY: 'auto' }}>
                     {prettyJson(log.changes?.after || null)}
                   </pre>
                 </div>
@@ -131,10 +131,10 @@ export const AuditLogsTable: React.FC<AuditLogsTableProps> = ({
   if (!canView) {
     return (
       <div data-card data-testid="audit-no-permission" style={{ padding: '32px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-        <p style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: 'var(--ink)' }}>
+        <p style={{ margin: 0, fontSize: '14.5px', fontWeight: 600, color: 'var(--ink)' }}>
           Acceso restringido
         </p>
-        <p style={{ margin: 0, fontSize: '12.5px', color: 'var(--muted)' }}>
+        <p style={{ margin: 0, fontSize: '14px', color: 'var(--muted)' }}>
           No tienes permisos para ver los registros de auditoría del sistema.
         </p>
       </div>
@@ -147,7 +147,7 @@ export const AuditLogsTable: React.FC<AuditLogsTableProps> = ({
       <div data-hd>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
           <h2>Logs de auditoría</h2>
-          <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
+          <span style={{ fontSize: '13.5px', color: 'var(--muted)' }}>
             {logs.length} registros
           </span>
         </div>
@@ -177,12 +177,12 @@ export const AuditLogsTable: React.FC<AuditLogsTableProps> = ({
       {isLoading ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px', gap: '8px' }}>
           <Spinner size="md" />
-          <span className="microlabel text-[10px]">Cargando logs de auditoría</span>
+          <span className="microlabel text-[11.5px]">Cargando logs de auditoría</span>
         </div>
       ) : logs.length === 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px', gap: '8px', textAlign: 'center' }}>
           <ShieldAlert size={24} style={{ color: 'var(--dim)' }} />
-          <p style={{ margin: 0, fontSize: '13px', color: 'var(--muted)' }}>No hay eventos registrados en este período.</p>
+          <p style={{ margin: 0, fontSize: '14.5px', color: 'var(--muted)' }}>No hay eventos registrados en este período.</p>
         </div>
       ) : (
         <div style={{ overflowX: 'auto' }}>

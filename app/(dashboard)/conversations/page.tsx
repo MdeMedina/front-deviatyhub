@@ -20,14 +20,14 @@ function ConversationsContent() {
     // La altura disponible depende solo de los paddings fijos del layout
     // (pt-14 del main + py-7 y pb-14 del contenedor): 56 + 28 + 56 = 140px.
     // Así el panel no depende de la altura del bloque de título, que varía.
-    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto h-[calc(100vh-140px)]">
+    <div className="flex flex-col gap-5 max-w-[1680px] mx-auto h-[calc(100vh-152px)]">
       {/* Header Bar */}
       <div className="flex items-end justify-between gap-5 flex-wrap pb-4 border-b border-[var(--line)]">
         <div className="flex flex-col gap-1">
-          <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
+          <h1 className="text-[28px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
             Conversaciones
           </h1>
-          <p className="text-[13.5px] text-[var(--muted)]">
+          <p className="text-[15px] text-[var(--muted)]">
             Supervisa e interviene chats en tiempo real de WhatsApp e Instagram.
           </p>
         </div>
@@ -61,7 +61,7 @@ function ConversationsContent() {
 export default function ConversationsPage() {
   return (
     <Suspense fallback={
-      <div className="flex items-center justify-center h-[calc(100vh-130px)] text-[var(--muted)] text-[13px]">
+      <div className="flex items-center justify-center h-[calc(100vh-142px)] text-[var(--muted)] text-[14.5px]">
         Cargando interfaz de mensajería...
       </div>
     }>

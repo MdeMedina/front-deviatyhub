@@ -93,7 +93,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 size="sm"
                 onClick={() => handleStatusUpdate(AppointmentStatus.NO_SHOW)}
                 loading={updateStatus.isPending}
-                icon={<XCircle size={14} />}
+                icon={<XCircle size={16} />}
               >
                 No asistió
               </Button>
@@ -104,7 +104,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 size="sm"
                 onClick={() => handleStatusUpdate(AppointmentStatus.COMPLETED)}
                 loading={updateStatus.isPending}
-                icon={<CheckCircle2 size={14} />}
+                icon={<CheckCircle2 size={16} />}
               >
                 Asistió
               </Button>
@@ -115,7 +115,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 size="sm"
                 onClick={() => handleStatusUpdate(AppointmentStatus.CONFIRMED)}
                 loading={updateStatus.isPending}
-                icon={<CheckCircle2 size={14} />}
+                icon={<CheckCircle2 size={16} />}
               >
                 Confirmar Cita
               </Button>
@@ -126,7 +126,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 size="sm"
                 onClick={() => handleStatusUpdate(AppointmentStatus.CANCELLED)}
                 loading={updateStatus.isPending}
-                icon={<XCircle size={14} />}
+                icon={<XCircle size={16} />}
               >
                 Cancelar
               </Button>
@@ -138,21 +138,21 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
       {isLoading && !demoData ? (
         <div className="py-14 flex flex-col items-center justify-center gap-2">
           <Spinner size="md" />
-          <p className="microlabel text-[10px]">Cargando información</p>
+          <p className="microlabel text-[11.5px]">Cargando información</p>
         </div>
       ) : isError || !appointment ? (
         <div className="py-10 text-center">
           <AlertCircle size={32} className="text-[var(--neg)] mx-auto mb-2" />
-          <p className="text-[13px] text-[var(--muted)]">No se pudo cargar la información de la cita</p>
+          <p className="text-[14.5px] text-[var(--muted)]">No se pudo cargar la información de la cita</p>
         </div>
       ) : (
         <div className="space-y-5">
           {/* Header Info */}
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="text-[16px] font-semibold text-[var(--ink)] mb-0.5">{appointment.contactName}</h3>
-              <p className="text-[12px] text-[var(--muted)] flex items-center gap-1.5">
-                ID de Conversación: <span className="microlabel text-[10px] bg-[var(--surface)] px-1.5 py-0.5 rounded border border-[var(--line)]">{appointment.conversationId}</span>
+              <h3 className="text-[17.5px] font-semibold text-[var(--ink)] mb-0.5">{appointment.contactName}</h3>
+              <p className="text-[13.5px] text-[var(--muted)] flex items-center gap-1.5">
+                ID de Conversación: <span className="microlabel text-[11.5px] bg-[var(--surface)] px-1.5 py-0.5 rounded border border-[var(--line)]">{appointment.conversationId}</span>
               </p>
             </div>
             <Badge variant={getStatusVariant(appointment.status)} size="md">
@@ -163,30 +163,30 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
           {/* Details Grid */}
           <div className="grid grid-cols-2 gap-3 bg-[var(--surface)] p-3.5 rounded-[8px] border border-[var(--line-soft)]">
             <div className="space-y-0.5">
-              <span className="microlabel text-[9px] flex items-center gap-1">
-                <Stethoscope size={10} /> Tratamiento
+              <span className="microlabel text-[10.5px] flex items-center gap-1">
+                <Stethoscope size={11} /> Tratamiento
               </span>
-              <p className="text-[13px] font-medium text-[var(--ink)]">{appointment.treatment?.name}</p>
+              <p className="text-[14.5px] font-medium text-[var(--ink)]">{appointment.treatment?.name}</p>
             </div>
             <div className="space-y-0.5">
-              <span className="microlabel text-[9px] flex items-center gap-1">
-                <User size={10} /> Especialista
+              <span className="microlabel text-[10.5px] flex items-center gap-1">
+                <User size={11} /> Especialista
               </span>
-              <p className="text-[13px] font-medium text-[var(--ink)]">{appointment.doctor?.name}</p>
+              <p className="text-[14.5px] font-medium text-[var(--ink)]">{appointment.doctor?.name}</p>
             </div>
             <div className="space-y-0.5">
-              <span className="microlabel text-[9px] flex items-center gap-1">
-                <Calendar size={10} /> Fecha
+              <span className="microlabel text-[10.5px] flex items-center gap-1">
+                <Calendar size={11} /> Fecha
               </span>
-              <p className="text-[13px] font-medium text-[var(--ink)] tabular">
+              <p className="text-[14.5px] font-medium text-[var(--ink)] tabular">
                 {new Date(appointment.scheduledAt).toLocaleDateString('es-ES', { dateStyle: 'medium' })}
               </p>
             </div>
             <div className="space-y-0.5">
-              <span className="microlabel text-[9px] flex items-center gap-1">
-                <Clock size={10} /> Horario
+              <span className="microlabel text-[10.5px] flex items-center gap-1">
+                <Clock size={11} /> Horario
               </span>
-              <p className="text-[13px] font-medium text-[var(--ink)] tabular">
+              <p className="text-[14.5px] font-medium text-[var(--ink)] tabular">
                 {new Date(appointment.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ({appointment.durationMin} min)
               </p>
             </div>
@@ -195,8 +195,8 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
           {/* History Timeline */}
           {appointment.history && appointment.history.length > 0 && (
             <div className="pt-2">
-              <h4 className="microlabel text-[9.5px] mb-3 flex items-center gap-1.5">
-                <History size={12} /> Historial de Cambios
+              <h4 className="microlabel text-[11px] mb-3 flex items-center gap-1.5">
+                <History size={13} /> Historial de Cambios
               </h4>
               <div className="space-y-3 relative before:absolute before:left-1.5 before:top-2 before:bottom-2 before:w-px before:bg-[var(--line)]">
                 {appointment.history.map((event: any, idx: number) => (
@@ -205,10 +205,10 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                       <div className="w-1 h-1 rounded-full bg-[var(--blue)]" />
                     </div>
                     <div className="flex justify-between items-baseline">
-                      <p className="text-[12.5px] font-medium text-[var(--ink)]">{event.event}</p>
-                      <span className="microlabel text-[9.5px] tabular">{new Date(event.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                      <p className="text-[14px] font-medium text-[var(--ink)]">{event.event}</p>
+                      <span className="microlabel text-[11px] tabular">{new Date(event.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
-                    <p className="text-[11px] text-[var(--muted)]">Por: {event.performed_by} ({event.channel})</p>
+                    <p className="text-[12.5px] text-[var(--muted)]">Por: {event.performed_by} ({event.channel})</p>
                   </div>
                 ))}
               </div>

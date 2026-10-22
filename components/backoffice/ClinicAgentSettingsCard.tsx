@@ -16,8 +16,8 @@ function Casilla({ checked, onChange, label, hint }: { checked: boolean; onChang
     <label className="flex items-start gap-2.5 cursor-pointer">
       <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="mt-[3px] accent-[var(--blue)]" />
       <span className="flex flex-col">
-        <span className="text-[13px] text-[var(--ink)]">{label}</span>
-        {hint && <span className="text-[11.5px] text-[var(--muted)] leading-snug">{hint}</span>}
+        <span className="text-[14.5px] text-[var(--ink)]">{label}</span>
+        {hint && <span className="text-[13px] text-[var(--muted)] leading-snug">{hint}</span>}
       </span>
     </label>
   )
@@ -61,7 +61,7 @@ export function ClinicAgentSettingsCard({ clinicId }: { clinicId: string }) {
         <h2>Agente</h2>
         {data?.mode && <span data-lbl>Modo: {data.mode === 'PAUSED' ? 'en pausa' : data.mode === 'SUPERVISED' ? 'supervisado' : 'autónomo'}</span>}
       </div>
-      <div className="px-[18px] py-3.5 flex flex-col gap-4">
+      <div className="px-[22px] py-3.5 flex flex-col gap-4">
         <div className="grid gap-3 grid-cols-2">
           <label className="flex flex-col gap-1 col-span-2">
             <span data-lbl>Nombre del asistente</span>
@@ -105,9 +105,9 @@ export function ClinicAgentSettingsCard({ clinicId }: { clinicId: string }) {
           </div>
         </div>
       </div>
-      <div className="px-[18px] py-3 border-t border-[var(--line)] bg-[var(--head)] flex items-center justify-end gap-3">
-        {guardar.isError && <span className="text-[12px] text-[var(--neg)]">{(guardar.error as Error)?.message}</span>}
-        {guardado && <span className="text-[12px] text-[var(--pos)]">Guardado</span>}
+      <div className="px-[22px] py-3 border-t border-[var(--line)] bg-[var(--head)] flex items-center justify-end gap-3">
+        {guardar.isError && <span className="text-[13.5px] text-[var(--neg)]">{(guardar.error as Error)?.message}</span>}
+        {guardado && <span className="text-[13.5px] text-[var(--pos)]">Guardado</span>}
         <Button type="submit" size="sm" loading={guardar.isPending}>Guardar</Button>
       </div>
     </form>

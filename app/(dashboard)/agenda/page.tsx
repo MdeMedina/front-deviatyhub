@@ -45,16 +45,16 @@ export default function AgendaPage() {
         <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
           <AlertCircle size={22} />
         </div>
-        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
-        <p className="text-[13px] text-[var(--muted)] leading-relaxed mb-5">
+        <h2 className="text-[20px] font-semibold text-[var(--ink)] mb-1.5">Acceso Denegado</h2>
+        <p className="text-[14.5px] text-[var(--muted)] leading-relaxed mb-5">
           No tienes los permisos necesarios para visualizar la agenda médica y gestionar las citas. Por favor contacta al administrador.
         </p>
         <Link
           href="/dashboard"
-          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[13px] transition-opacity gap-2"
+          className="inline-flex items-center justify-center px-4 py-2 bg-[var(--ink)] hover:opacity-85 text-[var(--bg)] font-medium rounded-[7px] text-[14.5px] transition-opacity gap-2"
         >
           Ir al Dashboard
-          <ArrowRight size={14} />
+          <ArrowRight size={16} />
         </Link>
       </div>
     )
@@ -96,14 +96,14 @@ export default function AgendaPage() {
   const appointments = data ?? []
 
   return (
-    <div className="flex flex-col gap-5 max-w-[1340px] mx-auto">
+    <div className="flex flex-col gap-5 max-w-[1680px] mx-auto">
       {/* Header Bar */}
       <div className="flex items-end justify-between gap-5 flex-wrap pb-4 border-b border-[var(--line)]">
         <div className="flex flex-col gap-1">
-          <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
+          <h1 className="text-[28px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
             Agenda & Citas
           </h1>
-          <p className="text-[13.5px] text-[var(--muted)]">
+          <p className="text-[15px] text-[var(--muted)]">
             Control de Consultas Médicas
           </p>
         </div>
@@ -118,12 +118,12 @@ export default function AgendaPage() {
               aria-label="Período anterior"
               style={{ width: '28px', height: '26px', padding: 0, borderColor: 'transparent', background: 'none' }}
             >
-              <ChevronLeft size={15} strokeWidth={1.9} />
+              <ChevronLeft size={17} strokeWidth={1.9} />
             </button>
             <button 
               data-btn 
               onClick={handleToday}
-              style={{ height: '26px', borderColor: 'transparent', background: 'none', fontSize: '12.5px' }}
+              style={{ height: '26px', borderColor: 'transparent', background: 'none', fontSize: '14px' }}
             >
               Hoy
             </button>
@@ -133,14 +133,14 @@ export default function AgendaPage() {
               aria-label="Período siguiente"
               style={{ width: '28px', height: '26px', padding: 0, borderColor: 'transparent', background: 'none' }}
             >
-              <ChevronRight size={15} strokeWidth={1.9} />
+              <ChevronRight size={17} strokeWidth={1.9} />
             </button>
           </div>
 
           {/* Range text in Mono */}
           <span 
             data-mono 
-            style={{ fontSize: '12.5px', color: 'var(--ink-soft)', border: '1px solid var(--line)', borderRadius: '7px', padding: '6px 12px', background: 'var(--card)' }}
+            style={{ fontSize: '14px', color: 'var(--ink-soft)', border: '1px solid var(--line)', borderRadius: '7px', padding: '6px 12px', background: 'var(--card)' }}
           >
             {getRangeLabel(view, currentDate)}
           </span>

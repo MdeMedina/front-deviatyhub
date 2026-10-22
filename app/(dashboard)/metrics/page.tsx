@@ -26,7 +26,7 @@ function MetricsContent() {
 
   if (isPending) {
     return (
-      <div className="flex flex-col gap-5 max-w-[1340px] mx-auto animate-dentral-shimmer" data-testid="metrics-loading">
+      <div className="flex flex-col gap-5 max-w-[1680px] mx-auto animate-dentral-shimmer" data-testid="metrics-loading">
         <div className="h-10 bg-[var(--surface-2)] rounded-[6px]" />
         <div className="h-28 bg-[var(--card)] border border-[var(--line)] rounded-[10px]" />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -47,8 +47,8 @@ function MetricsContent() {
           <AlertCircle size={22} />
         </div>
         <div className="space-y-1">
-          <h3 className="text-[16px] font-semibold text-[var(--ink)]">Error al cargar las métricas</h3>
-          <p className="text-[12.5px] text-[var(--muted)] leading-relaxed">
+          <h3 className="text-[17.5px] font-semibold text-[var(--ink)]">Error al cargar las métricas</h3>
+          <p className="text-[14px] text-[var(--muted)] leading-relaxed">
             No pudimos obtener la información analítica de la base de datos. Por favor, verifica tu conexión o vuelve a intentarlo.
           </p>
         </div>
@@ -133,14 +133,14 @@ function MetricsContent() {
   ]
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1340px] mx-auto">
+    <div className="flex flex-col gap-6 max-w-[1680px] mx-auto">
       {/* Header and Period Selector */}
       <div className="flex items-end justify-between gap-5 flex-wrap pb-[18px] border-b border-[var(--line)]">
         <div className="flex flex-col gap-[5px]">
-          <h1 className="text-[24px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight" data-testid="metrics-page-title">
+          <h1 className="text-[28px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight" data-testid="metrics-page-title">
             Métricas de Rendimiento
           </h1>
-          <p className="text-[13.5px] text-[var(--muted)]">
+          <p className="text-[15px] text-[var(--muted)]">
             Monitorea el tráfico conversacional y evalúa la efectividad del agente autónomo.
           </p>
         </div>
@@ -190,19 +190,19 @@ function MetricsContent() {
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         {metricCards.map((m) => (
           <div key={m.testId} data-testid={m.testId} data-card style={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--ink)' }}>{m.title}</span>
+            <span style={{ fontSize: '14.5px', fontWeight: 600, color: 'var(--ink)' }}>{m.title}</span>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '9px' }}>
-              <span data-mono style={{ fontSize: '26px', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--ink)', lineHeight: 1 }}>
+              <span data-mono style={{ fontSize: '30px', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--ink)', lineHeight: 1 }}>
                 {m.value}
               </span>
               {/* Sin periodo anterior con el que comparar no se pinta nada. */}
               {m.trend && (
-                <span data-mono style={{ fontSize: '11px', color: m.trend.positive ? 'var(--pos)' : 'var(--neg)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
+                <span data-mono style={{ fontSize: '12.5px', color: m.trend.positive ? 'var(--pos)' : 'var(--neg)', border: '1px solid var(--line)', background: 'var(--surface)', borderRadius: '5px', padding: '2px 6px' }}>
                   {m.trend.label}
                 </span>
               )}
             </div>
-            <span style={{ fontSize: '12px', color: 'var(--muted)' }}>{m.subtitle}</span>
+            <span style={{ fontSize: '13.5px', color: 'var(--muted)' }}>{m.subtitle}</span>
           </div>
         ))}
       </div>
@@ -226,7 +226,7 @@ export default function MetricsPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex flex-col gap-5 max-w-[1340px] mx-auto animate-dentral-shimmer">
+        <div className="flex flex-col gap-5 max-w-[1680px] mx-auto animate-dentral-shimmer">
           <div className="h-10 bg-[var(--surface-2)] rounded-[6px]" />
           <div className="h-32 bg-[var(--card)] border border-[var(--line)] rounded-[10px]" />
         </div>

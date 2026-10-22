@@ -151,7 +151,7 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
     return (
       <div className="flex flex-col items-center justify-center p-12 bg-[var(--card)] border border-[var(--line)] rounded-[10px] min-h-[300px]">
         <Spinner size="md" />
-        <span className="microlabel text-[10px] mt-2">Cargando acciones</span>
+        <span className="microlabel text-[11.5px] mt-2">Cargando acciones</span>
       </div>
     )
   }
@@ -159,7 +159,7 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
   if (errorConfig || !config) {
     return (
       <div className="p-8 bg-[var(--card)] border border-[var(--line)] rounded-[10px] text-center">
-        <p className="text-[13px] text-[var(--neg)]">Error al cargar la configuración de acciones del agente.</p>
+        <p className="text-[14.5px] text-[var(--neg)]">Error al cargar la configuración de acciones del agente.</p>
       </div>
     )
   }
@@ -250,11 +250,11 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
 
               {/* Body */}
               <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '16px', flex: 1 }}>
-                <p style={{ margin: 0, fontSize: '12.5px', lineHeight: 1.6, color: 'var(--muted)' }}>
+                <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6, color: 'var(--muted)' }}>
                   {actionInfo.description}
                 </p>
                 {bloqueada && (
-                  <p style={{ margin: 0, fontSize: '12px', color: 'var(--neg)' }}>
+                  <p style={{ margin: 0, fontSize: '13.5px', color: 'var(--neg)' }}>
                     No está incluida en el plan de tu clínica. Escríbenos para habilitarla.
                   </p>
                 )}
@@ -279,7 +279,7 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
                             gap: '6px',
                             padding: '3px 9px',
                             borderRadius: '999px',
-                            fontSize: '11.5px',
+                            fontSize: '13px',
                             fontWeight: 500,
                             border: `1px solid ${isSelected && isActived ? 'var(--blue-line)' : 'var(--line)'}`,
                             background: isSelected && isActived ? 'var(--blue-tint)' : 'var(--surface)',
@@ -287,7 +287,7 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
                             opacity: !isActived ? 0.5 : 1,
                           }}
                         >
-                          {isSelected && <Check size={11} strokeWidth={2.5} />}
+                          {isSelected && <Check size={12} strokeWidth={2.5} />}
                           {channel}
                         </button>
                       )
@@ -317,7 +317,7 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
                             gap: '6px',
                             padding: '3px 9px',
                             borderRadius: '999px',
-                            fontSize: '11.5px',
+                            fontSize: '13px',
                             fontWeight: 500,
                             border: `1px solid ${isSelected && isActived ? 'var(--blue-line)' : 'var(--line)'}`,
                             background: isSelected && isActived ? 'var(--blue-tint)' : 'var(--surface)',
@@ -326,9 +326,9 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
                           }}
                         >
                           {!isConnected ? (
-                            <AlertTriangle size={11} className="shrink-0" />
+                            <AlertTriangle size={12} className="shrink-0" />
                           ) : isSelected && isActived ? (
-                            <Check size={11} strokeWidth={2.5} className="shrink-0" />
+                            <Check size={12} strokeWidth={2.5} className="shrink-0" />
                           ) : null}
                           {integration}
                         </button>
@@ -339,8 +339,8 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
 
                 {/* Executions footer */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', paddingTop: '14px', borderTop: '1px solid var(--line-soft)', marginTop: 'auto' }}>
-                  <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Ejecuciones (7 días)</span>
-                  <span data-mono style={{ fontSize: '13px', color: 'var(--ink)' }}>{actionInfo.count}</span>
+                  <span style={{ fontSize: '14px', color: 'var(--muted)' }}>Ejecuciones (7 días)</span>
+                  <span data-mono style={{ fontSize: '14.5px', color: 'var(--ink)' }}>{actionInfo.count}</span>
                 </div>
               </div>
             </div>
@@ -356,15 +356,15 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
         <div style={{ padding: '18px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <span data-lbl>Ventana mínima de agendamiento</span>
-            <span data-mono style={{ fontSize: '15px', color: 'var(--ink)' }}>2 h</span>
+            <span data-mono style={{ fontSize: '16.5px', color: 'var(--ink)' }}>2 h</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <span data-lbl>Máx. reprogramaciones por paciente</span>
-            <span data-mono style={{ fontSize: '15px', color: 'var(--ink)' }}>3</span>
+            <span data-mono style={{ fontSize: '16.5px', color: 'var(--ink)' }}>3</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <span data-lbl>Derivación automática a humano</span>
-            <span style={{ fontSize: '15px', color: 'var(--ink)' }}>Tras 2 intentos fallidos</span>
+            <span style={{ fontSize: '16.5px', color: 'var(--ink)' }}>Tras 2 intentos fallidos</span>
           </div>
         </div>
       </div>

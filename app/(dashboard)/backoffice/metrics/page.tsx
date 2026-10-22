@@ -94,20 +94,20 @@ function TarjetaSla({ i }: { i: Sla }) {
     <div data-card className="flex flex-col min-w-0" style={{ borderTop: `3px solid ${COLOR[i.tono]}` }}>
       <div className="px-4 pt-3.5 pb-3 flex flex-col gap-2.5 flex-1">
         <div className="flex items-start justify-between gap-2">
-          <span className="text-[13.5px] font-semibold text-[var(--ink)] leading-snug">{i.metrica}</span>
+          <span className="text-[15px] font-semibold text-[var(--ink)] leading-snug">{i.metrica}</span>
           <span data-badge className="shrink-0"><Dot tone={i.tono} />{ESTADO[i.tono]}</span>
         </div>
         <div className="flex items-end gap-5 flex-wrap">
           {i.cifras.map((c) => (
             <div key={c.etiqueta ?? 'valor'} className="flex flex-col gap-0.5">
-              <span className="tabular text-[26px] font-semibold tracking-[-0.02em] text-[var(--ink)] leading-none">{c.valor}</span>
-              {c.etiqueta && <span className="text-[11.5px] text-[var(--muted)]">{c.etiqueta}</span>}
+              <span className="tabular text-[30px] font-semibold tracking-[-0.02em] text-[var(--ink)] leading-none">{c.valor}</span>
+              {c.etiqueta && <span className="text-[13px] text-[var(--muted)]">{c.etiqueta}</span>}
             </div>
           ))}
         </div>
-        {i.nota && <span className="text-[12px] text-[var(--muted)] leading-snug">{i.nota}</span>}
+        {i.nota && <span className="text-[13.5px] text-[var(--muted)] leading-snug">{i.nota}</span>}
       </div>
-      <dl className="grid grid-cols-2 border-t border-[var(--line)] bg-[var(--head)] text-[12px]">
+      <dl className="grid grid-cols-2 border-t border-[var(--line)] bg-[var(--head)] text-[13.5px]">
         <div className="px-4 py-2 flex flex-col gap-0.5 border-r border-[var(--line)] min-w-0">
           <dt data-lbl>Meta</dt>
           <dd className="tabular text-[var(--ink-soft)]">{i.meta}</dd>
@@ -126,8 +126,8 @@ function Cifra({ etiqueta, valor, detalle }: { etiqueta: string; valor: React.Re
   return (
     <div className="rounded-[8px] border border-[var(--line)] bg-[var(--surface)] px-3 py-2.5 flex flex-col gap-1 min-w-0">
       <span data-lbl>{etiqueta}</span>
-      <span className="tabular text-[19px] font-semibold text-[var(--ink)] leading-none truncate">{valor}</span>
-      {detalle && <span className="text-[11.5px] leading-snug">{detalle}</span>}
+      <span className="tabular text-[21px] font-semibold text-[var(--ink)] leading-none truncate">{valor}</span>
+      {detalle && <span className="text-[13px] leading-snug">{detalle}</span>}
     </div>
   )
 }
@@ -143,8 +143,8 @@ function Seccion({ titulo, detalle, children }: { titulo: string; detalle?: Reac
   return (
     <section className="flex flex-col gap-3">
       <div className="flex items-baseline justify-between gap-3 flex-wrap">
-        <h2 className="text-[16px] font-semibold text-[var(--ink)] tracking-[-0.012em]">{titulo}</h2>
-        {detalle && <span className="text-[12px] text-[var(--muted)]">{detalle}</span>}
+        <h2 className="text-[17.5px] font-semibold text-[var(--ink)] tracking-[-0.012em]">{titulo}</h2>
+        {detalle && <span className="text-[13.5px] text-[var(--muted)]">{detalle}</span>}
       </div>
       {children}
     </section>
@@ -180,25 +180,25 @@ function Metricas() {
           <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
             <div data-card className="px-4 py-3.5 flex flex-col gap-1.5">
               <span data-lbl>Costo de IA · {dias === 1 ? '24 h' : `${dias} d`}</span>
-              <span className="tabular text-[24px] font-semibold text-[var(--ink)] leading-none">{usd(h.cost.total_usd)}</span>
-              <span className="text-[12px] text-[var(--muted)]">Proyectado al mes: {usd(h.cost.projected_month_usd)}</span>
+              <span className="tabular text-[28px] font-semibold text-[var(--ink)] leading-none">{usd(h.cost.total_usd)}</span>
+              <span className="text-[13.5px] text-[var(--muted)]">Proyectado al mes: {usd(h.cost.projected_month_usd)}</span>
             </div>
             <div data-card className="px-4 py-3.5 flex flex-col gap-1.5">
               <span data-lbl>Turnos del agente</span>
-              <span className="tabular text-[24px] font-semibold text-[var(--ink)] leading-none">{h.llm.turns}</span>
-              <span className="text-[12px] text-[var(--muted)]">{h.llm.replied} respondidos · simulador {usd(h.cost.simulator_usd)}</span>
+              <span className="tabular text-[28px] font-semibold text-[var(--ink)] leading-none">{h.llm.turns}</span>
+              <span className="text-[13.5px] text-[var(--muted)]">{h.llm.replied} respondidos · simulador {usd(h.cost.simulator_usd)}</span>
             </div>
             <div data-card className="px-4 py-3.5 flex flex-col gap-1.5">
               <span data-lbl>Latencia p95</span>
-              <span className="tabular text-[24px] font-semibold text-[var(--ink)] leading-none">{seg(h.latency.end_to_end.p95)}</span>
-              <span className="text-[12px] text-[var(--muted)]">Meta &lt; {h.sla.latencyP95Ms / 1000} s</span>
+              <span className="tabular text-[28px] font-semibold text-[var(--ink)] leading-none">{seg(h.latency.end_to_end.p95)}</span>
+              <span className="text-[13.5px] text-[var(--muted)]">Meta &lt; {h.sla.latencyP95Ms / 1000} s</span>
             </div>
             <div data-card className="px-4 py-3.5 flex flex-col gap-1.5">
               <span data-lbl>Sin respuesta ahora</span>
-              <span className="tabular text-[24px] font-semibold leading-none" style={{ color: h.unanswered.count ? 'var(--neg)' : 'var(--ink)' }}>
+              <span className="tabular text-[28px] font-semibold leading-none" style={{ color: h.unanswered.count ? 'var(--neg)' : 'var(--ink)' }}>
                 {h.unanswered.count}
               </span>
-              <span className="text-[12px] text-[var(--muted)]">mensajes con más de {h.sla.unansweredAfterSec} s</span>
+              <span className="text-[13.5px] text-[var(--muted)]">mensajes con más de {h.sla.unansweredAfterSec} s</span>
             </div>
           </div>
 
@@ -213,10 +213,10 @@ function Metricas() {
               ].map((n) => (
                 <div key={n.titulo} className="rounded-[10px] border border-dashed border-[var(--line)] px-4 py-3 flex flex-col gap-1">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[13px] font-medium text-[var(--ink-soft)]">{n.titulo}</span>
+                    <span className="text-[14.5px] font-medium text-[var(--ink-soft)]">{n.titulo}</span>
                     <span data-badge>No aplica</span>
                   </div>
-                  <span className="text-[12px] text-[var(--muted)] leading-snug">{n.texto}</span>
+                  <span className="text-[13.5px] text-[var(--muted)] leading-snug">{n.texto}</span>
                 </div>
               ))}
             </div>
@@ -227,11 +227,11 @@ function Metricas() {
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 {h.unanswered.items.map((u) => (
                   <div key={u.conversation_id} data-card className="px-4 py-3 flex flex-col gap-1" style={{ borderTop: '3px solid var(--neg)' }}>
-                    <span className="text-[13.5px] font-semibold text-[var(--ink)]">{u.clinic_name}</span>
-                    <span className="tabular text-[20px] font-semibold text-[var(--neg)] leading-none">
+                    <span className="text-[15px] font-semibold text-[var(--ink)]">{u.clinic_name}</span>
+                    <span className="tabular text-[22px] font-semibold text-[var(--neg)] leading-none">
                       {u.waiting_sec >= 3600 ? `${Math.round(u.waiting_sec / 3600)} h` : `${Math.round(u.waiting_sec / 60)} min`}
                     </span>
-                    <span className="tabular text-[11.5px] text-[var(--dim)] truncate">{u.conversation_id}</span>
+                    <span className="tabular text-[13px] text-[var(--dim)] truncate">{u.conversation_id}</span>
                   </div>
                 ))}
               </div>
@@ -244,7 +244,7 @@ function Metricas() {
         {cargandoClinicas ? (
           <div className="py-10 flex justify-center"><Spinner /></div>
         ) : clinicas.length === 0 ? (
-          <div data-card className="px-4 py-6 text-[13px] text-[var(--muted)]">Todavía no hay clínicas.</div>
+          <div data-card className="px-4 py-6 text-[14.5px] text-[var(--muted)]">Todavía no hay clínicas.</div>
         ) : (
           <div className="flex flex-col gap-3">
             {clinicas.map((c) => {
@@ -253,7 +253,7 @@ function Metricas() {
               return (
                 <div key={c.id} data-card>
                   <div data-hd>
-                    <Link href={`/backoffice/clinics/${c.id}`} className="text-[14.5px] font-semibold text-[var(--ink)] hover:text-[var(--blue)]">
+                    <Link href={`/backoffice/clinics/${c.id}`} className="text-[16px] font-semibold text-[var(--ink)] hover:text-[var(--blue)]">
                       {c.name}
                     </Link>
                     <span data-badge><Dot tone={c.active ? 'pos' : 'neg'} />{c.active ? 'Con acceso' : 'Bloqueada'}</span>
@@ -270,7 +270,7 @@ function Metricas() {
                     <Cifra etiqueta="Ingreso estimado" valor={dinero(c.estimated_revenue, c.currency)} />
                     <Cifra etiqueta="Autonomía" valor={pct(c.autonomy_rate)} />
                   </div>
-                  <div className="px-3.5 py-2.5 border-t border-[var(--line)] bg-[var(--head)] flex items-center gap-x-5 gap-y-2 flex-wrap text-[12.5px]">
+                  <div className="px-3.5 py-2.5 border-t border-[var(--line)] bg-[var(--head)] flex items-center gap-x-5 gap-y-2 flex-wrap text-[14px]">
                     <span className="flex items-center gap-2">
                       <span data-lbl>Garantía del mes</span>
                       <span data-badge>
@@ -290,7 +290,7 @@ function Metricas() {
         )}
       </Seccion>
 
-      <p className="text-[11.5px] text-[var(--dim)]">
+      <p className="text-[13px] text-[var(--dim)]">
         El costo de IA usa los precios públicos de OpenAI y cobra todos los tokens de entrada a precio normal: no descuenta los que OpenAI sirve
         desde caché, así que puede estar hasta al doble del real. No incluye Meta ni la infraestructura.
       </p>

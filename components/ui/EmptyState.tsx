@@ -27,12 +27,12 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         </div>
       )}
       
-      <h3 className="text-[14.5px] font-semibold text-[var(--ink)] mb-1 tracking-[-0.012em]">
+      <h3 className="text-[16px] font-semibold text-[var(--ink)] mb-1 tracking-[-0.012em]">
         {title}
       </h3>
       
       {description && (
-        <p className="text-[12.5px] text-[var(--muted)] max-w-sm mb-5 leading-relaxed">
+        <p className="text-[14px] text-[var(--muted)] max-w-sm mb-5 leading-relaxed">
           {description}
         </p>
       )}

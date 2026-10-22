@@ -101,7 +101,7 @@ export const ClinicConfigForm: React.FC<ClinicConfigFormProps> = ({ readOnly }) 
     return (
       <div data-card style={{ padding: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '300px' }}>
         <Spinner size="md" />
-        <span className="microlabel text-[10px] mt-2">Cargando configuración...</span>
+        <span className="microlabel text-[11.5px] mt-2">Cargando configuración...</span>
       </div>
     )
   }
@@ -109,7 +109,7 @@ export const ClinicConfigForm: React.FC<ClinicConfigFormProps> = ({ readOnly }) 
   if (isError) {
     return (
       <div data-card style={{ padding: '24px', textAlign: 'center' }}>
-        <p style={{ fontSize: '13px', color: 'var(--neg)' }}>
+        <p style={{ fontSize: '14.5px', color: 'var(--neg)' }}>
           No se pudo cargar la configuración de la clínica. Por favor, intente de nuevo.
         </p>
       </div>
@@ -232,7 +232,7 @@ export const ClinicConfigForm: React.FC<ClinicConfigFormProps> = ({ readOnly }) 
               </>
             ) : (
               <>
-                <Save size={14} strokeWidth={1.75} />
+                <Save size={16} strokeWidth={1.75} />
                 <span>Guardar cambios</span>
               </>
             )}

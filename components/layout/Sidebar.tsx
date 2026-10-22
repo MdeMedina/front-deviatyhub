@@ -103,17 +103,17 @@ export const Sidebar: React.FC = () => {
   return (
     <aside
       className={`fixed left-0 top-0 h-screen bg-[var(--nav)] border-r border-[var(--line)] flex flex-col z-40 transition-all duration-200 ${
-        isSidebarOpen ? 'w-[240px]' : 'w-[72px]'
+        isSidebarOpen ? 'w-[264px]' : 'w-[72px]'
       }`}
     >
-      {/* Header 56px */}
-      <div className="h-14 flex items-center px-4 justify-between border-b border-[var(--line)] bg-[var(--card)]">
+      {/* Header 64px */}
+      <div className="h-16 flex items-center px-5 justify-between border-b border-[var(--line)] bg-[var(--card)]">
         <div className="flex items-center gap-2 overflow-hidden">
           {isSidebarOpen ? (
-            <Logo variant="lockup" size={15} />
+            <Logo variant="lockup" size={17} />
           ) : (
             <span className="w-[30px] h-[30px] grid place-items-center rounded-full bg-[var(--surface)] border border-[var(--line)] text-[var(--ink)] shrink-0">
-              <Logo variant="mark" size={17} />
+              <Logo variant="mark" size={19} />
             </span>
           )}
         </div>
@@ -123,12 +123,12 @@ export const Sidebar: React.FC = () => {
           className="p-1 rounded-[6px] hover:bg-[var(--surface-2)] text-[var(--muted)] hover:text-[var(--ink)] transition-colors cursor-pointer"
           aria-label={isSidebarOpen ? "Contraer menú lateral" : "Expandir menú lateral"}
         >
-          {isSidebarOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+          {isSidebarOpen ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
         </button>
       </div>
 
       {/* Navigation Groups */}
-      <nav className="flex-1 overflow-y-auto overflow-x-hidden py-3.5 px-2.5 space-y-4">
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden py-4 px-3 space-y-5">
         {NAV_GROUPS.map((group) => {
           if (group.platformOnly && !user?.platform_admin) return null
           if (soloPlataforma && !group.platformOnly) return null
@@ -164,13 +164,13 @@ export const Sidebar: React.FC = () => {
                     key={item.href}
                     href={item.href}
                     title={!isSidebarOpen ? item.label : undefined}
-                    className={`flex items-center gap-2.5 px-2 py-[7px] rounded-[6px] transition-[background-color,color] duration-150 relative text-[13.5px] group ${
+                    className={`flex items-center gap-3 px-2.5 py-[9px] rounded-[7px] transition-[background-color,color] duration-150 relative text-[15px] group ${
                       isActive 
-                        ? 'bg-[var(--blue-tint)] text-[var(--blue)] font-medium before:content-[""] before:absolute before:left-[-10px] before:top-[7px] before:bottom-[7px] before:w-[2px] before:bg-[var(--blue)] before:rounded-r-[2px]' 
+                        ? 'bg-[var(--blue-tint)] text-[var(--blue)] font-medium before:content-[""] before:absolute before:left-[-10px] before:top-[9px] before:bottom-[9px] before:w-[2px] before:bg-[var(--blue)] before:rounded-r-[2px]' 
                         : 'text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-[var(--ink)] font-normal'
                     }`}
                   >
-                    <Icon size={16} className={`shrink-0 ${isActive ? 'text-[var(--blue)]' : 'text-[var(--muted)] group-hover:text-[var(--ink)]'}`} />
+                    <Icon size={18} className={`shrink-0 ${isActive ? 'text-[var(--blue)]' : 'text-[var(--muted)] group-hover:text-[var(--ink)]'}`} />
                     
                     {isSidebarOpen && (
                       <span className="truncate">
@@ -185,22 +185,22 @@ export const Sidebar: React.FC = () => {
         })}
       </nav>
 
-      {/* Footer 56px */}
-      <div className="p-3 border-t border-[var(--line)] bg-[var(--card)] flex items-center justify-between">
+      {/* Footer */}
+      <div className="px-4 py-3.5 border-t border-[var(--line)] bg-[var(--card)] flex items-center justify-between">
         {isSidebarOpen ? (
           <div className="overflow-hidden">
             <p className="microlabel">{soloPlataforma ? 'Cuenta' : 'Plan Actual'}</p>
-            <p className="text-[12.5px] font-medium text-[var(--ink)] truncate">{soloPlataforma ? 'Equipo Dentral' : 'Enterprise Pro'}</p>
+            <p className="text-[14px] font-medium text-[var(--ink)] truncate">{soloPlataforma ? 'Equipo Dentral' : 'Enterprise Pro'}</p>
           </div>
         ) : <div />}
 
         <button
           onClick={toggleTheme}
-          className="w-7 h-7 flex items-center justify-center border border-[var(--line)] rounded-[6px] bg-[var(--head)] text-[var(--muted)] hover:text-[var(--ink)] transition-colors cursor-pointer shrink-0"
+          className="w-8 h-8 flex items-center justify-center border border-[var(--line)] rounded-[6px] bg-[var(--head)] text-[var(--muted)] hover:text-[var(--ink)] transition-colors cursor-pointer shrink-0"
           title={theme === 'dark' ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
           aria-label="Alternar tema"
         >
-          {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
         </button>
       </div>
     </aside>

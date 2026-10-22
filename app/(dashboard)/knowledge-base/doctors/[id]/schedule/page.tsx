@@ -26,8 +26,8 @@ export default function DoctorSchedulePage() {
         <div className="w-11 h-11 border border-[var(--line)] rounded-[7px] bg-[var(--head)] flex items-center justify-center text-[var(--neg)] mb-3">
           <AlertCircle size={22} />
         </div>
-        <h2 className="text-[18px] font-semibold text-[var(--ink)] mb-1.5">Acceso denegado</h2>
-        <p className="text-[13px] text-[var(--muted)] leading-relaxed">
+        <h2 className="text-[20px] font-semibold text-[var(--ink)] mb-1.5">Acceso denegado</h2>
+        <p className="text-[14.5px] text-[var(--muted)] leading-relaxed">
           No tienes permisos para ver la jornada de los profesionales.
         </p>
       </div>
@@ -56,13 +56,13 @@ export default function DoctorSchedulePage() {
           style={{ width: '32px', height: '32px', padding: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
           aria-label="Volver a especialistas"
         >
-          <ArrowLeft size={15} />
+          <ArrowLeft size={17} />
         </Link>
         <div>
-          <h1 className="text-[18px] font-semibold text-[var(--ink)]">
+          <h1 className="text-[20px] font-semibold text-[var(--ink)]">
             Jornada de {doctor?.name ?? 'el profesional'}
           </h1>
-          <p className="text-[13px] text-[var(--muted)]">
+          <p className="text-[14.5px] text-[var(--muted)]">
             {doctor?.title ?? 'Determina las horas que el agente puede ofrecer'}
           </p>
         </div>

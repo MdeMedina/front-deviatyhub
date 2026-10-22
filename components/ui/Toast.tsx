@@ -41,9 +41,9 @@ export const Toast: React.FC<ToastProps> = ({ toast, onRemove }) => {
       </div>
       
       <div className="flex-1 space-y-0.5">
-        <h4 className="text-[13px] font-semibold text-[var(--ink)] leading-snug">{toast.title}</h4>
+        <h4 className="text-[14.5px] font-semibold text-[var(--ink)] leading-snug">{toast.title}</h4>
         {toast.message && (
-          <p className="text-[12px] text-[var(--muted)] leading-relaxed">
+          <p className="text-[13.5px] text-[var(--muted)] leading-relaxed">
             {toast.message}
           </p>
         )}
@@ -54,7 +54,7 @@ export const Toast: React.FC<ToastProps> = ({ toast, onRemove }) => {
         className="shrink-0 p-1 text-[var(--muted)] hover:text-[var(--ink)] rounded-[4px] transition-colors cursor-pointer"
         aria-label="Cerrar notificación"
       >
-        <X size={14} />
+        <X size={16} />
       </button>
     </motion.div>
   )

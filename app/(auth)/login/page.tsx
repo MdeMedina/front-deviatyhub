@@ -59,15 +59,15 @@ export default function LoginPage() {
       {/* Left Column: Brand & Form */}
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '40px 48px', minHeight: '100vh' }}>
         {/* Brand Header */}
-        <Logo variant="lockup" size={14} />
+        <Logo variant="lockup" size={16} />
 
         {/* Form Container */}
         <div style={{ maxWidth: '360px', width: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '28px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <h1 style={{ margin: 0, fontSize: '26px', fontWeight: 600, letterSpacing: '-0.025em', color: 'var(--ink)' }}>
+            <h1 style={{ margin: 0, fontSize: '30px', fontWeight: 600, letterSpacing: '-0.025em', color: 'var(--ink)' }}>
               Bienvenido de nuevo
             </h1>
-            <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6, color: 'var(--muted)' }}>
+            <p style={{ margin: 0, fontSize: '15.5px', lineHeight: 1.6, color: 'var(--muted)' }}>
               Ingresa tus credenciales para acceder al panel de Dentral.
             </p>
           </div>
@@ -75,8 +75,8 @@ export default function LoginPage() {
           {/* Inline Validation Alert */}
           {validationError && (
             <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', padding: '11px 13px', border: '1px solid var(--blue-line)', background: 'var(--blue-tint)', borderRadius: '8px' }}>
-              <AlertCircle size={15} strokeWidth={1.75} style={{ color: 'var(--blue)', marginTop: '1px', flex: 'none' }} />
-              <span style={{ fontSize: '13px', lineHeight: 1.5, color: 'var(--ink-soft)' }}>{validationError}</span>
+              <AlertCircle size={17} strokeWidth={1.75} style={{ color: 'var(--blue)', marginTop: '1px', flex: 'none' }} />
+              <span style={{ fontSize: '14.5px', lineHeight: 1.5, color: 'var(--ink-soft)' }}>{validationError}</span>
             </div>
           )}
 
@@ -99,7 +99,7 @@ export default function LoginPage() {
             <div data-field>
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px' }}>
                 <label htmlFor="password">Contraseña</label>
-                <a href="#" style={{ fontSize: '12px', color: 'var(--muted)', textDecoration: 'none' }}>
+                <a href="#" style={{ fontSize: '13.5px', color: 'var(--muted)', textDecoration: 'none' }}>
                   ¿Olvidaste tu contraseña?
                 </a>
               </div>
@@ -126,7 +126,7 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p style={{ margin: 0, fontSize: '13px', color: 'var(--muted)' }}>
+          <p style={{ margin: 0, fontSize: '14.5px', color: 'var(--muted)' }}>
             ¿No tienes cuenta?{' '}
             <a href="#" style={{ fontWeight: 500, textDecoration: 'none' }}>
               Contacta con soporte
@@ -141,7 +141,7 @@ export default function LoginPage() {
             <Link
               href="/set-password?token=demo"
               data-btn
-              style={{ height: '28px', fontSize: '12px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
+              style={{ height: '28px', fontSize: '13.5px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
             >
               Establecer contraseña
             </Link>
@@ -152,7 +152,7 @@ export default function LoginPage() {
               style={{ height: '28px', width: '32px', padding: 0 }}
               aria-label="Cambiar tema"
             >
-              <SunMoon size={14} strokeWidth={1.75} />
+              <SunMoon size={16} strokeWidth={1.75} />
             </button>
           </div>
         </div>
@@ -181,31 +181,31 @@ export default function LoginPage() {
         
         <div style={{ position: 'absolute', top: '56px', left: '56px', right: '56px', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#5FBF8D' }} />
-          <span style={{ fontFamily: 'var(--font-app-sans), system-ui, sans-serif', fontSize: '10.5px', letterSpacing: '0.09em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)' }}>
+          <span style={{ fontFamily: 'var(--font-app-sans), system-ui, sans-serif', fontSize: '12px', letterSpacing: '0.09em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)' }}>
             Nueva versión 2.4 ya disponible
           </span>
         </div>
 
         <div style={{ position: 'relative', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '18px' }}>
-          <h2 style={{ margin: 0, fontSize: '34px', lineHeight: 1.15, fontWeight: 600, letterSpacing: '-0.03em', color: '#FFFFFF', textWrap: 'pretty' }}>
+          <h2 style={{ margin: 0, fontSize: '38px', lineHeight: 1.15, fontWeight: 600, letterSpacing: '-0.03em', color: '#FFFFFF', textWrap: 'pretty' }}>
             Optimiza la gestión de tu clínica dental
           </h2>
-          <p style={{ margin: 0, fontSize: '15px', lineHeight: 1.65, color: 'rgba(255,255,255,.6)', textWrap: 'pretty' }}>
+          <p style={{ margin: 0, fontSize: '16.5px', lineHeight: 1.65, color: 'rgba(255,255,255,.6)', textWrap: 'pretty' }}>
             La plataforma integral impulsada por IA para manejar citas, conversaciones y pacientes de forma inteligente.
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '1px', background: 'rgba(255,255,255,.12)', border: '1px solid rgba(255,255,255,.12)', borderRadius: '10px', overflow: 'hidden', marginTop: '14px' }}>
             <div style={{ background: 'var(--blue-deep)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
-              <span data-mono style={{ fontSize: '20px', color: '#FFFFFF' }}>24/7</span>
-              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,.45)', lineHeight: 1.4 }}>Atención continua</span>
+              <span data-mono style={{ fontSize: '22px', color: '#FFFFFF' }}>24/7</span>
+              <span style={{ fontSize: '12.5px', color: 'rgba(255,255,255,.45)', lineHeight: 1.4 }}>Atención continua</span>
             </div>
             <div style={{ background: 'var(--blue-deep)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
-              <span data-mono style={{ fontSize: '20px', color: '#FFFFFF' }}>86%</span>
-              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,.45)', lineHeight: 1.4 }}>Tasa de contención</span>
+              <span data-mono style={{ fontSize: '22px', color: '#FFFFFF' }}>86%</span>
+              <span style={{ fontSize: '12.5px', color: 'rgba(255,255,255,.45)', lineHeight: 1.4 }}>Tasa de contención</span>
             </div>
             <div style={{ background: 'var(--blue-deep)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
-              <span data-mono style={{ fontSize: '20px', color: '#FFFFFF' }}>1.2s</span>
-              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,.45)', lineHeight: 1.4 }}>Respuesta media</span>
+              <span data-mono style={{ fontSize: '22px', color: '#FFFFFF' }}>1.2s</span>
+              <span style={{ fontSize: '12.5px', color: 'rgba(255,255,255,.45)', lineHeight: 1.4 }}>Respuesta media</span>
             </div>
           </div>
         </div>

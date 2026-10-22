@@ -68,8 +68,8 @@ function NuevaClinica() {
             <div className="flex items-start gap-3">
               <CheckCircle2 size={20} className="text-[var(--pos)] shrink-0 mt-0.5" />
               <div className="flex flex-col gap-1">
-                <p className="text-[14.5px] font-semibold text-[var(--ink)]">{resultado.clinic.name}</p>
-                <p className="text-[13px] text-[var(--muted)] leading-relaxed">
+                <p className="text-[16px] font-semibold text-[var(--ink)]">{resultado.clinic.name}</p>
+                <p className="text-[14.5px] text-[var(--muted)] leading-relaxed">
                   Le enviamos la invitación a <span className="text-[var(--ink)]">{resultado.admin.email}</span>.
                   El agente queda <strong className="font-medium text-[var(--ink)]">en pausa</strong> hasta que la clínica
                   tenga profesionales, tratamientos y WhatsApp conectado.
@@ -79,7 +79,7 @@ function NuevaClinica() {
             <div className="flex flex-col gap-1.5">
               <span data-lbl>Enlace de invitación</span>
               <CopyField value={resultado.invite_link} />
-              <span className="text-[12px] text-[var(--muted)]">
+              <span className="text-[13.5px] text-[var(--muted)]">
                 Por si el correo no llega. Vence el {new Date(resultado.invite_expires).toLocaleDateString('es-CL', { day: 'numeric', month: 'long' })}.
               </span>
             </div>
@@ -89,7 +89,7 @@ function NuevaClinica() {
               </Button>
               <Link
                 href={`/backoffice/clinics/${resultado.clinic.id}`}
-                className="h-9 px-3.5 inline-flex items-center rounded-[7px] border border-[var(--line)] bg-[var(--card)] text-[13px] text-[var(--ink-soft)] hover:border-[var(--dim)] hover:text-[var(--ink)] transition-colors"
+                className="h-9 px-3.5 inline-flex items-center rounded-[7px] border border-[var(--line)] bg-[var(--card)] text-[14.5px] text-[var(--ink-soft)] hover:border-[var(--dim)] hover:text-[var(--ink)] transition-colors"
               >
                 Ver la ficha
               </Link>
@@ -121,7 +121,7 @@ function NuevaClinica() {
               onChange={(v) => { setSlugEditado(true); setSlug(slugDe(v)) }}
               placeholder="clinica-dental-providencia"
             />
-            <span className="text-[12px] text-[var(--muted)]">Único en la plataforma. Se genera con el nombre.</span>
+            <span className="text-[13.5px] text-[var(--muted)]">Único en la plataforma. Se genera con el nombre.</span>
           </div>
           <div className="flex flex-col gap-1.5">
             <label htmlFor="plan" className="microlabel">Plan</label>
@@ -140,18 +140,18 @@ function NuevaClinica() {
         <div data-hd style={{ borderTop: '1px solid var(--line)' }}><h2>Quién la administra</h2></div>
         <div className="px-5 py-5 flex flex-col gap-1.5">
           <Input label="Correo del administrador" type="email" value={correoDueno} onChange={setCorreoDueno} placeholder="admin@clinica.cl" required />
-          <span className="text-[12px] text-[var(--muted)]">
+          <span className="text-[13.5px] text-[var(--muted)]">
             Recibe una invitación para crear su contraseña y entra directo al panel de su clínica como Administrador. Desde ahí invita a su equipo.
           </span>
         </div>
 
         <div className="px-5 py-4 border-t border-[var(--line)] bg-[var(--head)] flex items-center justify-between gap-3 flex-wrap">
-          <span className="text-[12.5px] text-[var(--muted)]">
+          <span className="text-[14px] text-[var(--muted)]">
             Se crea con horario de lunes a viernes de 9:00 a 18:00 y el agente en pausa.
           </span>
           <div className="flex items-center gap-3">
             {crear.isError && (
-              <span className="text-[12.5px] text-[var(--neg)]">{(crear.error as Error)?.message || 'No se pudo crear.'}</span>
+              <span className="text-[14px] text-[var(--neg)]">{(crear.error as Error)?.message || 'No se pudo crear.'}</span>
             )}
             <Button type="submit" disabled={!listo} loading={crear.isPending}>Crear clínica</Button>
           </div>

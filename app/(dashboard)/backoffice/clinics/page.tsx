@@ -34,9 +34,9 @@ function Clinicas() {
         actions={
           <Link
             href="/backoffice/clinics/new"
-            className="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-[7px] bg-[var(--blue-solid)] text-[var(--on-blue)] text-[13px] font-medium hover:opacity-[.88] transition-opacity"
+            className="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-[7px] bg-[var(--blue-solid)] text-[var(--on-blue)] text-[14.5px] font-medium hover:opacity-[.88] transition-opacity"
           >
-            <Plus size={14} /> Nueva clínica
+            <Plus size={16} /> Nueva clínica
           </Link>
         }
       />
@@ -44,7 +44,7 @@ function Clinicas() {
       <div data-card>
         <div data-hd>
           <div style={{ position: 'relative', width: '280px', maxWidth: '60%' }}>
-            <Search size={14} strokeWidth={1.75} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--dim)' }} />
+            <Search size={16} strokeWidth={1.75} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--dim)' }} />
             <input
               data-inp
               type="text"
@@ -60,9 +60,9 @@ function Clinicas() {
         {isLoading ? (
           <div className="py-16 flex justify-center"><Spinner /></div>
         ) : isError ? (
-          <p className="px-[18px] py-6 text-[13px] text-[var(--neg)]">No se pudieron cargar las clínicas.</p>
+          <p className="px-[22px] py-6 text-[14.5px] text-[var(--neg)]">No se pudieron cargar las clínicas.</p>
         ) : visibles.length === 0 ? (
-          <p className="px-[18px] py-6 text-[13px] text-[var(--muted)]">Ninguna clínica coincide con la búsqueda.</p>
+          <p className="px-[22px] py-6 text-[14.5px] text-[var(--muted)]">Ninguna clínica coincide con la búsqueda.</p>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table data-tbl>
@@ -88,7 +88,7 @@ function Clinicas() {
                       <td>
                         <Link href={`/backoffice/clinics/${c.id}`} className="flex flex-col min-w-0 group">
                           <span className="font-medium text-[var(--ink)] group-hover:text-[var(--blue)] truncate">{c.name}</span>
-                          <span className="tabular text-[11.5px] text-[var(--dim)]">{c.slug} · {c.plan}</span>
+                          <span className="tabular text-[13px] text-[var(--dim)]">{c.slug} · {c.plan}</span>
                         </Link>
                       </td>
                       <td>
@@ -108,10 +108,10 @@ function Clinicas() {
                         <button
                           type="button"
                           onClick={() => enter({ id: c.id, name: c.name })}
-                          className="h-7 px-2.5 inline-flex items-center gap-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--card)] text-[12px] text-[var(--ink-soft)] hover:border-[var(--dim)] hover:text-[var(--ink)] transition-colors cursor-pointer whitespace-nowrap"
+                          className="h-7 px-2.5 inline-flex items-center gap-1.5 rounded-[6px] border border-[var(--line)] bg-[var(--card)] text-[13.5px] text-[var(--ink-soft)] hover:border-[var(--dim)] hover:text-[var(--ink)] transition-colors cursor-pointer whitespace-nowrap"
                           title="Abrir el panel de esta clínica como su administrador"
                         >
-                          <LogIn size={12} /> Entrar
+                          <LogIn size={13} /> Entrar
                         </button>
                       </td>
                     </tr>

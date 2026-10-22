@@ -130,11 +130,11 @@ export const SimulatorChat: React.FC<SimulatorChatProps> = ({ resetNonce = 0 }) 
           {messages.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-3">
               <div className="w-10 h-10 rounded-[6px] border border-[var(--line)] bg-[var(--head)] flex items-center justify-center text-[var(--dim)]">
-                <Wrench size={18} strokeWidth={1.75} />
+                <Wrench size={20} strokeWidth={1.75} />
               </div>
               <div>
-                <p className="text-[14px] font-semibold text-[var(--ink)]">Inicia una simulación</p>
-                <p className="text-[12px] text-[var(--muted)] max-w-xs mt-1">
+                <p className="text-[15.5px] font-semibold text-[var(--ink)]">Inicia una simulación</p>
+                <p className="text-[13.5px] text-[var(--muted)] max-w-xs mt-1">
                   Escribe como un paciente o selecciona una sugerencia para probar la lógica del agente.
                 </p>
               </div>
@@ -145,7 +145,7 @@ export const SimulatorChat: React.FC<SimulatorChatProps> = ({ resetNonce = 0 }) 
                     key={idx}
                     type="button"
                     onClick={() => handleSendMessage(s)}
-                    className="text-left px-3 py-1.5 rounded-[6px] bg-[var(--card)] border border-[var(--line)] text-[12px] text-[var(--ink-soft)] hover:border-[var(--blue)] hover:text-[var(--blue)] transition-colors cursor-pointer"
+                    className="text-left px-3 py-1.5 rounded-[6px] bg-[var(--card)] border border-[var(--line)] text-[13.5px] text-[var(--ink-soft)] hover:border-[var(--blue)] hover:text-[var(--blue)] transition-colors cursor-pointer"
                   >
                     {s}
                   </button>
@@ -166,7 +166,7 @@ export const SimulatorChat: React.FC<SimulatorChatProps> = ({ resetNonce = 0 }) 
                       maxWidth: '78%',
                       padding: '10px 13px',
                       borderRadius: '10px',
-                      fontSize: '13px',
+                      fontSize: '14.5px',
                       lineHeight: '1.55',
                       border: `1px solid ${isUser ? 'var(--line)' : 'var(--blue-solid)'}`,
                       background: isUser ? 'var(--card)' : 'var(--blue-solid)',
@@ -179,7 +179,7 @@ export const SimulatorChat: React.FC<SimulatorChatProps> = ({ resetNonce = 0 }) 
                   {!isUser && msg.toolsUsed && msg.toolsUsed.length > 0 && (
                     <span data-testid="tools-badges" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                       {msg.toolsUsed.map((tool, idx) => (
-                        <span key={idx} data-badge style={{ fontSize: '10.5px', padding: '2px 7px', background: 'var(--card)' }}>
+                        <span key={idx} data-badge style={{ fontSize: '12px', padding: '2px 7px', background: 'var(--card)' }}>
                           {tool}
                         </span>
                       ))}
@@ -204,7 +204,7 @@ export const SimulatorChat: React.FC<SimulatorChatProps> = ({ resetNonce = 0 }) 
                 }}
               >
                 <Spinner size="sm" />
-                <span style={{ fontSize: '12px', color: 'var(--muted)' }}>Agente razonando...</span>
+                <span style={{ fontSize: '13.5px', color: 'var(--muted)' }}>Agente razonando...</span>
               </div>
             </div>
           )}
@@ -234,7 +234,7 @@ export const SimulatorChat: React.FC<SimulatorChatProps> = ({ resetNonce = 0 }) 
             disabled={!messageInput.trim() || sendMessage.isPending}
             style={{ width: '38px', height: '38px', padding: 0, flex: 'none' }}
           >
-            <Send size={15} strokeWidth={1.75} />
+            <Send size={17} strokeWidth={1.75} />
           </button>
         </form>
       </div>
@@ -248,14 +248,14 @@ export const SimulatorChat: React.FC<SimulatorChatProps> = ({ resetNonce = 0 }) 
           </div>
           <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {toolEntries.length === 0 ? (
-              <p style={{ margin: 0, fontSize: '12.5px', color: 'var(--muted)' }}>
+              <p style={{ margin: 0, fontSize: '14px', color: 'var(--muted)' }}>
                 Aún no se han invocado herramientas en esta sesión.
               </p>
             ) : (
               toolEntries.map(([tool, count]) => (
                 <div key={tool} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-                  <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>{tool}</span>
-                  <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>{count}</span>
+                  <span style={{ fontSize: '14px', color: 'var(--muted)' }}>{tool}</span>
+                  <span data-mono style={{ fontSize: '14px', color: 'var(--ink)' }}>{count}</span>
                 </div>
               ))
             )}
@@ -269,16 +269,16 @@ export const SimulatorChat: React.FC<SimulatorChatProps> = ({ resetNonce = 0 }) 
           </div>
           <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-              <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Paso actual</span>
-              <span data-badge style={{ fontSize: '10.5px' }}>{started ? 'ESPERANDO_HORARIO' : 'IDLE'}</span>
+              <span style={{ fontSize: '14px', color: 'var(--muted)' }}>Paso actual</span>
+              <span data-badge style={{ fontSize: '12px' }}>{started ? 'ESPERANDO_HORARIO' : 'IDLE'}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-              <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Canal simulado</span>
-              <span data-badge style={{ fontSize: '10.5px' }}>WHATSAPP</span>
+              <span style={{ fontSize: '14px', color: 'var(--muted)' }}>Canal simulado</span>
+              <span data-badge style={{ fontSize: '12px' }}>WHATSAPP</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-              <span style={{ fontSize: '12.5px', color: 'var(--muted)' }}>Latencia media</span>
-              <span data-mono style={{ fontSize: '12.5px', color: 'var(--ink)' }}>840 ms</span>
+              <span style={{ fontSize: '14px', color: 'var(--muted)' }}>Latencia media</span>
+              <span data-mono style={{ fontSize: '14px', color: 'var(--ink)' }}>840 ms</span>
             </div>
           </div>
         </div>

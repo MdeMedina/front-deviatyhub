@@ -88,7 +88,7 @@ export const IntegrationCard: React.FC<IntegrationCardProps> = ({
         {/* Card Header (34px icon box & Status badge) */}
         <div className="flex items-start justify-between gap-3">
           <div className="w-[34px] h-[34px] rounded-[6px] bg-[var(--head)] border border-[var(--line)] flex items-center justify-center text-[var(--ink)] shrink-0">
-            <BrandIcon size={17} />
+            <BrandIcon size={19} />
           </div>
 
           <Badge
@@ -100,13 +100,13 @@ export const IntegrationCard: React.FC<IntegrationCardProps> = ({
 
         {/* Brand Details */}
         <div className="space-y-1">
-          <h3 className="text-[14.5px] font-semibold text-[var(--ink)]">{brand.name}</h3>
-          <p className="text-[12.5px] text-[var(--muted)] leading-relaxed">{brand.description}</p>
+          <h3 className="text-[16px] font-semibold text-[var(--ink)]">{brand.name}</h3>
+          <p className="text-[14px] text-[var(--muted)] leading-relaxed">{brand.description}</p>
         </div>
 
         {/* Actions: two 50% buttons */}
         {!onTest && !onConfigure ? (
-          <p className="text-[12px] text-[var(--dim)] pt-1">La gestiona el equipo de Dentral. Si necesitas cambiar algo, escríbenos.</p>
+          <p className="text-[13.5px] text-[var(--dim)] pt-1">La gestiona el equipo de Dentral. Si necesitas cambiar algo, escríbenos.</p>
         ) : (
         <div className="flex gap-2 pt-1">
           {onConfigure && (
@@ -133,12 +133,12 @@ export const IntegrationCard: React.FC<IntegrationCardProps> = ({
 
       {/* Status footer bar on --surface */}
       {integration.last_tested_at && (
-        <div className="flex items-center justify-between gap-2 px-[18px] py-[11px] bg-[var(--surface)] border-t border-[var(--line)] text-[11.5px]">
+        <div className="flex items-center justify-between gap-2 px-[22px] py-[11px] bg-[var(--surface)] border-t border-[var(--line)] text-[13px]">
           <div className="flex items-center gap-1.5">
             {integration.last_test_ok ? (
-              <CheckCircle2 size={12} className="text-[var(--pos)] shrink-0" />
+              <CheckCircle2 size={13} className="text-[var(--pos)] shrink-0" />
             ) : (
-              <XCircle size={12} className="text-[var(--neg)] shrink-0" />
+              <XCircle size={13} className="text-[var(--neg)] shrink-0" />
             )}
             <span className={integration.last_test_ok ? 'text-[var(--pos)]' : 'text-[var(--neg)]'}>
               {integration.last_test_ok ? 'Conexión OK' : 'Fallo de conexión'}
@@ -150,13 +150,13 @@ export const IntegrationCard: React.FC<IntegrationCardProps> = ({
             {integration.latency_ms !== undefined && (
               <div className="relative group inline-block">
                 <div className="flex items-center gap-0.5 text-[var(--muted)] hover:text-[var(--ink)] transition-colors cursor-help">
-                  <Info size={10} />
+                  <Info size={11} />
                   <span className="font-mono">{integration.latency_ms} ms</span>
                 </div>
 
                 <div
                   data-testid="latency-tooltip"
-                  className="absolute bottom-full right-0 mb-1.5 px-2 py-1 bg-[var(--ink)] text-[var(--bg)] text-[9px] font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow z-20"
+                  className="absolute bottom-full right-0 mb-1.5 px-2 py-1 bg-[var(--ink)] text-[var(--bg)] text-[10.5px] font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow z-20"
                 >
                   Latencia del último test
                 </div>

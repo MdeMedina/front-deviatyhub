@@ -38,9 +38,9 @@ export const Button: React.FC<ButtonProps> = ({
   }
 
   const sizes = {
-    sm: 'h-7 px-3 text-[13px] gap-1.5',
-    md: 'h-8 px-[13px] text-[13px] gap-[7px]',
-    lg: 'h-10 px-5 text-[13px] gap-2.5',
+    sm: 'h-8 px-3.5 text-[14.5px] gap-1.5',
+    md: 'h-9 px-4 text-[14.5px] gap-[7px]',
+    lg: 'h-11 px-6 text-[14.5px] gap-2.5',
   }
 
   const width = fullWidth ? 'w-full' : ''
@@ -60,7 +60,7 @@ export const Button: React.FC<ButtonProps> = ({
         </>
       ) : (
         <>
-          {icon && <span className="shrink-0 [&>svg]:w-3.5 [&>svg]:h-3.5">{icon}</span>}
+          {icon && <span className="shrink-0 [&>svg]:w-4 [&>svg]:h-4">{icon}</span>}
           {children}
         </>
       )}

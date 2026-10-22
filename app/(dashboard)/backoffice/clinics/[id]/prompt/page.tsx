@@ -68,7 +68,7 @@ function Editor() {
   const igualAlBase = useMemo(() => !!p && texto === p.base, [p, texto])
 
   if (isLoading) return <div className="py-16 flex justify-center"><Spinner /></div>
-  if (isError || !p) return <p className="text-[13px] text-[var(--neg)]">No se pudo cargar el prompt.</p>
+  if (isError || !p) return <p className="text-[14.5px] text-[var(--neg)]">No se pudo cargar el prompt.</p>
 
   const guardar = () =>
     acciones.guardar.mutate(
@@ -88,14 +88,14 @@ function Editor() {
             ) : (
               <span data-badge><Dot tone="dim" />Usa el prompt del sistema</span>
             )}
-            <span className="text-[12.5px] text-[var(--muted)]">Solo lo ve y lo edita el equipo de Dentral.</span>
+            <span className="text-[14px] text-[var(--muted)]">Solo lo ve y lo edita el equipo de Dentral.</span>
           </span>
         }
       />
 
       {p.base_changed && (
-        <div className="flex items-start gap-2.5 rounded-[10px] border border-[var(--neg)] bg-[var(--card)] px-4 py-3 text-[13px] text-[var(--ink)]">
-          <AlertTriangle size={16} className="text-[var(--neg)] shrink-0 mt-[1px]" />
+        <div className="flex items-start gap-2.5 rounded-[10px] border border-[var(--neg)] bg-[var(--card)] px-4 py-3 text-[14.5px] text-[var(--ink)]">
+          <AlertTriangle size={18} className="text-[var(--neg)] shrink-0 mt-[1px]" />
           <span>
             El prompt del sistema cambió después de guardar esta versión, así que no incluye las mejoras posteriores.
             Revísala partiendo del prompt del sistema o vuelve a usarlo.
@@ -109,11 +109,11 @@ function Editor() {
           <div data-hd>
             <h2>Comportamiento</h2>
             <span className="flex items-center gap-2">
-              {sinGuardar && <span className="text-[12px] text-[var(--neg)]">Cambios sin guardar</span>}
+              {sinGuardar && <span className="text-[13.5px] text-[var(--neg)]">Cambios sin guardar</span>}
               <span data-lbl className="tabular">{texto.length.toLocaleString('es-CL')} caracteres</span>
             </span>
           </div>
-          <div className="px-[18px] py-2.5 border-b border-[var(--line)] flex items-center gap-2 flex-wrap">
+          <div className="px-[22px] py-2.5 border-b border-[var(--line)] flex items-center gap-2 flex-wrap">
             <Button size="sm" variant="ghost" onClick={() => setTexto(p.base)} disabled={igualAlBase}>Partir del prompt del sistema</Button>
             {p.active && (
               <Button size="sm" variant="ghost" onClick={() => setTexto(p.active!.content)} disabled={texto === p.active.content}>
@@ -127,15 +127,15 @@ function Editor() {
             onChange={(e) => setTexto(e.target.value)}
             spellCheck={false}
             aria-label="Texto de comportamiento del agente"
-            className="w-full min-h-[560px] resize-y px-[18px] py-3.5 bg-[var(--card)] text-[13px] leading-relaxed text-[var(--ink)] outline-none"
+            className="w-full min-h-[560px] resize-y px-[22px] py-3.5 bg-[var(--card)] text-[14.5px] leading-relaxed text-[var(--ink)] outline-none"
           />
           {(errores.length > 0 || avisos.length > 0 || avisosGuardado.length > 0) && (
-            <ul className="px-[18px] py-3 border-t border-[var(--line)] flex flex-col gap-1.5 text-[12.5px]">
+            <ul className="px-[22px] py-3 border-t border-[var(--line)] flex flex-col gap-1.5 text-[14px]">
               {errores.map((e) => <li key={e} className="text-[var(--neg)]">✕ {e}</li>)}
               {[...new Set([...avisos, ...avisosGuardado])].map((a) => <li key={a} className="text-[var(--ink-soft)]">⚠ {a}</li>)}
             </ul>
           )}
-          <div className="px-[18px] py-3 border-t border-[var(--line)] bg-[var(--head)] flex items-center gap-3 flex-wrap">
+          <div className="px-[22px] py-3 border-t border-[var(--line)] bg-[var(--head)] flex items-center gap-3 flex-wrap">
             <input
               data-inp
               value={nota}
@@ -144,7 +144,7 @@ function Editor() {
               className="flex-1 min-w-[220px]"
               style={{ height: 34 }}
             />
-            {acciones.guardar.isError && <span className="text-[12px] text-[var(--neg)]">{(acciones.guardar.error as Error)?.message}</span>}
+            {acciones.guardar.isError && <span className="text-[13.5px] text-[var(--neg)]">{(acciones.guardar.error as Error)?.message}</span>}
             <Button onClick={guardar} loading={acciones.guardar.isPending} disabled={!sinGuardar || errores.length > 0}>
               Guardar y activar
             </Button>
@@ -155,17 +155,17 @@ function Editor() {
         <div className="flex flex-col gap-5 min-w-0">
           <div data-card>
             <div data-hd><h2>Marcadores</h2></div>
-            <ul className="px-[18px] py-3 flex flex-col gap-2.5">
+            <ul className="px-[22px] py-3 flex flex-col gap-2.5">
               {Object.entries(p.markers).map(([nombre, desc]) => (
                 <li key={nombre} className="flex flex-col gap-0.5">
-                  <button type="button" onClick={() => insertar(nombre)} className="w-fit text-[12.5px] font-medium text-[var(--blue)] hover:underline cursor-pointer" title="Insertar en el texto">
+                  <button type="button" onClick={() => insertar(nombre)} className="w-fit text-[14px] font-medium text-[var(--blue)] hover:underline cursor-pointer" title="Insertar en el texto">
                     {`{${nombre}}`}
                   </button>
-                  <span className="text-[11.5px] text-[var(--muted)] leading-snug">{desc}</span>
+                  <span className="text-[13px] text-[var(--muted)] leading-snug">{desc}</span>
                 </li>
               ))}
             </ul>
-            <p className="px-[18px] pb-3 text-[11.5px] text-[var(--muted)] leading-snug">
+            <p className="px-[22px] pb-3 text-[13px] text-[var(--muted)] leading-snug">
               Cualquier otra llave se envía tal cual. Los datos de la clínica (horario, tratamientos, profesionales) los agrega el sistema solo.
             </p>
           </div>
@@ -176,17 +176,17 @@ function Editor() {
               <span data-lbl>{p.versions.length}</span>
             </div>
             {p.versions.length === 0 ? (
-              <p className="px-[18px] py-4 text-[12.5px] text-[var(--muted)]">Todavía no hay versiones propias.</p>
+              <p className="px-[22px] py-4 text-[14px] text-[var(--muted)]">Todavía no hay versiones propias.</p>
             ) : (
               <ul className="flex flex-col">
                 {p.versions.map((v) => (
-                  <li key={v.id} className="px-[18px] py-2.5 border-t border-[var(--line)] first:border-t-0 flex flex-col gap-1">
+                  <li key={v.id} className="px-[22px] py-2.5 border-t border-[var(--line)] first:border-t-0 flex flex-col gap-1">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[12.5px] text-[var(--ink)]">{new Date(v.created_at).toLocaleString('es-CL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                      <span className="text-[14px] text-[var(--ink)]">{new Date(v.created_at).toLocaleString('es-CL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
                       {v.active ? <span data-badge><Dot tone="pos" />Activa</span> : null}
                     </div>
-                    {v.note && <span className="text-[12px] text-[var(--ink-soft)] leading-snug">{v.note}</span>}
-                    <span className="text-[11.5px] text-[var(--muted)]">
+                    {v.note && <span className="text-[13.5px] text-[var(--ink-soft)] leading-snug">{v.note}</span>}
+                    <span className="text-[13px] text-[var(--muted)]">
                       {v.created_by ?? 'sin autor'}{!v.based_on_current ? ' · sobre un prompt del sistema anterior' : ''}
                     </span>
                     <div className="flex gap-1.5 pt-0.5">
@@ -202,10 +202,10 @@ function Editor() {
               </ul>
             )}
             {p.active && (
-              <div className="px-[18px] py-3 border-t border-[var(--line)] bg-[var(--head)]">
+              <div className="px-[22px] py-3 border-t border-[var(--line)] bg-[var(--head)]">
                 {confirmarBase ? (
                   <div className="flex flex-col gap-2">
-                    <span className="text-[12.5px] text-[var(--ink)]">El agente vuelve a usar el prompt del sistema. Las versiones quedan guardadas.</span>
+                    <span className="text-[14px] text-[var(--ink)]">El agente vuelve a usar el prompt del sistema. Las versiones quedan guardadas.</span>
                     <div className="flex gap-2">
                       <Button size="sm" variant="danger" loading={acciones.usarBase.isPending} onClick={() => acciones.usarBase.mutate(undefined, { onSuccess: () => { setConfirmarBase(false); setTexto(p.base) } })}>
                         Sí, volver
@@ -227,17 +227,17 @@ function Editor() {
         <button type="button" onClick={() => setVerFijo((v) => !v)} className="w-full text-left cursor-pointer" aria-expanded={verFijo}>
           <div data-hd>
             <h2 className="flex items-center gap-1.5">
-              {verFijo ? <ChevronDown size={15} /> : <ChevronRight size={15} />} Parte fija (no editable)
+              {verFijo ? <ChevronDown size={17} /> : <ChevronRight size={17} />} Parte fija (no editable)
             </h2>
             <span data-lbl>Va siempre después del comportamiento</span>
           </div>
         </button>
         {verFijo && (
-          <div className="px-[18px] py-3.5 flex flex-col gap-2">
-            <p className="text-[12px] text-[var(--muted)] leading-snug">
+          <div className="px-[22px] py-3.5 flex flex-col gap-2">
+            <p className="text-[13.5px] text-[var(--muted)] leading-snug">
               Datos de la clínica, calendario, estado de la reserva y el formato de respuesta. El sistema depende de este formato para reservar, por eso no se edita.
             </p>
-            <pre className="whitespace-pre-wrap text-[12.5px] leading-relaxed text-[var(--ink-soft)] bg-[var(--surface)] border border-[var(--line)] rounded-[8px] p-3 overflow-x-auto">
+            <pre className="whitespace-pre-wrap text-[14px] leading-relaxed text-[var(--ink-soft)] bg-[var(--surface)] border border-[var(--line)] rounded-[8px] p-3 overflow-x-auto">
               {p.fixed}
             </pre>
           </div>

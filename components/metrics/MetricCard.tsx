@@ -54,28 +54,28 @@ export const MetricCard: React.FC<MetricCardProps> = ({
         <span
           data-mono
           data-testid={actualTestId ? `${actualTestId}-value` : undefined}
-          style={{ fontSize: '25px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }}
+          style={{ fontSize: '28px', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--ink)' }}
         >
           {displayedValue}
         </span>
         {trend && (
           <span
             data-testid="trend-badge"
-            className={`inline-flex items-center gap-0.5 font-mono text-[11px] font-medium px-1.5 py-0.5 rounded-[5px] border border-[var(--line)] bg-[var(--surface)] ${
+            className={`inline-flex items-center gap-0.5 font-mono text-[12.5px] font-medium px-1.5 py-0.5 rounded-[5px] border border-[var(--line)] bg-[var(--surface)] ${
               isTrendPositive ? 'text-[var(--pos)]' : 'text-[var(--neg)]'
             }`}
           >
             {trend.direction === 'up' ? (
-              <ArrowUpRight size={11} />
+              <ArrowUpRight size={12} />
             ) : (
-              <ArrowDownRight size={11} />
+              <ArrowDownRight size={12} />
             )}
             {trendText}
           </span>
         )}
       </div>
 
-      {sub && <span style={{ fontSize: '11.5px', color: 'var(--dim)' }}>{sub}</span>}
+      {sub && <span style={{ fontSize: '13px', color: 'var(--dim)' }}>{sub}</span>}
     </div>
   )
 }

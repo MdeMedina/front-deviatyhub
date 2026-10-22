@@ -66,7 +66,7 @@ function Ficha() {
 
   if (isLoading) return <div className="py-16 flex justify-center"><Spinner /></div>
   if (isError || !c) {
-    return <p className="text-[13px] text-[var(--neg)]">No se pudo cargar la clínica.</p>
+    return <p className="text-[14.5px] text-[var(--neg)]">No se pudo cargar la clínica.</p>
   }
 
   const pasos = puestaEnMarcha(c)
@@ -82,18 +82,18 @@ function Ficha() {
           <span className="flex items-center gap-2 flex-wrap">
             <span data-badge><Dot tone={c.active ? 'pos' : 'neg'} />{c.active ? 'Con acceso' : 'Entrada bloqueada'}</span>
             {modo && <span data-badge><Dot tone={modo.tone} />Agente {modo.label.toLowerCase()}</span>}
-            <span className="tabular text-[12px] text-[var(--dim)]">{c.slug} · {c.plan} · creada {hace(c.created_at)}</span>
+            <span className="tabular text-[13.5px] text-[var(--dim)]">{c.slug} · {c.plan} · creada {hace(c.created_at)}</span>
           </span>
         }
         actions={
           <>
             <Link
               href={`/backoffice/clinics/${c.id}/prompt`}
-              className="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-[7px] border border-[var(--line)] bg-[var(--card)] text-[13px] font-medium text-[var(--ink-soft)] hover:border-[var(--dim)] hover:text-[var(--ink)] transition-colors"
+              className="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-[7px] border border-[var(--line)] bg-[var(--card)] text-[14.5px] font-medium text-[var(--ink-soft)] hover:border-[var(--dim)] hover:text-[var(--ink)] transition-colors"
             >
-              <FileText size={14} /> Editar prompt
+              <FileText size={16} /> Editar prompt
             </Link>
-            <Button icon={<LogIn size={14} />} onClick={() => enter({ id: c.id, name: c.name })}>
+            <Button icon={<LogIn size={16} />} onClick={() => enter({ id: c.id, name: c.name })}>
               Entrar al panel
             </Button>
           </>
@@ -124,7 +124,7 @@ function Ficha() {
                         <td>
                           <span className="flex flex-col min-w-0">
                             <span className="text-[var(--ink)] font-medium truncate">{u.email}</span>
-                            {u.doctor && <span className="text-[11.5px] text-[var(--dim)]">{u.doctor}</span>}
+                            {u.doctor && <span className="text-[13px] text-[var(--dim)]">{u.doctor}</span>}
                           </span>
                         </td>
                         <td>
@@ -157,7 +157,7 @@ function Ficha() {
                         <tr>
                           <td colSpan={4}>
                             <div className="flex flex-col gap-1.5 py-1">
-                              <span className="text-[12px] text-[var(--muted)]">Invitación reenviada. Enlace para mandarlo a mano:</span>
+                              <span className="text-[13.5px] text-[var(--muted)]">Invitación reenviada. Enlace para mandarlo a mano:</span>
                               <CopyField value={enlace.link} />
                             </div>
                           </td>
@@ -169,7 +169,7 @@ function Ficha() {
               </table>
             </div>
             <form
-              className="px-[18px] py-3 border-t border-[var(--line)] bg-[var(--head)] flex flex-col gap-2"
+              className="px-[22px] py-3 border-t border-[var(--line)] bg-[var(--head)] flex flex-col gap-2"
               onSubmit={async (e) => {
                 e.preventDefault()
                 if (!correoNuevo.includes('@')) return
@@ -193,7 +193,7 @@ function Ficha() {
                   Invitar administrador
                 </Button>
               </div>
-              <span className="text-[11.5px] text-[var(--muted)]">
+              <span className="text-[13px] text-[var(--muted)]">
                 {invitar.isError
                   ? (invitar.error as Error)?.message
                   : 'Entra con todos los permisos de las secciones habilitadas. El resto del equipo lo invita la clínica desde su panel.'}
@@ -209,7 +209,7 @@ function Ficha() {
               <span data-lbl>Se configuran entrando al panel de la clínica</span>
             </div>
             {c.integrations.filter((i) => i.type !== 'WHATSAPP').length === 0 ? (
-              <p className="px-[18px] py-5 text-[13px] text-[var(--muted)]">Ninguna configurada todavía.</p>
+              <p className="px-[22px] py-5 text-[14.5px] text-[var(--muted)]">Ninguna configurada todavía.</p>
             ) : (
               <table data-tbl>
                 <thead>
@@ -233,7 +233,7 @@ function Ficha() {
                       <td className="text-[var(--muted)]">
                         {i.last_tested_at ? `${hace(i.last_tested_at)} · ${i.last_test_ok ? 'bien' : 'falló'}` : '—'}
                       </td>
-                      <td className="tabular text-[12px] text-[var(--muted)]">{i.external_id || '—'}</td>
+                      <td className="tabular text-[13.5px] text-[var(--muted)]">{i.external_id || '—'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -249,13 +249,13 @@ function Ficha() {
 
           <div data-card>
             <div data-hd><h2>Prompt del agente</h2></div>
-            <div className="px-[18px] py-3.5 flex flex-col gap-2.5">
-              <span className="text-[12.5px] text-[var(--muted)] leading-snug">
+            <div className="px-[22px] py-3.5 flex flex-col gap-2.5">
+              <span className="text-[14px] text-[var(--muted)] leading-snug">
                 Cómo habla y cómo lleva la conversación el agente de esta clínica. Solo lo ve el equipo de Dentral.
               </span>
               <Link
                 href={`/backoffice/clinics/${c.id}/prompt`}
-                className="w-fit h-8 px-3 inline-flex items-center rounded-[7px] border border-[var(--line)] bg-[var(--card)] text-[12.5px] text-[var(--ink-soft)] hover:border-[var(--dim)] hover:text-[var(--ink)] transition-colors"
+                className="w-fit h-8 px-3 inline-flex items-center rounded-[7px] border border-[var(--line)] bg-[var(--card)] text-[14px] text-[var(--ink-soft)] hover:border-[var(--dim)] hover:text-[var(--ink)] transition-colors"
               >
                 Editar prompt
               </Link>
@@ -269,12 +269,12 @@ function Ficha() {
               <h2>Puesta en marcha</h2>
               <span data-lbl className="tabular">{hechos}/{pasos.length}</span>
             </div>
-            <ul className="px-[18px] py-3.5 flex flex-col gap-2.5">
+            <ul className="px-[22px] py-3.5 flex flex-col gap-2.5">
               {pasos.map((p) => (
-                <li key={p.label} className="flex items-start gap-2.5 text-[13px]">
+                <li key={p.label} className="flex items-start gap-2.5 text-[14.5px]">
                   {p.ok
-                    ? <CheckCircle2 size={15} className="text-[var(--pos)] shrink-0 mt-[1px]" />
-                    : <Circle size={15} className="text-[var(--dim)] shrink-0 mt-[1px]" />}
+                    ? <CheckCircle2 size={17} className="text-[var(--pos)] shrink-0 mt-[1px]" />
+                    : <Circle size={17} className="text-[var(--dim)] shrink-0 mt-[1px]" />}
                   <span className={p.ok ? 'text-[var(--ink-soft)]' : 'text-[var(--ink)]'}>{p.label}</span>
                 </li>
               ))}
@@ -283,7 +283,7 @@ function Ficha() {
 
           <div data-card>
             <div data-hd><h2>Datos</h2></div>
-            <dl className="px-[18px] py-3.5 grid grid-cols-[110px_minmax(0,1fr)] gap-x-3 gap-y-2.5 text-[13px]">
+            <dl className="px-[22px] py-3.5 grid grid-cols-[110px_minmax(0,1fr)] gap-x-3 gap-y-2.5 text-[14.5px]">
               <dt data-lbl className="pt-[2px]">Facturación</dt>
               <dd className="text-[var(--ink)] break-words">{c.billing_email}</dd>
               <dt data-lbl className="pt-[2px]">Teléfono</dt>
@@ -295,7 +295,7 @@ function Ficha() {
               <dt data-lbl className="pt-[2px]">Pacientes</dt>
               <dd className="tabular text-[var(--ink)]">{c.counts.contacts}</dd>
               <dt data-lbl className="pt-[2px]">Horario</dt>
-              <dd className="tabular text-[12px] text-[var(--ink-soft)] flex flex-col gap-0.5">
+              <dd className="tabular text-[13.5px] text-[var(--ink-soft)] flex flex-col gap-0.5">
                 {c.schedules.length === 0 ? '—' : c.schedules.filter((s) => s.isOpen).map((s) => (
                   <span key={s.dayOfWeek}>{DIAS[s.dayOfWeek]} {s.openTime}–{s.closeTime}</span>
                 ))}

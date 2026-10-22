@@ -74,7 +74,7 @@ export const Modal: React.FC<ModalProps> = ({
           >
             {/* Header */}
             <div className="px-5 py-3.5 bg-[var(--head)] border-b border-[var(--line)] flex items-center justify-between">
-              <h3 id="modal-title" className="text-[14.5px] font-semibold text-[var(--ink)] tracking-[-0.012em]">
+              <h3 id="modal-title" className="text-[16px] font-semibold text-[var(--ink)] tracking-[-0.012em]">
                 {title}
               </h3>
               <button
@@ -82,12 +82,12 @@ export const Modal: React.FC<ModalProps> = ({
                 className="w-7 h-7 flex items-center justify-center text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--surface-2)] rounded-[6px] transition-colors cursor-pointer"
                 aria-label="Cerrar modal"
               >
-                <X size={15} />
+                <X size={17} />
               </button>
             </div>
 
             {/* Body */}
-            <div className="px-5 py-5 overflow-y-auto max-h-[70vh] text-[13.5px] text-[var(--ink-soft)]">
+            <div className="px-5 py-5 overflow-y-auto max-h-[70vh] text-[15px] text-[var(--ink-soft)]">
               {children}
             </div>
 

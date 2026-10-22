@@ -88,7 +88,7 @@ export default function DesignSystemPage() {
           className="grid grid-cols-1 md:grid-cols-2 gap-8"
         >
           {/* Buttons Section */}
-          <Section icon={<MousePointer2 size={18} />} title="Button" description="Botón principal con soporte para estados de carga, variantes y feedback táctil.">
+          <Section icon={<MousePointer2 size={20} />} title="Button" description="Botón principal con soporte para estados de carga, variantes y feedback táctil.">
             <div className="flex flex-wrap gap-4 items-center">
               <Button onClick={() => addToast({ title: 'Click!', message: 'Has pulsado el botón Primary', type: 'info' })}>
                 Primary Button
@@ -104,19 +104,19 @@ export default function DesignSystemPage() {
           </Section>
 
           {/* Inputs Section */}
-          <Section icon={<Type size={18} />} title="Input" description="Campos de texto con soporte para iconos, etiquetas y estados de error.">
+          <Section icon={<Type size={20} />} title="Input" description="Campos de texto con soporte para iconos, etiquetas y estados de error.">
             <div className="space-y-6">
               <Input 
                 label="Nombre de Usuario" 
                 placeholder="Ej: Miguel Medina" 
-                leftIcon={<User size={18} />}
+                leftIcon={<User size={20} />}
                 value=""
                 onChange={() => {}}
               />
               <Input 
                 label="Búsqueda" 
                 placeholder="Buscar conversación..." 
-                leftIcon={<Search size={18} />}
+                leftIcon={<Search size={20} />}
                 value=""
                 onChange={() => {}}
               />
@@ -124,7 +124,7 @@ export default function DesignSystemPage() {
                 label="Campo con Error" 
                 placeholder="Email inválido" 
                 error="Este correo ya está registrado"
-                leftIcon={<AlertCircle size={18} />}
+                leftIcon={<AlertCircle size={20} />}
                 value=""
                 onChange={() => {}}
               />
@@ -132,7 +132,7 @@ export default function DesignSystemPage() {
           </Section>
 
           {/* Badges Section */}
-          <Section icon={<Square size={18} />} title="Badge" description="Pequeños indicadores de estado con diseño 'soft background'.">
+          <Section icon={<Square size={20} />} title="Badge" description="Pequeños indicadores de estado con diseño 'soft background'.">
             <div className="flex flex-wrap gap-4">
               <Badge variant="success">Online</Badge>
               <Badge variant="warning" dot>Pausado</Badge>
@@ -143,7 +143,7 @@ export default function DesignSystemPage() {
           </Section>
 
           {/* Feedback & Spinner Section */}
-          <Section icon={<Bell size={18} />} title="Feedback & Loading" description="Componentes para informar al usuario sobre procesos o eventos globales.">
+          <Section icon={<Bell size={20} />} title="Feedback & Loading" description="Componentes para informar al usuario sobre procesos o eventos globales.">
             <div className="flex flex-wrap gap-8 items-center">
               <div className="flex items-center gap-2">
                 <Spinner size="sm" />
@@ -167,7 +167,7 @@ export default function DesignSystemPage() {
           </Section>
 
           {/* Modal Section */}
-          <Section icon={<Layout size={18} />} title="Modal" description="Diálogos flotantes usando Portals para evitar conflictos de z-index y animaciones suaves.">
+          <Section icon={<Layout size={20} />} title="Modal" description="Diálogos flotantes usando Portals para evitar conflictos de z-index y animaciones suaves.">
             <Button variant="secondary" onClick={() => setIsModalOpen(true)}>
               Abrir Modal de Ejemplo
             </Button>
@@ -202,7 +202,7 @@ export default function DesignSystemPage() {
           </Section>
 
           {/* Empty State Section */}
-          <Section icon={<Inbox size={18} />} title="Empty State" description="Componente para guiar al usuario cuando no hay datos disponibles.">
+          <Section icon={<Inbox size={20} />} title="Empty State" description="Componente para guiar al usuario cuando no hay datos disponibles.">
             <div className="border border-dashed border-slate-200 rounded-3xl bg-white/50">
               <EmptyState 
                 title="No hay conversaciones"
@@ -217,7 +217,7 @@ export default function DesignSystemPage() {
           </Section>
 
           {/* Agenda Section */}
-          <Section icon={<Calendar size={18} />} title="Agenda / Citas" description="Componentes para la gestión de turnos, integrando estados visuales y acciones.">
+          <Section icon={<Calendar size={20} />} title="Agenda / Citas" description="Componentes para la gestión de turnos, integrando estados visuales y acciones.">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <AppointmentCard 
                 appointment={mockAppointment} 
@@ -234,7 +234,7 @@ export default function DesignSystemPage() {
               />
             </div>
             
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-4">
+            <p className="text-[11.5px] text-slate-400 font-bold uppercase tracking-widest mt-4">
               Haz click en una tarjeta para ver el detalle
             </p>
 
@@ -256,7 +256,7 @@ export default function DesignSystemPage() {
         {/* Technical Footer */}
         <footer className="mt-20 pt-8 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center text-slate-400">
           <div className="flex items-center gap-2 mb-4 md:mb-0">
-            <Code size={16} />
+            <Code size={18} />
             <span className="text-xs font-mono">Build Phase 1.7 / Atomic Design System</span>
           </div>
           <p className="text-xs font-medium italic">Deviaty Hub — Premium Dental AI Interface</p>
