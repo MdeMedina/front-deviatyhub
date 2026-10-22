@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { CheckCircle2, Circle, LogIn } from 'lucide-react'
+import { CheckCircle2, Circle, FileText, LogIn } from 'lucide-react'
 import {
   useActAsClinic,
   useInviteClinicAdmin,
@@ -86,9 +86,17 @@ function Ficha() {
           </span>
         }
         actions={
-          <Button icon={<LogIn size={14} />} onClick={() => enter({ id: c.id, name: c.name })}>
-            Entrar al panel
-          </Button>
+          <>
+            <Link
+              href={`/backoffice/clinics/${c.id}/prompt`}
+              className="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-[7px] border border-[var(--line)] bg-[var(--card)] text-[13px] font-medium text-[var(--ink-soft)] hover:border-[var(--dim)] hover:text-[var(--ink)] transition-colors"
+            >
+              <FileText size={14} /> Editar prompt
+            </Link>
+            <Button icon={<LogIn size={14} />} onClick={() => enter({ id: c.id, name: c.name })}>
+              Entrar al panel
+            </Button>
+          </>
         }
       />
 
