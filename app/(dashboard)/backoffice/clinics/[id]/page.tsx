@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { CheckCircle2, Circle, LogIn } from 'lucide-react'
 import {
@@ -237,6 +238,21 @@ function Ficha() {
           <ClinicAccessCard clinic={c} />
 
           <ClinicAgentSettingsCard clinicId={c.id} />
+
+          <div data-card>
+            <div data-hd><h2>Prompt del agente</h2></div>
+            <div className="px-[18px] py-3.5 flex flex-col gap-2.5">
+              <span className="text-[12.5px] text-[var(--muted)] leading-snug">
+                Cómo habla y cómo lleva la conversación el agente de esta clínica. Solo lo ve el equipo de Dentral.
+              </span>
+              <Link
+                href={`/backoffice/clinics/${c.id}/prompt`}
+                className="w-fit h-8 px-3 inline-flex items-center rounded-[7px] border border-[var(--line)] bg-[var(--card)] text-[12.5px] text-[var(--ink-soft)] hover:border-[var(--dim)] hover:text-[var(--ink)] transition-colors"
+              >
+                Editar prompt
+              </Link>
+            </div>
+          </div>
 
           <ClinicCommercialCard clinicId={c.id} />
 

@@ -440,3 +440,61 @@ export const useSaveAgentSettings = (id: string) => {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['platform', 'agent-settings', id] }),
   })
 }
+
+
+// ─── Prompt del agente ─────────────────────────────────────────────────
+
+export interface PromptVersion {
+  id: string
+  content: string
+  note: string | null
+  active: boolean
+  created_at: string
+  created_by: string | null
+  /** Se escribió sobre el prompt base vigente. */
+  based_on_current: boolean
+  same_as_base: boolean
+}
+
+export interface ClinicPrompt {
+  base: string
+  base_hash: string
+  fixed: string
+  markers: Record<string, string>
+  active: PromptVersion | null
+  base_changed: boolean
+  versions: PromptVersion[]
+  warnings?: string[]
+}
+
+export const useClinicPrompt = (id: string) =>
+  useQuery({
+    queryKey: ['platform', 'prompt', id],
+    queryFn: () => apiClient.get<ClinicPrompt>(ENDPOINTS.platform.prompt(id)),
+    enabled: !!id,
+  })
+
+export const useReviewPrompt = (id: string) =>
+  useMutation({
+    mutationFn: (content: string) =>
+      apiClient.post<{ errores: string[]; avisos: string[] }>(ENDPOINTS.platform.prompt(id, '/review'), { content }),
+  })
+
+export const usePromptActions = (id: string) => {
+  const qc = useQueryClient()
+  const ok = (data: ClinicPrompt) => qc.setQueryData(['platform', 'prompt', id], data)
+  return {
+    guardar: useMutation({
+      mutationFn: (d: { content: string; note?: string }) => apiClient.post<ClinicPrompt>(ENDPOINTS.platform.prompt(id), d),
+      onSuccess: ok,
+    }),
+    activar: useMutation({
+      mutationFn: (versionId: string) => apiClient.post<ClinicPrompt>(ENDPOINTS.platform.prompt(id, `/versions/${versionId}/activate`)),
+      onSuccess: ok,
+    }),
+    usarBase: useMutation({
+      mutationFn: () => apiClient.delete<ClinicPrompt>(ENDPOINTS.platform.prompt(id)),
+      onSuccess: ok,
+    }),
+  }
+}

@@ -53,6 +53,7 @@ export const ENDPOINTS = {
     access:       (id: string) => `${API_BASE}/core/platform/clinics/${id}/access`,
     commercial:   (id: string) => `${API_BASE}/core/platform/clinics/${id}/commercial`,
     agentSettings: (id: string) => `${API_BASE}/core/platform/clinics/${id}/agent-settings`,
+    prompt:       (id: string, sufijo = '') => `${API_BASE}/core/platform/clinics/${id}/prompt${sufijo}`,
     impact:       (id: string) => `${API_BASE}/core/platform/clinics/${id}/impact`,
     health:       `${API_BASE}/core/platform/metrics/health`,
     clinicsMetrics: `${API_BASE}/core/platform/metrics/clinics`,
