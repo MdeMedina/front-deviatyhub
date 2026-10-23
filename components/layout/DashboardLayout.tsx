@@ -38,14 +38,21 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
       return
     }
 
-    if (access_token) {
-      socketClient.connect(access_token)
-    }
+    // El socket lee el token y la clínica del store en cada intento.
+    socketClient.connect()
 
     return () => {
       socketClient.disconnect()
     }
-  }, [isAuthenticated, access_token, router, mounted])
+  }, [isAuthenticated, router, mounted])
+
+  // Token renovado u otra clínica elegida en el backoffice: se reconecta (el
+  // servidor mete el socket en la sala de esa clínica) sin recrear el socket,
+  // así no se pierden los listeners.
+  useEffect(() => {
+    if (!mounted || !isAuthenticated) return
+    socketClient.refresh()
+  }, [mounted, isAuthenticated, access_token, actingClinic?.id])
 
   // Cuando vence el token se comprueba la sesión sin esperar a que el usuario
   // haga algo: /auth/me con el token vencido dispara la renovación y, si ya no
