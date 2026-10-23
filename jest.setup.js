@@ -54,6 +54,7 @@ jest.mock('@/lib/socket/socket-client', () => ({
     on: jest.fn(),
     off: jest.fn(),
     connect: jest.fn(),
+    refresh: jest.fn(),
     disconnect: jest.fn(),
     isConnected: jest.fn(() => true),
     // Devuelve la función de desuscripción, igual que la implementación real.
