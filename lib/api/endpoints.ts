@@ -42,6 +42,9 @@ export const ENDPOINTS = {
     byId:           (id: string) => `${API_BASE}/core/agenda/appointments/${id}`,
     status:         (id: string) => `${API_BASE}/core/agenda/appointments/${id}/status`,
     reschedule:     (id: string) => `${API_BASE}/core/agenda/appointments/${id}/reschedule`,
+    coordination:   `${API_BASE}/core/agenda/coordination`,
+    coordinationSync: `${API_BASE}/core/agenda/coordination/sync`,
+    coordinated:    (id: string) => `${API_BASE}/core/agenda/appointments/${id}/coordinated`,
   },
   platform: {
     overview:     `${API_BASE}/core/platform/overview`,
@@ -58,6 +61,7 @@ export const ENDPOINTS = {
     health:       `${API_BASE}/core/platform/metrics/health`,
     clinicsMetrics: `${API_BASE}/core/platform/metrics/clinics`,
     whatsapp:     (id: string, accion = '') => `${API_BASE}/core/platform/clinics/${id}/whatsapp${accion ? `/${accion}` : ''}`,
+    dentalink:    (id: string, sufijo = '') => `${API_BASE}/core/platform/clinics/${id}/dentalink${sufijo}`,
     users:        (id: string) => `${API_BASE}/core/platform/clinics/${id}/users`,
     resendInvite: (id: string, userId: string) => `${API_BASE}/core/platform/clinics/${id}/users/${userId}/resend-invite`,
   },

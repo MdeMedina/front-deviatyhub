@@ -16,6 +16,7 @@ import { useAppointments } from '@/lib/api/hooks/use-appointments'
 import { useAgendaAbsences } from '@/lib/api/hooks/use-doctor-schedule'
 import { CalendarGrid } from '@/components/agenda/CalendarGrid'
 import { AppointmentModal } from '@/components/agenda/AppointmentModal'
+import { DentalinkCoordination } from '@/components/agenda/DentalinkCoordination'
 import { getDateRange, getRangeLabel } from '@/lib/utils/dates'
 
 export default function AgendaPage() {
@@ -171,6 +172,9 @@ export default function AgendaPage() {
           </div>
         </div>
       </div>
+
+      {/* Lo que falta pasar a Dentalink (solo clínicas con Dentalink) */}
+      <DentalinkCoordination />
 
       {/* Main Calendar Matrix */}
       <CalendarGrid

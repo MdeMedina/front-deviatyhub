@@ -13,6 +13,7 @@ import {
 } from '@/lib/api/hooks/use-platform'
 import { ClinicAccessCard } from '@/components/backoffice/ClinicAccessCard'
 import { ClinicWhatsAppCard } from '@/components/backoffice/ClinicWhatsAppCard'
+import { ClinicDentalinkCard } from '@/components/backoffice/ClinicDentalinkCard'
 import { ClinicCommercialCard } from '@/components/backoffice/ClinicCommercialCard'
 import { ClinicAgentSettingsCard } from '@/components/backoffice/ClinicAgentSettingsCard'
 import { Spinner } from '@/components/ui/Spinner'
@@ -203,12 +204,14 @@ function Ficha() {
 
           <ClinicWhatsAppCard clinicId={c.id} clinicName={c.name} />
 
+          <ClinicDentalinkCard clinicId={c.id} />
+
           <div data-card>
             <div data-hd>
               <h2>Otras integraciones</h2>
               <span data-lbl>Se configuran entrando al panel de la clínica</span>
             </div>
-            {c.integrations.filter((i) => i.type !== 'WHATSAPP').length === 0 ? (
+            {c.integrations.filter((i) => i.type !== 'WHATSAPP' && i.type !== 'DENTALINK').length === 0 ? (
               <p className="px-[22px] py-5 text-[14.5px] text-[var(--muted)]">Ninguna configurada todavía.</p>
             ) : (
               <table data-tbl>
@@ -221,7 +224,7 @@ function Ficha() {
                   </tr>
                 </thead>
                 <tbody>
-                  {c.integrations.filter((i) => i.type !== 'WHATSAPP').map((i) => (
+                  {c.integrations.filter((i) => i.type !== 'WHATSAPP' && i.type !== 'DENTALINK').map((i) => (
                     <tr key={i.type}>
                       <td className="font-medium text-[var(--ink)]">{INTEGRACION[i.type] || i.type}</td>
                       <td>

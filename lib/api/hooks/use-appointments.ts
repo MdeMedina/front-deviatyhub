@@ -93,3 +93,54 @@ export const useRescheduleAppointment = () => {
     }
   })
 }
+
+// ─── Coordinación con Dentalink ─────────────────────────────────────
+
+export interface CoordinationItem {
+  id: string
+  code: string | null
+  action: 'crear' | 'mover' | 'anular'
+  status: string
+  scheduled_at: string
+  duration_min: number
+  source: 'AGENT' | 'HUMAN' | 'EXTERNAL'
+  doctor: string | null
+  treatment: string | null
+  patient: string | null
+  phone: string | null
+  rut: string | null
+  conversation_id: string | null
+  updated_at: string | null
+}
+
+export interface CoordinationData {
+  enabled: boolean
+  last_sync: { at: string; ok: boolean; error?: string | null } | null
+  items: CoordinationItem[]
+}
+
+/** Lo agendado, movido o anulado desde Dentral que falta repetir en Dentalink. */
+export const useCoordination = () =>
+  useQuery({
+    queryKey: ['coordination'],
+    queryFn: () => apiClient.get<CoordinationData>(ENDPOINTS.agenda.coordination),
+    refetchInterval: 60_000,
+  })
+
+export const useCoordinationActions = () => {
+  const qc = useQueryClient()
+  const refrescar = () => {
+    qc.invalidateQueries({ queryKey: ['coordination'] })
+    qc.invalidateQueries({ queryKey: ['appointments'] })
+  }
+  return {
+    marcar: useMutation({
+      mutationFn: (id: string) => apiClient.post(ENDPOINTS.agenda.coordinated(id), {}),
+      onSuccess: refrescar,
+    }),
+    sincronizar: useMutation({
+      mutationFn: () => apiClient.post(ENDPOINTS.agenda.coordinationSync, {}),
+      onSuccess: refrescar,
+    }),
+  }
+}

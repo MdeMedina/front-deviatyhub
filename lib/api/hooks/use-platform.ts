@@ -498,3 +498,82 @@ export const usePromptActions = (id: string) => {
     }),
   }
 }
+
+// ─── Dentalink de cada clínica ──────────────────────────────────────
+
+export interface DentalinkSync {
+  at: string
+  ok: boolean
+  motivo: 'diaria' | 'periodica' | 'manual'
+  desde?: string
+  hasta?: string
+  citas_leidas?: number
+  creadas?: number
+  actualizadas?: number
+  anuladas?: number
+  coordinadas?: number
+  pendientes?: number
+  no_encontradas?: number
+  bloqueos?: number
+  dentistas_sin_vincular?: { id: number; nombre: string; citas: number }[]
+  aviso?: string | null
+  error?: string | null
+  duracion_ms?: number
+}
+
+export interface ClinicDentalink {
+  connected: boolean
+  has_token: boolean
+  sucursal: { id: number; nombre: string | null } | null
+  timezone: string | null
+  last_sync: DentalinkSync | null
+  last_error: string | null
+  pending_coordination: number
+  doctors: { id: string; name: string; booking_mode: string; external_id: string | null }[]
+  sucursales?: { id: number; nombre: string; habilitada: boolean }[]
+}
+
+export const useClinicDentalink = (id: string) =>
+  useQuery({
+    queryKey: ['platform', 'dentalink', id],
+    queryFn: () => apiClient.get<ClinicDentalink>(ENDPOINTS.platform.dentalink(id)),
+    enabled: !!id,
+  })
+
+export const useDentalinkDentistas = (id: string, enabled: boolean) =>
+  useQuery({
+    queryKey: ['platform', 'dentalink', id, 'dentistas'],
+    queryFn: () => apiClient.get<{ id: number; nombre: string; habilitado: boolean }[]>(ENDPOINTS.platform.dentalink(id, '/dentistas')),
+    enabled: !!id && enabled,
+    staleTime: 5 * 60_000,
+  })
+
+export const useDentalinkActions = (id: string) => {
+  const qc = useQueryClient()
+  const refrescar = () => {
+    qc.invalidateQueries({ queryKey: ['platform', 'dentalink', id] })
+    qc.invalidateQueries({ queryKey: ['platform', 'clinic'] })
+  }
+  return {
+    configurar: useMutation({
+      mutationFn: (d: { token?: string; id_sucursal?: number }) => apiClient.put<ClinicDentalink>(ENDPOINTS.platform.dentalink(id), d),
+      onSuccess: (data) => {
+        qc.setQueryData(['platform', 'dentalink', id], data)
+        refrescar()
+      },
+    }),
+    vincular: useMutation({
+      mutationFn: (links: { doctor_id: string; external_id: string | null }[]) =>
+        apiClient.put<ClinicDentalink>(ENDPOINTS.platform.dentalink(id, '/doctors'), { links }),
+      onSuccess: refrescar,
+    }),
+    sincronizar: useMutation({
+      mutationFn: () => apiClient.post<DentalinkSync>(ENDPOINTS.platform.dentalink(id, '/sync'), {}),
+      onSuccess: refrescar,
+    }),
+    desconectar: useMutation({
+      mutationFn: () => apiClient.delete<ClinicDentalink>(ENDPOINTS.platform.dentalink(id)),
+      onSuccess: refrescar,
+    }),
+  }
+}
