@@ -28,6 +28,7 @@ import {
 import { useAuthStore } from '@/lib/stores/auth.store'
 import { useUIStore } from '@/lib/stores/ui.store'
 import { Logo } from '@/components/brand/Logo'
+import { usePendientesDelEquipo } from '@/lib/api/hooks/use-pendientes'
 
 interface NavGroup {
   name: string
@@ -99,6 +100,8 @@ export const Sidebar: React.FC = () => {
   // Superusuario fuera de cualquier clínica: solo existe el backoffice.
   const soloPlataforma = !!user?.platform_admin && !actingClinic
   const { isSidebarOpen, toggleSidebar, theme, toggleTheme } = useUIStore()
+  const { sinAtender, porDentalink } = usePendientesDelEquipo(!soloPlataforma && !!user)
+  const contador: Record<string, number> = { '/conversations': sinAtender, '/agenda': porDentalink }
 
   return (
     <aside
@@ -173,8 +176,16 @@ export const Sidebar: React.FC = () => {
                     <Icon size={18} className={`shrink-0 ${isActive ? 'text-[var(--blue)]' : 'text-[var(--muted)] group-hover:text-[var(--ink)]'}`} />
                     
                     {isSidebarOpen && (
-                      <span className="truncate">
+                      <span className="truncate flex-1">
                         {item.label}
+                      </span>
+                    )}
+                    {contador[item.href] > 0 && (
+                      <span
+                        title={item.href === '/agenda' ? 'Citas por pasar a Dentalink' : 'Conversaciones derivadas sin atender'}
+                        className={`tabular inline-grid place-items-center min-w-[22px] h-[22px] px-1.5 rounded-full bg-[var(--neg)] text-white text-[12.5px] font-semibold ${isSidebarOpen ? '' : 'absolute top-0.5 right-0.5'}`}
+                      >
+                        {contador[item.href]}
                       </span>
                     )}
                   </Link>
