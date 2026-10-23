@@ -220,7 +220,7 @@ export const ScheduleEditor: React.FC<ScheduleEditorProps> = ({ readOnly }) => {
                         disabled={!day.is_open || readOnly}
                         onChange={(e) => handleTimeChange(day.day_of_week, 'open_time', e.target.value)}
                         className="tabular"
-                        style={{ height: '30px', width: '120px', borderColor: errorMsg ? 'var(--neg)' : undefined }}
+                        style={{ height: '38px', width: '160px', borderColor: errorMsg ? 'var(--neg)' : undefined }}
                       />
                     </td>
                     <td>
@@ -232,7 +232,7 @@ export const ScheduleEditor: React.FC<ScheduleEditorProps> = ({ readOnly }) => {
                         disabled={!day.is_open || readOnly}
                         onChange={(e) => handleTimeChange(day.day_of_week, 'close_time', e.target.value)}
                         className="tabular"
-                        style={{ height: '30px', width: '120px', borderColor: errorMsg ? 'var(--neg)' : undefined }}
+                        style={{ height: '38px', width: '160px', borderColor: errorMsg ? 'var(--neg)' : undefined }}
                       />
                     </td>
                   </tr>

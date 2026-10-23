@@ -30,9 +30,9 @@ function Kpi({ titulo, valor, meta, estado, detalle }: {
   return (
     <div data-card className="flex flex-col min-w-0" style={{ borderTop: `3px solid ${FRANJA[estado]}` }}>
       <div className="px-4 pt-3.5 pb-3 flex flex-col gap-2 flex-1">
-        <div className="flex items-start justify-between gap-2">
-          <span className="text-[14.5px] font-semibold text-[var(--ink)] leading-snug">{titulo}</span>
-          <span data-badge className="shrink-0">
+        <div className="flex flex-col items-start gap-1.5">
+          <span className="text-[15px] font-semibold text-[var(--ink)] leading-snug">{titulo}</span>
+          <span data-badge>
             <span data-dot style={{ background: COLOR[estado] }} />
             {ETIQUETA[estado]}
           </span>
@@ -147,9 +147,9 @@ export function ImpactSection({ days }: { days: number }) {
         )}
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] items-start">
+      <div className="grid gap-3 2xl:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] items-start">
         <TarjetaGarantia />
-        <div className="grid gap-3 grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
           <Kpi
             titulo="Ingreso estimado"
             valor={dinero(b.estimated_revenue, imp.currency)}

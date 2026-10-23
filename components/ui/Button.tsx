@@ -27,7 +27,7 @@ export const Button: React.FC<ButtonProps> = ({
   icon,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-medium transition-[border-color,color,background-color,opacity] duration-150 rounded-[7px] cursor-pointer outline-none focus-visible:ring-3 focus-visible:ring-[var(--blue-tint)] focus-visible:border-[var(--blue)] disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed select-none'
+  const baseStyles = 'inline-flex items-center justify-center whitespace-nowrap font-medium transition-[border-color,color,background-color,opacity] duration-150 rounded-[7px] cursor-pointer outline-none focus-visible:ring-3 focus-visible:ring-[var(--blue-tint)] focus-visible:border-[var(--blue)] disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed select-none'
   
   const variants = {
     primary: 'bg-[var(--blue-solid)] text-[var(--on-blue)] border border-[var(--blue-solid)] hover:opacity-[.88]',

@@ -101,7 +101,7 @@ function Ficha() {
         }
       />
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px] items-start">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_400px] items-start">
         <div className="flex flex-col gap-5 min-w-0">
           <div data-card>
             <div data-hd>
@@ -286,7 +286,7 @@ function Ficha() {
 
           <div data-card>
             <div data-hd><h2>Datos</h2></div>
-            <dl className="px-[22px] py-3.5 grid grid-cols-[110px_minmax(0,1fr)] gap-x-3 gap-y-2.5 text-[14.5px]">
+            <dl className="px-[22px] py-3.5 grid grid-cols-[130px_minmax(0,1fr)] gap-x-3 gap-y-2.5 text-[14.5px]">
               <dt data-lbl className="pt-[2px]">Facturación</dt>
               <dd className="text-[var(--ink)] break-words">{c.billing_email}</dd>
               <dt data-lbl className="pt-[2px]">Teléfono</dt>

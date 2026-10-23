@@ -81,7 +81,7 @@ export function ClinicWhatsAppCard({ clinicId, clinicName }: { clinicId: string;
                   : 'Aún sin verificar con Meta.'}
               </span>
             )}
-            <dl className="grid grid-cols-[130px_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-[14px]">
+            <dl className="grid grid-cols-[150px_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-[14px]">
               <dt data-lbl className="pt-[2px]">ID del número</dt>
               <dd className="tabular text-[var(--ink-soft)] break-all">{w.phone_number_id || dentral?.phone_number_id || '—'}</dd>
               {w.mode === 'own' && (<>

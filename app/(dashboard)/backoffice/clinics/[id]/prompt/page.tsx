@@ -103,7 +103,7 @@ function Editor() {
         </div>
       )}
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px] items-start">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px] items-start">
         {/* Editor */}
         <div data-card className="flex flex-col min-w-0">
           <div data-hd>

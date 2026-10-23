@@ -93,9 +93,9 @@ function TarjetaSla({ i }: { i: Sla }) {
   return (
     <div data-card className="flex flex-col min-w-0" style={{ borderTop: `3px solid ${COLOR[i.tono]}` }}>
       <div className="px-4 pt-3.5 pb-3 flex flex-col gap-2.5 flex-1">
-        <div className="flex items-start justify-between gap-2">
+        <div className="flex flex-col items-start gap-1.5">
           <span className="text-[15px] font-semibold text-[var(--ink)] leading-snug">{i.metrica}</span>
-          <span data-badge className="shrink-0"><Dot tone={i.tono} />{ESTADO[i.tono]}</span>
+          <span data-badge><Dot tone={i.tono} />{ESTADO[i.tono]}</span>
         </div>
         <div className="flex items-end gap-5 flex-wrap">
           {i.cifras.map((c) => (
