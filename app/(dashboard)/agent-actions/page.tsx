@@ -38,15 +38,9 @@ export default function AgentActionsPage() {
     <div className="flex flex-col gap-5 max-w-[1680px] mx-auto">
       {/* Header Bar */}
       <div className="flex items-end justify-between gap-5 flex-wrap pb-4 border-b border-[var(--line)]">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-[28px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
-            Configuración del Agente
-          </h1>
-          <p className="text-[15px] text-[var(--muted)]">
-            Controla las reglas de negocio y flujos de automatización del bot.
-          </p>
-        </div>
-        <span data-lbl>Actualizado 16 ago, 09:12</span>
+        <h1 className="text-[28px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight">
+          Configuración del agente
+        </h1>
       </div>
 
       {/* Main Content */}

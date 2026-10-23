@@ -71,63 +71,54 @@ function MetricsContent() {
     title: string
     value: React.ReactNode
     trend: TrendDisplay | null
-    subtitle: string
     testId: string
   }[] = [
     {
       title: 'Conversaciones atendidas',
       value: formatCount(metrics?.conversations_attended),
       trend: formatTrend(trends?.conversations_attended),
-      subtitle: 'Total del periodo',
       testId: 'metric-conversations',
     },
     {
       title: 'Tasa de contención',
       value: formatRate(metrics?.containment_rate),
       trend: formatTrend(trends?.containment_rate),
-      subtitle: 'Autónomo por IA',
       testId: 'metric-containment',
     },
     {
       title: 'Tiempo de respuesta',
       value: formatResponseTime(metrics?.avg_response_time_ms),
       trend: formatTrend(trends?.avg_response_time_ms, { lowerIsBetter: true }),
-      subtitle: 'Tiempo promedio',
       testId: 'metric-response-time',
     },
     {
       title: 'Citas agendadas',
       value: formatCount(metrics?.appointments_scheduled),
       trend: formatTrend(trends?.appointments_scheduled),
-      subtitle: 'Agendadas autónomamente',
       testId: 'metric-scheduled',
     },
     {
       title: 'Citas reprogramadas',
       value: formatCount(metrics?.appointments_rescheduled),
       trend: formatTrend(trends?.appointments_rescheduled),
-      subtitle: 'Cambios gestionados',
       testId: 'metric-rescheduled',
     },
     {
       title: 'Citas canceladas',
       value: formatCount(metrics?.appointments_cancelled),
       trend: formatTrend(trends?.appointments_cancelled, { lowerIsBetter: true }),
-      subtitle: 'Cancelaciones registradas',
       testId: 'metric-cancellations',
     },
     {
       title: 'Derivación a humano',
       value: formatCount(metrics?.human_takeovers),
       trend: formatTrend(trends?.human_takeovers, { lowerIsBetter: true }),
-      subtitle: 'Traspasos al equipo',
       testId: 'metric-human-takeovers',
     },
     {
       title: 'Fuera de horario',
       value: formatCount(metrics?.out_of_hours_conversations),
       trend: formatTrend(trends?.out_of_hours_conversations),
-      subtitle: 'Chats nocturnos y festivos',
       testId: 'metric-after-hours',
     },
   ]
@@ -136,14 +127,9 @@ function MetricsContent() {
     <div className="flex flex-col gap-6 max-w-[1680px] mx-auto">
       {/* Header and Period Selector */}
       <div className="flex items-end justify-between gap-5 flex-wrap pb-[18px] border-b border-[var(--line)]">
-        <div className="flex flex-col gap-[5px]">
-          <h1 className="text-[28px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight" data-testid="metrics-page-title">
-            Métricas de Rendimiento
-          </h1>
-          <p className="text-[15px] text-[var(--muted)]">
-            Monitorea el tráfico conversacional y evalúa la efectividad del agente autónomo.
-          </p>
-        </div>
+        <h1 className="text-[28px] font-semibold tracking-[-0.028em] text-[var(--ink)] leading-tight" data-testid="metrics-page-title">
+          Métricas
+        </h1>
 
         {/* Period Selector Tabs */}
         <div data-tabs>
@@ -202,7 +188,6 @@ function MetricsContent() {
                 </span>
               )}
             </div>
-            <span style={{ fontSize: '13.5px', color: 'var(--muted)' }}>{m.subtitle}</span>
           </div>
         ))}
       </div>

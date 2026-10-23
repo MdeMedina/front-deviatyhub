@@ -168,20 +168,14 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
     {
       key: 'schedule' as const,
       title: 'Agendar Citas',
-      description: 'Permite al asistente agendar nuevas citas médicas verificando la disponibilidad y reglas clínicas en tiempo real.',
-      count: '248',
     },
     {
       key: 'reschedule' as const,
       title: 'Reprogramar Citas',
-      description: 'Habilita al paciente cambiar fecha y horario de citas ya existentes manteniendo la trazabilidad histórica.',
-      count: '53',
     },
     {
       key: 'cancel' as const,
       title: 'Cancelar Citas',
-      description: 'Gestiona la cancelación de turnos y libera el horario en el calendario de forma automática.',
-      count: '26',
     },
   ]
 
@@ -250,9 +244,6 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
 
               {/* Body */}
               <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '16px', flex: 1 }}>
-                <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6, color: 'var(--muted)' }}>
-                  {actionInfo.description}
-                </p>
                 {bloqueada && (
                   <p style={{ margin: 0, fontSize: '13.5px', color: 'var(--neg)' }}>
                     No está incluida en el plan de tu clínica. Escríbenos para habilitarla.
@@ -261,7 +252,7 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
 
                 {/* Channels */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <span data-lbl>Canales habilitados</span>
+                  <span data-lbl>Canales</span>
                   <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                     {channelsList.map((channel) => {
                       const isSelected = actionConfig.channels.includes(channel)
@@ -297,7 +288,7 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
 
                 {/* Integrations */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <span data-lbl>Integraciones asociadas</span>
+                  <span data-lbl>Integraciones</span>
                   <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                     {integrationsList.map((integration) => {
                       const isSelected = actionConfig.integrations.includes(integration)
@@ -336,37 +327,10 @@ export const AgentActionToggle: React.FC<AgentActionToggleProps> = ({ readOnly =
                     })}
                   </div>
                 </div>
-
-                {/* Executions footer */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', paddingTop: '14px', borderTop: '1px solid var(--line-soft)', marginTop: 'auto' }}>
-                  <span style={{ fontSize: '14px', color: 'var(--muted)' }}>Ejecuciones (7 días)</span>
-                  <span data-mono style={{ fontSize: '14.5px', color: 'var(--ink)' }}>{actionInfo.count}</span>
-                </div>
               </div>
             </div>
           )
         })}
-      </div>
-
-      {/* Safety Rules Card */}
-      <div data-card>
-        <div data-hd>
-          <h2>Reglas de seguridad del agente</h2>
-        </div>
-        <div style={{ padding: '18px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <span data-lbl>Ventana mínima de agendamiento</span>
-            <span data-mono style={{ fontSize: '16.5px', color: 'var(--ink)' }}>2 h</span>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <span data-lbl>Máx. reprogramaciones por paciente</span>
-            <span data-mono style={{ fontSize: '16.5px', color: 'var(--ink)' }}>3</span>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <span data-lbl>Derivación automática a humano</span>
-            <span style={{ fontSize: '16.5px', color: 'var(--ink)' }}>Tras 2 intentos fallidos</span>
-          </div>
-        </div>
       </div>
     </div>
   )

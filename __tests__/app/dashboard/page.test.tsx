@@ -229,9 +229,9 @@ describe('Dashboard Page — Home Screen', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('link', { name: /Bandeja de Entrada/i })).toHaveAttribute('href', '/conversations')
-      expect(screen.getByRole('link', { name: /Agenda Médica/i })).toHaveAttribute('href', '/agenda')
+      expect(screen.getByRole('link', { name: /Agenda/i })).toHaveAttribute('href', '/agenda')
       expect(screen.getByRole('link', { name: /Base de Conocimiento/i })).toHaveAttribute('href', '/knowledge-base')
-      expect(screen.getByRole('link', { name: /Métricas y Reportes/i })).toHaveAttribute('href', '/metrics')
+      expect(screen.getByRole('link', { name: /Métricas/i })).toHaveAttribute('href', '/metrics')
     })
   })
 })

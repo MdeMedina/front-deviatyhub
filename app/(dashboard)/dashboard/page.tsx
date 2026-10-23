@@ -65,19 +65,19 @@ function DashboardContent() {
   const AGENT_STATUS: Record<AgentMode, { label: string; description: string; color: string; pulse: boolean }> = {
     AUTONOMOUS: {
       label: 'Activo y operando',
-      description: 'El agente responde a los pacientes y gestiona la agenda de forma autónoma.',
+      description: 'Responde y gestiona la agenda solo.',
       color: 'var(--pos)',
       pulse: true,
     },
     SUPERVISED: {
       label: 'Supervisado',
-      description: 'El agente responde dudas, pero no agenda, reprograma ni cancela horas: eso lo gestiona el equipo.',
+      description: 'Responde dudas; las horas las gestiona el equipo.',
       color: 'var(--warn, var(--blue))',
       pulse: true,
     },
     PAUSED: {
       label: 'En pausa',
-      description: 'El agente no está respondiendo. Las conversaciones entrantes quedan en la bandeja para que las atienda el equipo.',
+      description: 'No responde. Los chats quedan en la bandeja.',
       color: 'var(--neg)',
       pulse: false,
     },
@@ -134,14 +134,6 @@ function DashboardContent() {
         </div>
 
         <div className="flex items-center gap-2.5">
-          <div data-badge style={{ height: '32px', padding: '0 11px', background: 'var(--card)' }}>
-            <span className="relative inline-flex w-1.5 h-1.5">
-              <span className="animate-dentral-ping absolute inset-0 rounded-full bg-[var(--pos)]" />
-              <span className="relative w-1.5 h-1.5 rounded-full bg-[var(--pos)]" />
-            </span>
-            <span data-lbl style={{ color: 'var(--ink-soft)' }}>Agente activo</span>
-          </div>
-
           <button 
             data-btn="primary"
             onClick={openAgentModal}
@@ -175,7 +167,6 @@ function DashboardContent() {
             </span>
             {!isMetricsError && trendBadge(conversationsTrend)}
           </div>
-          <span style={{ fontSize: '13px', color: 'var(--dim)' }}>Últimos 7 días</span>
         </div>
 
         {/* Cell 2 */}
@@ -190,7 +181,6 @@ function DashboardContent() {
             </span>
             {!isMetricsError && trendBadge(containmentTrend)}
           </div>
-          <span style={{ fontSize: '13px', color: 'var(--dim)' }}>Autónomo por IA</span>
         </div>
 
         {/* Cell 3 */}
@@ -205,7 +195,6 @@ function DashboardContent() {
             </span>
             {!isMetricsError && trendBadge(appointmentsTrend)}
           </div>
-          <span style={{ fontSize: '13px', color: 'var(--dim)' }}>Reservadas con éxito</span>
         </div>
 
         {/* Cell 4 */}
@@ -220,7 +209,6 @@ function DashboardContent() {
             </span>
             {!isMetricsError && trendBadge(responseTrend)}
           </div>
-          <span style={{ fontSize: '13px', color: 'var(--dim)' }}>Tiempo promedio</span>
         </div>
       </div>
 
@@ -235,8 +223,7 @@ function DashboardContent() {
         {/* Left Card: 4 Accesos Directos in 2x2 Grid */}
         <div data-card>
           <div data-hd>
-            <h2>Accesos directos del sistema</h2>
-            <span data-lbl>4 módulos</span>
+            <h2>Accesos directos</h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '1px', background: 'var(--line)' }}>
             {/* Shortcut 1 */}
@@ -252,9 +239,6 @@ function DashboardContent() {
                   <ArrowUpRight size={14} strokeWidth={1.9} />
                 </span>
               </div>
-              <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.55, color: 'var(--muted)' }}>
-                Supervisa e interviene chats en tiempo real de WhatsApp e Instagram.
-              </p>
             </Link>
 
             {/* Shortcut 2 */}
@@ -265,14 +249,11 @@ function DashboardContent() {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '9px', width: '100%' }}>
                 <span data-icon><Calendar size={17} strokeWidth={1.75} /></span>
-                <span style={{ fontSize: '15px', fontWeight: 500, color: 'var(--ink)' }}>Agenda médica</span>
+                <span style={{ fontSize: '15px', fontWeight: 500, color: 'var(--ink)' }}>Agenda</span>
                 <span data-icon style={{ marginLeft: 'auto', width: '24px', height: '24px', background: 'var(--surface)', color: 'var(--ink-soft)' }}>
                   <ArrowUpRight size={14} strokeWidth={1.9} />
                 </span>
               </div>
-              <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.55, color: 'var(--muted)' }}>
-                Visualiza el calendario completo de citas y coordina horarios médicos.
-              </p>
             </Link>
 
             {/* Shortcut 3 */}
@@ -288,9 +269,6 @@ function DashboardContent() {
                   <ArrowUpRight size={14} strokeWidth={1.9} />
                 </span>
               </div>
-              <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.55, color: 'var(--muted)' }}>
-                Administra las políticas de atención, especialidades y tratamientos de la clínica.
-              </p>
             </Link>
 
             {/* Shortcut 4 */}
@@ -301,22 +279,19 @@ function DashboardContent() {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '9px', width: '100%' }}>
                 <span data-icon><BarChart3 size={17} strokeWidth={1.75} /></span>
-                <span style={{ fontSize: '15px', fontWeight: 500, color: 'var(--ink)' }}>Métricas y reportes</span>
+                <span style={{ fontSize: '15px', fontWeight: 500, color: 'var(--ink)' }}>Métricas</span>
                 <span data-icon style={{ marginLeft: 'auto', width: '24px', height: '24px', background: 'var(--surface)', color: 'var(--ink-soft)' }}>
                   <ArrowUpRight size={14} strokeWidth={1.9} />
                 </span>
               </div>
-              <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.55, color: 'var(--muted)' }}>
-                Analiza el rendimiento del agente IA, tasas de éxito de citas y velocidad de respuesta.
-              </p>
             </Link>
           </div>
         </div>
 
-        {/* Right Card: Estado de la IA */}
+        {/* Right Card: Estado del agente */}
         <div data-card>
           <div data-hd>
-            <h2>Estado de la IA</h2>
+            <h2>Estado del agente</h2>
           </div>
           <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>

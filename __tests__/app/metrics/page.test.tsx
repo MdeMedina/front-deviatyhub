@@ -121,7 +121,7 @@ describe('Metrics Page — Analytics Screen', () => {
 
     // Wait for the skeleton to disappear and the metrics page to load
     await waitFor(() => {
-      expect(screen.getByTestId('metrics-page-title')).toHaveTextContent(/Métricas de Rendimiento/i)
+      expect(screen.getByTestId('metrics-page-title')).toHaveTextContent(/Métricas/i)
       // Check individual MetricCard rendering
       expect(screen.getByText(/Conversaciones Atendidas/i)).toBeInTheDocument()
       expect(screen.getByText('250')).toBeInTheDocument()

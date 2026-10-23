@@ -78,7 +78,7 @@ describe('AgentActionsPage Integration & Permissions', () => {
 
     render(<AgentActionsPage />)
 
-    expect(screen.getByText('Configuración del Agente')).toBeInTheDocument()
+    expect(screen.getByText('Configuración del agente')).toBeInTheDocument()
     expect(screen.getByTestId('mock-agent-action-toggle')).toBeInTheDocument()
     expect(screen.getByTestId('mock-agent-action-toggle')).toHaveAttribute('data-readonly', 'false')
   })
